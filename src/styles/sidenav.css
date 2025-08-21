@@ -1,0 +1,49 @@
+.side-navbar {
+  background-color: #ffffff;
+  color: rgb(255, 255, 255);
+  width: 70px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+  position: fixed;
+  flex-shrink: 0;
+}
+
+.side-navbar-inner {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+}
+
+.nav-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  align-items: center;
+}
+
+.nav-item {
+  font-size: 24px;
+  padding: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.nav-item:hover {
+  background-color: #c4c6c8;
+}
+
+.nav-item.active {
+  background-color: #4A90E2;
+  color: white;
+}
+
+.logout {
+  color: #e74c3c;
+}

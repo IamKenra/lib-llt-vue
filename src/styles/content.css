@@ -1,0 +1,39 @@
+
+.dummy-content {
+  height: 1500px; /* Force scrollable area */
+  padding: 20px;
+}
+
+/* Visualization of the layout structure */
+.layout-visualization {
+  margin-top: 30px;
+  padding: 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.layout-visualization p {
+  margin-bottom: 15px;
+  color: #7f8c8d;
+}
+
+.layout-box {
+  border: 2px dashed #bdc3c7;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+}
+
+.top-box {
+  background-color: #e74c3c20;
+}
+
+.side-box {
+  background-color: #3498db20;
+}
+
+.content-box {
+  background-color: #2ecc7120;
+  height: 300px;
+}

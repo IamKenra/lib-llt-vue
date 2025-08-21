@@ -1,0 +1,121 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #ffffff;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.top-navbar {
+  justify-content: space-between;
+  background-color: #ffffff;
+  color: rgb(0, 0, 0);
+  padding: 0.75rem 1.2rem;
+  height: 70px;
+  display: flex;
+  align-items: center;
+}
+
+.top-navbar h2 {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* Main Content Container */
+.main-container {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+/* Sidebar Navigation */
+.side-navbar {
+  width: 70px;
+  background-color: #ffffff;
+  color: rgb(0, 0, 0);
+  padding: 20px;
+  overflow-y: auto;
+  flex-shrink: 0;
+  justify-content: space-between;
+}
+
+.side-navbar h2 {
+  margin-bottom: 20px;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.content {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  background-color: #ecf0f1;
+  /* New styles for rounded corner and inner shadow */
+  border-top-left-radius: 30px;
+  box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.1),
+              inset -4px -4px 8px rgba(255, 255, 255, 0.7);
+  position: relative;
+  border: 1px solid;
+}
+
+.breadcrumb-wrapper {
+  top: 0;
+  background-color: white;
+  z-index: 10;
+  border-radius: 8px;
+  padding: 0.5rem;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.p-breadcrumb {
+  background: transparent;
+  border: none;
+}
+
+.dummy-content {
+  height: 1500px; /* Force scrollable area */
+  padding: 20px;
+}
+
+/* Visualization of the layout structure */
+.layout-visualization {
+  margin-top: 15px;
+  padding: 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.layout-visualization p {
+  margin-bottom: 15px;
+  color: #7f8c8d;
+}
+
+.layout-box {
+  border: 2px dashed #bdc3c7;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+}
+
+.top-box {
+  background-color: #e74c3c20;
+}
+
+.side-box {
+  background-color: #3498db20;
+}
+
+.content-box {
+  background-color: #2ecc7120;
+  height: 300px;
+}
