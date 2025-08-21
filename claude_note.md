@@ -1,8 +1,28 @@
 # Claude Note - Lib LLT Vue
 
-## Checklist Fitur Development
+## Progress Development
 
-### 🗺️ Map Graph - Data Sebaran Lansia per RW
+### ✅ Completed Features
+
+#### 🎨 UI/UX Improvements
+- [x] **Navbar Highlight**: Menu aktif dengan background biru (#4A90E2) dan icon putih
+- [x] **Menu Navigation**: Ganti 'asset' menjadi 'lansia' di sidebar navigation
+- [x] **Responsive Layout**: Fixed layout dengan top navbar dan side navigation
+
+#### 👥 User Management
+- [x] **User Table**: Tabel user management dengan PrimeVue DataTable
+- [x] **Kolom Data**: No (urut waktu), Avatar, Name, Email, Phone, Role, Actions
+- [x] **Role System**: 3 role dengan color coding
+  - Super Admin (merah/danger)
+  - Admin (kuning/warning) 
+  - Surveyor (biru/info)
+- [x] **Features**: Search, pagination (10 rows), sortable columns
+- [x] **Sample Data**: 5 users dengan timestamp berurutan
+- [x] **Actions**: View, Edit, Delete buttons
+
+### 🔄 In Progress
+
+#### 🗺️ Map Graph - Data Sebaran Lansia per RW
 - [ ] Setup library mapping (Leaflet.js/D3.js/MapBox)
 - [ ] Download data boundary kelurahan Kotabaru, Yogyakarta
   - Sumber: BPS/HDX (Indonesia Administrative Boundaries Level 4)
@@ -14,9 +34,24 @@
 - [ ] Styling dan interaktifitas map
 - [ ] Testing dan optimasi performance
 
-## Catatan Teknis
+### 📋 Technical Notes
 
-### Data Boundary Kelurahan
+#### User Management Implementation
+- **Framework**: Vue 3 Composition API + TypeScript
+- **UI Library**: PrimeVue (DataTable, Column, Button, Tag, InputText)
+- **Data Structure**:
+  ```typescript
+  interface User {
+    id: string
+    name: string
+    email: string
+    phone: string
+    role: 'Super Admin' | 'Admin' | 'Surveyor'
+    createdAt: Date
+  }
+  ```
+
+#### Data Boundary Kelurahan
 - **Sumber Utama**: BPS (Badan Pusat Statistik)
   - Portal SIG BPS: sig.bps.go.id
   - BPS Yogyakarta: yogyakarta.bps.go.id
@@ -25,13 +60,14 @@
   - GitHub repositories: bachtiarpanjaitan/geojson-id, Alf-Anas/batas-administrasi-indonesia
   - OpenStreetMap: polygons.openstreetmap.fr
 
-### Library Options
+#### Library Options for Mapping
 1. **Leaflet.js + Vue2Leaflet**: Lightweight, baik untuk interactive maps
 2. **D3.js**: Full control, baik untuk custom visualization
 3. **MapBox GL JS**: High performance, advanced styling
 
-### Target Implementation
-- Visualisasi data sebaran lansia per RW dalam bentuk choropleth map
-- Interactive tooltip dengan detail data
-- Zoom dan pan functionality
-- Legend dan filter options
+### 🎯 Next Steps
+1. Implementasi CRUD operations untuk user management
+2. Add/Edit user form dengan validation
+3. Role-based access control
+4. Setup mapping library untuk fitur lansia
+5. Download dan integrate boundary data kelurahan

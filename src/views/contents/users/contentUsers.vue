@@ -38,7 +38,11 @@
       responsiveLayout="scroll"
     >
       <Column selectionMode="multiple" headerStyle="width: 3em" />
-      <Column field="id" header="ID" sortable />
+      <Column header="No" style="width: 80px">
+        <template #body="slotProps">
+          {{ slotProps.index + 1 }}
+        </template>
+      </Column>
       <Column header="Avatar">
         <template #body>
           <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
@@ -103,6 +107,7 @@ const users = [
     email: 'budi.santoso@email.com',
     phone: '081234567890',
     role: 'Super Admin',
+    createdAt: new Date('2024-01-15T09:00:00'),
   },
   {
     id: 'USR-002',
@@ -110,6 +115,7 @@ const users = [
     email: 'siti.nurhaliza@email.com',
     phone: '081234567891',
     role: 'Admin',
+    createdAt: new Date('2024-02-10T10:30:00'),
   },
   {
     id: 'USR-003',
@@ -117,6 +123,7 @@ const users = [
     email: 'ahmad.wijaya@email.com',
     phone: '081234567892',
     role: 'Surveyor',
+    createdAt: new Date('2024-03-05T14:15:00'),
   },
   {
     id: 'USR-004',
@@ -124,6 +131,7 @@ const users = [
     email: 'dewi.kartika@email.com',
     phone: '081234567893',
     role: 'Admin',
+    createdAt: new Date('2024-04-20T16:45:00'),
   },
   {
     id: 'USR-005',
@@ -131,15 +139,19 @@ const users = [
     email: 'rudi.hermawan@email.com',
     phone: '081234567894',
     role: 'Surveyor',
+    createdAt: new Date('2024-08-01T08:20:00'),
   },
-]
+].sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())
 
 const filteredUsers = computed(() => {
   return users.filter((user) => {
+    const searchTerm = search.value.toLowerCase()
     const matchesSearch =
-      user.name.toLowerCase().includes(search.value.toLowerCase()) ||
-      user.email.toLowerCase().includes(search.value.toLowerCase()) ||
-      user.id.toLowerCase().includes(search.value.toLowerCase())
+      user.name.toLowerCase().includes(searchTerm) ||
+      user.email.toLowerCase().includes(searchTerm) ||
+      user.id.toLowerCase().includes(searchTerm) ||
+      user.phone.toLowerCase().includes(searchTerm) ||
+      user.role.toLowerCase().includes(searchTerm)
     return matchesSearch
   })
 })
