@@ -19,7 +19,7 @@ const router = useRouter()
 const route = useRoute()
 
 const activeMenu = computed(() => {
-  return route.query.content || 'dashboard'
+  return route.query.content || null // Don't highlight any menu during welcome
 })
 
 function navigateTo(content: 'dashboard' | 'lansia'| 'users') {

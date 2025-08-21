@@ -16,9 +16,17 @@
   - Super Admin (merah/danger)
   - Admin (kuning/warning) 
   - Surveyor (biru/info)
-- [x] **Features**: Search, pagination (10 rows), sortable columns
+- [x] **Features**: Search (semua field), pagination (10 rows), sortable columns
 - [x] **Sample Data**: 5 users dengan timestamp berurutan
 - [x] **Actions**: View, Edit, Delete buttons
+
+#### 🎉 Welcome Screen
+- [x] **Welcome Animation**: Logo statis di tengah dengan loading dots
+- [x] **Progress Bar**: Animasi loading 4 detik dengan gradient biru
+- [x] **Auto Redirect**: Otomatis ke dashboard setelah welcome sequence
+- [x] **Blue Theme**: Background gradient sesuai warna logo LLT
+- [x] **Clean Architecture**: Terpisah CSS dan composable
+- [x] **User Greeting**: Menampilkan nama user yang login
 
 ### 🔄 In Progress
 
@@ -49,6 +57,24 @@
     role: 'Super Admin' | 'Admin' | 'Surveyor'
     createdAt: Date
   }
+  ```
+
+#### Welcome Screen Implementation
+- **Architecture**: Clean separation of concerns
+  - `contentWelcome.vue` - Template dan component logic
+  - `useWelcome.ts` - Composable untuk welcome functionality
+  - `welcome.css` - Styling terpisah dengan animations
+- **Features**:
+  - Auto progress animation (0-100% dalam 4 detik)
+  - Logo positioning dengan CSS Grid/Flexbox
+  - Loading dots dengan staggered animation
+  - Smooth redirect ke dashboard
+- **File Structure**:
+  ```
+  src/
+  ├── views/contents/welcome/contentWelcome.vue
+  ├── composables/useWelcome.ts
+  └── styles/welcome.css
   ```
 
 #### Data Boundary Kelurahan

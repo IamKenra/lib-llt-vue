@@ -1,0 +1,114 @@
+.welcome-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #4A90E2 0%, #2E5BBA 100%);
+  border-radius: 0;
+  margin: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+}
+
+.welcome-card {
+  background: white;
+  padding: 3rem 2rem;
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  max-width: 400px;
+  width: 100%;
+}
+
+.welcome-animation {
+  margin-bottom: 2rem;
+}
+
+.logo-animation {
+  width: 120px;
+  height: auto;
+  margin-bottom: 1rem;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.loading-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  background: #4A90E2;
+  border-radius: 50%;
+  animation: dotBounce 1.5s ease-in-out infinite;
+}
+
+.dot:nth-child(2) { 
+  animation-delay: 0.3s; 
+}
+
+.dot:nth-child(3) { 
+  animation-delay: 0.6s; 
+}
+
+@keyframes dotBounce {
+  0%, 60%, 100% { 
+    transform: translateY(0); 
+  }
+  30% { 
+    transform: translateY(-20px); 
+  }
+}
+
+.welcome-text {
+  margin-bottom: 2rem;
+}
+
+.welcome-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.welcome-subtitle {
+  font-size: 1.2rem;
+  color: #4A90E2;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.welcome-description {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 4px;
+  background: #e0e0e0;
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4A90E2, #667eea);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.loading-text {
+  color: #888;
+  font-size: 0.9rem;
+  margin: 0;
+}

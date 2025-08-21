@@ -10,7 +10,7 @@
       </div>
 
       <div class="content">
-        <div class="breadcrumb-wrapper">
+        <div v-if="route.query.content" class="breadcrumb-wrapper">
           <breadbrumb/>
         </div>
 
@@ -28,6 +28,7 @@ import breadbrumb from '../components/breadcrumb.vue'
 import contentDashboardAdmin from './contents/dashboard/contentDashboard.vue'
 // import contentLansia from './contents/lansia/contentLansia.vue'
 import contentUsers from './contents/users/contentUsers.vue'
+import contentWelcome from './contents/welcome/contentWelcome.vue'
 
 // Temporary fallback component for lansia
 const contentLansia = {
@@ -62,7 +63,8 @@ const currentContent = computed(() => {
   if (key === 'dashboard' || key === 'lansia' || key === 'users') {
     return contentMap[key]
   } else {
-    return contentMap['dashboard']
+    // Show welcome screen when no content query parameter (first login)
+    return contentWelcome
   }
 })
 
