@@ -1,0 +1,148 @@
+/* Add User Modal Styles */
+.add-user-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1rem 0;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.field-label {
+  font-weight: 600;
+  color: #374151;
+  font-size: 0.875rem;
+}
+
+.field-label::after {
+  content: "";
+}
+
+/* Input Field Styles */
+.p-inputtext,
+.p-dropdown {
+  border-radius: 20px;
+  border: 1px solid #d1d5db;
+  padding: 0.75rem;
+  font-size: 0.875rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.p-inputtext:focus,
+.p-dropdown:focus-within {
+  outline: none;
+  border-color: #4A90E2;
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+}
+
+.p-inputtext.p-invalid,
+.p-dropdown.p-invalid {
+  border-color: #ef4444;
+}
+
+/* Error Message Styles */
+.p-error {
+  color: #ef4444;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+/* Dropdown Specific Styles */
+.p-dropdown .p-dropdown-label {
+  padding: 0.75rem;
+  font-size: 0.875rem;
+}
+
+.p-dropdown .p-dropdown-label.p-placeholder {
+  color: #9ca3af;
+}
+
+/* Modal Header Styles */
+:deep(.p-dialog) {
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+:deep(.p-dialog-header) {
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+  border-radius: 20px 20px 0 0;
+  padding: 1.5rem;
+}
+
+:deep(.p-dialog-title) {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+:deep(.p-dialog-content) {
+  padding: 1.5rem;
+  background: white;
+}
+
+:deep(.p-dialog-footer) {
+  padding: 1rem 1.5rem 1.5rem;
+  background: #f9fafb;
+  border-top: 1px solid #e5e7eb;
+  border-radius: 0 0 20px 20px;
+}
+
+/* Button Styles */
+:deep(.p-button) {
+  border-radius: 20px;
+  padding: 0.75rem 1.5rem;
+  font-weight: 500;
+  font-size: 0.875rem;
+  transition: all 0.2s;
+}
+
+:deep(.p-button.p-button-outlined) {
+  background: transparent;
+  color: #6b7280;
+  border-color: #d1d5db;
+}
+
+:deep(.p-button.p-button-outlined:hover) {
+  background: #f3f4f6;
+  color: #374151;
+  border-color: #9ca3af;
+}
+
+:deep(.p-button:not(.p-button-outlined)) {
+  background: #4A90E2;
+  border-color: #4A90E2;
+  color: white;
+}
+
+:deep(.p-button:not(.p-button-outlined):hover) {
+  background: #2E5BBA;
+  border-color: #2E5BBA;
+}
+
+/* Loading State */
+:deep(.p-button .p-button-loading-icon) {
+  margin-right: 0.5rem;
+}
+
+/* Responsive Styles */
+@media (max-width: 640px) {
+  :deep(.p-dialog) {
+    width: 95vw !important;
+    margin: 0.5rem;
+  }
+  
+  .add-user-form {
+    gap: 1rem;
+  }
+  
+  :deep(.p-dialog-content),
+  :deep(.p-dialog-header),
+  :deep(.p-dialog-footer) {
+    padding: 1rem;
+  }
+}

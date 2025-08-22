@@ -25,7 +25,7 @@ export function useWelcome() {
     router.push({ query: { content: 'dashboard' } })
   }
 
-  // Auto-start welcome sequence when component mounts
+
   onMounted(() => {
     startWelcomeSequence()
   })

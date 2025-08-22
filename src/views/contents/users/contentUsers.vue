@@ -13,7 +13,7 @@
       <div class="relative max-w-sm w-full">
         <i class="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
         <InputText
-          v-model="search"
+          v-model="searchTerm"
           placeholder="Search..."
           class="w-full !pl-10 !pr-4 !py-2 text-sm border !border-gray-300 !rounded-full !focus:outline-none !focus:ring-2 focus:ring-blue-500"
         />
@@ -21,7 +21,10 @@
 
       <!-- New Button -->
       <div class="ml-4">
-        <button class="bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-full px-5 py-2 flex items-center gap-2 shadow">
+        <button 
+          @click="openAddModal"
+          class="bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-full px-5 py-2 flex items-center gap-2 shadow"
+        >
           <i class="pi pi-plus text-base" />
           <span>New</span>
         </button>
@@ -37,13 +40,12 @@
       :rows="10"
       responsiveLayout="scroll"
     >
-      <Column selectionMode="multiple" headerStyle="width: 3em" />
       <Column header="No" style="width: 80px">
         <template #body="slotProps">
           {{ slotProps.index + 1 }}
         </template>
       </Column>
-      <Column header="Avatar">
+      <Column header="" style="width: 60px">
         <template #body>
           <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
             <i class="pi pi-user text-gray-500" />
@@ -57,32 +59,49 @@
 
       <Column header="Role">
         <template #body="slotProps">
-          <Tag :value="slotProps.data.role" :severity="roleSeverity(slotProps.data.role)" />
+          <Tag :value="slotProps.data.role" :severity="getRoleSeverity(slotProps.data.role)" />
         </template>
       </Column>
 
       <Column header="Actions">
-        <template #body>
+        <template #body="slotProps">
           <div class="flex !space-x-2">
             <Button icon="pi pi-eye" rounded outlined class="p-button-info" title="View" />
-            <Button icon="pi pi-pencil" rounded outlined class="p-button-primary" title="Edit" />
-            <Button icon="pi pi-trash" rounded outlined class="p-button-danger" title="Delete" />
+            <Button icon="pi pi-pencil" rounded outlined class="p-button-primary" title="Edit" @click="openEditModal(slotProps.data)" />
+            <Button icon="pi pi-trash" rounded outlined class="p-button-danger" title="Delete" @click="handleDeleteUser(slotProps.data.id)" />
           </div>
         </template>
       </Column>
 
       <template #footer> In total there are {{ filteredUsers.length }} users. </template>
     </DataTable>
+
+    <!-- Add User Modal -->
+    <AddUserModal
+      v-model:visible="showAddModal"
+      @submit="handleAddUser"
+      @cancel="handleCancelModal"
+    />
+
+    <!-- Edit User Modal -->
+    <AddUserModal
+      v-model:visible="showEditModal"
+      :user="selectedUser"
+      @submit="handleEditUser"
+      @cancel="handleCancelModal"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, defineProps, watch } from 'vue'
+import { defineProps, watch, ref } from 'vue'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import Button from 'primevue/button'
 import Tag from 'primevue/tag'
 import InputText from 'primevue/inputtext'
+import AddUserModal from '../../../components/modals/AddUserModal.vue'
+import { useUserManagement } from '../../../composables/useUserManagement'
 
 interface Category {
   id: string
@@ -90,8 +109,23 @@ interface Category {
 }
 
 const props = defineProps<{ category: Category | null }>()
-const search = ref('')
 const selectedCategoryName = ref(props.category?.name || '')
+
+// Use user management composable
+const {
+  filteredUsers,
+  searchTerm,
+  showAddModal,
+  showEditModal,
+  selectedUser,
+  openAddModal,
+  openEditModal,
+  handleAddUser,
+  handleEditUser,
+  handleDeleteUser,
+  handleCancelModal,
+  getRoleSeverity,
+} = useUserManagement()
 
 watch(
   () => props.category,
@@ -99,75 +133,6 @@ watch(
     selectedCategoryName.value = newCategory?.name || ''
   }
 )
-
-const users = [
-  {
-    id: 'USR-001',
-    name: 'Budi Santoso',
-    email: 'budi.santoso@email.com',
-    phone: '081234567890',
-    role: 'Super Admin',
-    createdAt: new Date('2024-01-15T09:00:00'),
-  },
-  {
-    id: 'USR-002',
-    name: 'Siti Nurhaliza',
-    email: 'siti.nurhaliza@email.com',
-    phone: '081234567891',
-    role: 'Admin',
-    createdAt: new Date('2024-02-10T10:30:00'),
-  },
-  {
-    id: 'USR-003',
-    name: 'Ahmad Wijaya',
-    email: 'ahmad.wijaya@email.com',
-    phone: '081234567892',
-    role: 'Surveyor',
-    createdAt: new Date('2024-03-05T14:15:00'),
-  },
-  {
-    id: 'USR-004',
-    name: 'Dewi Kartika',
-    email: 'dewi.kartika@email.com',
-    phone: '081234567893',
-    role: 'Admin',
-    createdAt: new Date('2024-04-20T16:45:00'),
-  },
-  {
-    id: 'USR-005',
-    name: 'Rudi Hermawan',
-    email: 'rudi.hermawan@email.com',
-    phone: '081234567894',
-    role: 'Surveyor',
-    createdAt: new Date('2024-08-01T08:20:00'),
-  },
-].sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())
-
-const filteredUsers = computed(() => {
-  return users.filter((user) => {
-    const searchTerm = search.value.toLowerCase()
-    const matchesSearch =
-      user.name.toLowerCase().includes(searchTerm) ||
-      user.email.toLowerCase().includes(searchTerm) ||
-      user.id.toLowerCase().includes(searchTerm) ||
-      user.phone.toLowerCase().includes(searchTerm) ||
-      user.role.toLowerCase().includes(searchTerm)
-    return matchesSearch
-  })
-})
-
-function roleSeverity(role: string) {
-  switch (role) {
-    case 'Super Admin':
-      return 'danger'
-    case 'Admin':
-      return 'warning'
-    case 'Surveyor':
-      return 'info'
-    default:
-      return 'secondary'
-  }
-}
 
 </script>
 
