@@ -13,8 +13,8 @@
 
 .p-dialog-header {
   border-radius: 28px 28px 0 0 !important;
-  background: #f9fafb;
-  border-bottom: 1px solid #e5e7eb;
+  background: white !important;
+  border: none !important;
   padding: 1.5rem;
 }
 

@@ -2,24 +2,12 @@
   <Dialog 
     v-model:visible="visible" 
     modal 
-    header=""
+    header="User Profile"
     :style="{ width: '580px' }"
-    :closable="false"
+    :closable="true"
     :draggable="false"
   >
     <div v-if="user" class="modern-user-detail">
-      <!-- Custom Header with Close Button -->
-      <div class="flex justify-between items-center !mb-6">
-        <h2 class="text-xl font-bold text-gray-900">User Profile</h2>
-        <Button
-          icon="pi pi-times"
-          text
-          rounded
-          severity="secondary"
-          @click="handleClose"
-          class="!w-8 !h-8 !p-0"
-        />
-      </div>
 
       <!-- Hero Section -->
       <div class="relative bg-gradient-to-br from-blue-500 via-purple-600 to-indigo-700 rounded-2xl !p-8 !mb-6 overflow-hidden">
