@@ -59,7 +59,10 @@
 
       <Column header="Role">
         <template #body="slotProps">
-          <Tag :value="slotProps.data.role" :severity="getRoleSeverity(slotProps.data.role)" />
+          <div :class="getRoleBadgeClasses(slotProps.data.role)" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold">
+            <i :class="getRoleIcon(slotProps.data.role)" class="text-sm"></i>
+            <span>{{ slotProps.data.role }}</span>
+          </div>
         </template>
       </Column>
 
@@ -118,7 +121,6 @@ import { defineProps, watch, ref } from 'vue'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import Button from 'primevue/button'
-import Tag from 'primevue/tag'
 import InputText from 'primevue/inputtext'
 import AddUserModal from '../../../components/modals/AddUserModal.vue'
 import ConfirmDeleteModal from '../../../components/modals/ConfirmDeleteModal.vue'
@@ -156,7 +158,8 @@ const {
   handleCancelDelete,
   handleEditFromView,
   handleCloseView,
-  getRoleSeverity,
+  getRoleBadgeClasses,
+  getRoleIcon,
 } = useUserManagement()
 
 watch(

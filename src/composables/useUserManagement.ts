@@ -224,7 +224,7 @@ export function useUserManagement() {
     closeModals()
   }
 
-  // Role severity for UI
+  // Role severity for UI (kept for backward compatibility)
   const getRoleSeverity = (role: string) => {
     switch (role) {
       case 'Super Admin':
@@ -235,6 +235,34 @@ export function useUserManagement() {
         return 'info'
       default:
         return 'secondary'
+    }
+  }
+
+  // Enhanced role badge styling - subtle and professional
+  const getRoleBadgeClasses = (role: string) => {
+    switch (role) {
+      case 'Super Admin':
+        return 'bg-red-50 text-red-700 border border-red-200 shadow-sm'
+      case 'Admin':
+        return 'bg-blue-50 text-blue-700 border border-blue-200 shadow-sm'
+      case 'Surveyor':
+        return 'bg-green-50 text-green-700 border border-green-200 shadow-sm'
+      default:
+        return 'bg-gray-50 text-gray-700 border border-gray-200 shadow-sm'
+    }
+  }
+
+  // Role icons
+  const getRoleIcon = (role: string) => {
+    switch (role) {
+      case 'Super Admin':
+        return 'pi pi-crown'
+      case 'Admin':
+        return 'pi pi-shield'
+      case 'Surveyor':
+        return 'pi pi-map-marker'
+      default:
+        return 'pi pi-user'
     }
   }
 
@@ -277,5 +305,7 @@ export function useUserManagement() {
     
     // Utilities
     getRoleSeverity,
+    getRoleBadgeClasses,
+    getRoleIcon,
   }
 }

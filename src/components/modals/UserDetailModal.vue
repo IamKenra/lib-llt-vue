@@ -31,9 +31,9 @@
           </div>
           
           <h1 class="text-2xl font-bold !mb-2">{{ user.name }}</h1>
-          <div class="inline-flex items-center !px-3 !py-1 rounded-full bg-white/20 backdrop-blur-sm">
-            <i class="pi pi-shield text-yellow-300 text-sm !mr-2" />
-            <span class="text-sm font-medium">{{ user.role }}</span>
+          <div :class="getRoleBadgeClasses(user.role)" class="inline-flex items-center gap-2 !px-3 !py-1.5 rounded-full text-sm font-semibold">
+            <i :class="getRoleIcon(user.role)" class="text-sm"></i>
+            <span>{{ user.role }}</span>
           </div>
         </div>
       </div>
@@ -97,6 +97,7 @@
 import { computed } from 'vue'
 import Dialog from 'primevue/dialog'
 import Button from 'primevue/button'
+import { useUserManagement } from '../../composables/useUserManagement'
 
 interface User {
   id: string
@@ -120,6 +121,9 @@ interface Emits {
 
 const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
+
+// Use role badge functions from composable
+const { getRoleBadgeClasses, getRoleIcon } = useUserManagement()
 
 // Computed properties
 const visible = computed({
