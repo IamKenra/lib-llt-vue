@@ -61,16 +61,21 @@
   color: #9ca3af;
 }
 
-/* Modal Header Styles */
+/* Modal Header Styles - Using higher specificity */
+.p-component-overlay .p-dialog {
+  border-radius: 40px !important;
+  overflow: hidden;
+}
+
 :deep(.p-dialog) {
-  border-radius: 20px;
+  border-radius: 40px !important;
   overflow: hidden;
 }
 
 :deep(.p-dialog-header) {
   background: #f9fafb;
   border-bottom: 1px solid #e5e7eb;
-  border-radius: 20px 20px 0 0;
+  border-radius: 40px 40px 0 0 !important;
   padding: 1.5rem;
 }
 
@@ -89,7 +94,7 @@
   padding: 1rem 1.5rem 1.5rem;
   background: #f9fafb;
   border-top: 1px solid #e5e7eb;
-  border-radius: 0 0 20px 20px;
+  border-radius: 0 0 40px 40px !important;
 }
 
 /* Button Styles */
