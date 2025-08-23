@@ -3,9 +3,12 @@ import { ref, computed } from 'vue'
 interface User {
   id: string
   name: string
+  username: string
   email: string
   phone: string
   role: string
+  password?: string // Optional for existing users
+  profileImage?: string // URL or base64
   createdAt: Date
 }
 
@@ -15,41 +18,51 @@ export function useUserManagement() {
     {
       id: 'USR-001',
       name: 'Budi Santoso',
+      username: 'budi.santoso',
       email: 'budi.santoso@email.com',
       phone: '081234567890',
       role: 'Super Admin',
+      profileImage: undefined,
       createdAt: new Date('2024-01-15T09:00:00'),
     },
     {
       id: 'USR-002',
       name: 'Siti Nurhaliza',
+      username: 'siti.nurhaliza',
       email: 'siti.nurhaliza@email.com',
       phone: '081234567891',
       role: 'Admin',
+      profileImage: undefined,
       createdAt: new Date('2024-02-10T10:30:00'),
     },
     {
       id: 'USR-003',
       name: 'Ahmad Wijaya',
+      username: 'ahmad.wijaya',
       email: 'ahmad.wijaya@email.com',
       phone: '081234567892',
       role: 'Surveyor',
+      profileImage: undefined,
       createdAt: new Date('2024-03-05T14:15:00'),
     },
     {
       id: 'USR-004',
       name: 'Dewi Kartika',
+      username: 'dewi.kartika',
       email: 'dewi.kartika@email.com',
       phone: '081234567893',
       role: 'Admin',
+      profileImage: undefined,
       createdAt: new Date('2024-04-20T16:45:00'),
     },
     {
       id: 'USR-005',
       name: 'Rudi Hermawan',
+      username: 'rudi.hermawan',
       email: 'rudi.hermawan@email.com',
       phone: '081234567894',
       role: 'Surveyor',
+      profileImage: undefined,
       createdAt: new Date('2024-08-01T08:20:00'),
     },
   ].sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime()))
@@ -75,6 +88,7 @@ export function useUserManagement() {
     return users.value.filter((user) => {
       return (
         user.name.toLowerCase().includes(term) ||
+        user.username.toLowerCase().includes(term) ||
         user.email.toLowerCase().includes(term) ||
         user.id.toLowerCase().includes(term) ||
         user.phone.toLowerCase().includes(term) ||
@@ -95,9 +109,12 @@ export function useUserManagement() {
     const newUser: User = {
       id: generateUserId(),
       name: userData.name,
+      username: userData.username,
       email: userData.email,
       phone: userData.phone,
       role: userData.role,
+      password: userData.password,
+      profileImage: userData.profileImage,
       createdAt: new Date(),
     }
     
@@ -116,9 +133,14 @@ export function useUserManagement() {
       users.value[userIndex] = {
         ...users.value[userIndex],
         name: userData.name,
+        username: userData.username,
         email: userData.email,
         phone: userData.phone,
         role: userData.role,
+        // Only update password if provided
+        ...(userData.password && { password: userData.password }),
+        // Only update profile image if provided
+        ...(userData.profileImage !== undefined && { profileImage: userData.profileImage }),
       }
       console.log('User updated successfully!')
     }

@@ -53,8 +53,8 @@
         </template>
       </Column>
 
-      <Column field="name" header="Name" sortable />
-      <Column field="email" header="Email" sortable />
+      <Column field="name" header="Name" />
+      <Column field="email" header="Email" />
       <Column field="phone" header="Phone" />
 
       <Column header="Role">
@@ -130,6 +130,19 @@ import { useUserManagement } from '../../../composables/useUserManagement'
 interface Category {
   id: string
   name: string
+}
+
+// Make sure User interface is compatible
+interface User {
+  id: string
+  name: string
+  username: string
+  email: string
+  phone: string
+  role: string
+  password?: string
+  profileImage?: string
+  createdAt: Date
 }
 
 const props = defineProps<{ category: Category | null }>()

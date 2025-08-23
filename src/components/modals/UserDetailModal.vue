@@ -70,8 +70,8 @@
           </div>
           <div class="space-y-3">
             <div>
-              <p class="text-xs font-medium text-gray-500 uppercase tracking-wide !mb-1">User ID</p>
-              <p class="text-sm text-gray-900 font-mono font-medium">{{ user.id }}</p>
+              <p class="text-xs font-medium text-gray-500 uppercase tracking-wide !mb-1">Username</p>
+              <p class="text-sm text-gray-900 font-mono font-medium">{{ user.username }}</p>
             </div>
             <div>
               <p class="text-xs font-medium text-gray-500 uppercase tracking-wide !mb-1">Member Since</p>
@@ -102,9 +102,12 @@ import { useUserManagement } from '../../composables/useUserManagement'
 interface User {
   id: string
   name: string
+  username: string
   email: string
   phone: string
   role: string
+  password?: string
+  profileImage?: string
   createdAt: Date
 }
 
