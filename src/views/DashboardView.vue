@@ -26,25 +26,9 @@ import { computed } from 'vue'
 import 'primeicons/primeicons.css'
 import breadbrumb from '../components/breadcrumb.vue'
 import contentDashboardAdmin from './contents/dashboard/contentDashboard.vue'
-// import contentLansia from './contents/lansia/contentLansia.vue'
+import contentLansia from './contents/lansia/contentLansia.vue'
 import contentUsers from './contents/users/contentUsers.vue'
 import contentWelcome from './contents/welcome/contentWelcome.vue'
-
-// Temporary fallback component for lansia
-const contentLansia = {
-  template: `
-    <div class="bg-white rounded-2xl border shadow-sm p-4">
-      <div class="flex justify-between items-center p-4 mb-10">
-        <h2 class="text-2xl text-gray-900">Data Lansia</h2>
-      </div>
-      <div class="text-center py-8">
-        <i class="pi pi-users text-6xl text-gray-300 mb-4"></i>
-        <p class="text-gray-500 text-lg">Fitur Data Lansia</p>
-        <p class="text-gray-400">Akan dikembangkan dengan map visualization</p>
-      </div>
-    </div>
-  `
-}
 import sidenav from '../components/sideNav.vue'
 import topnav from '../components/topNav.vue'
 const route = useRoute()

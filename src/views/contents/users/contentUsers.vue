@@ -122,10 +122,10 @@ import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
-import AddUserModal from '../../../components/modals/AddUserModal.vue'
+import AddUserModal from './modals/AddUserModal.vue'
 import ConfirmDeleteModal from '../../../components/modals/ConfirmDeleteModal.vue'
-import UserDetailModal from '../../../components/modals/UserDetailModal.vue'
-import { useUserManagement } from '../../../composables/useUserManagement'
+import UserDetailModal from './modals/UserDetailModal.vue'
+import { useUserManagement } from './composables/useUserManagement'
 
 interface Category {
   id: string

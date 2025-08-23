@@ -97,7 +97,7 @@
 import { computed } from 'vue'
 import Dialog from 'primevue/dialog'
 import Button from 'primevue/button'
-import { useUserManagement } from '../../composables/useUserManagement'
+import { useUserManagement } from '../composables/useUserManagement'
 
 interface User {
   id: string
