@@ -60,7 +60,10 @@ export function useUserManagement() {
   // Modal state
   const showAddModal = ref(false)
   const showEditModal = ref(false)
+  const showDeleteModal = ref(false)
   const selectedUser = ref<User | null>(null)
+  const userToDelete = ref<User | null>(null)
+  const isDeletingUser = ref(false)
 
   // Computed properties
   const filteredUsers = computed(() => {
@@ -144,10 +147,18 @@ export function useUserManagement() {
     showEditModal.value = true
   }
 
+  const openDeleteModal = (user: User) => {
+    userToDelete.value = { ...user }
+    showDeleteModal.value = true
+  }
+
   const closeModals = () => {
     showAddModal.value = false
     showEditModal.value = false
+    showDeleteModal.value = false
     selectedUser.value = null
+    userToDelete.value = null
+    isDeletingUser.value = false
   }
 
   // Event handlers
@@ -163,14 +174,32 @@ export function useUserManagement() {
     }
   }
 
-  const handleDeleteUser = (userId: string) => {
-    if (confirm('Are you sure you want to delete this user?')) {
-      deleteUser(userId)
+  const handleConfirmDelete = async () => {
+    if (!userToDelete.value) return
+    
+    isDeletingUser.value = true
+    console.log('Deleting user:', userToDelete.value.id)
+    
+    try {
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      
+      deleteUser(userToDelete.value.id)
+      closeModals()
+    } catch (error) {
+      console.error('Error deleting user:', error)
+    } finally {
+      isDeletingUser.value = false
     }
   }
 
   const handleCancelModal = () => {
     console.log('Modal cancelled')
+    closeModals()
+  }
+
+  const handleCancelDelete = () => {
+    console.log('Delete cancelled')
     closeModals()
   }
 
@@ -195,7 +224,10 @@ export function useUserManagement() {
     searchTerm,
     showAddModal,
     showEditModal,
+    showDeleteModal,
     selectedUser,
+    userToDelete,
+    isDeletingUser,
 
     // Methods
     addUser,
@@ -207,13 +239,15 @@ export function useUserManagement() {
     // Modal methods
     openAddModal,
     openEditModal,
+    openDeleteModal,
     closeModals,
     
     // Event handlers
     handleAddUser,
     handleEditUser,
-    handleDeleteUser,
+    handleConfirmDelete,
     handleCancelModal,
+    handleCancelDelete,
     
     // Utilities
     getRoleSeverity,
