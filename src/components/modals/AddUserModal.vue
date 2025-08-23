@@ -69,21 +69,20 @@
       </div>
     </form>
 
-    <template #footer>
-      <div class="flex justify-end gap-2">
-        <Button
-          label="Cancel"
-          severity="secondary"
-          outlined
-          @click="handleCancel"
-        />
-        <Button
-          :label="isEdit ? 'Update User' : 'Add User'"
-          :loading="isLoading"
-          @click="handleSubmit"
-        />
-      </div>
-    </template>
+    <!-- Action Buttons -->
+    <div class="flex justify-end gap-2 !mt-6">
+      <Button
+        label="Cancel"
+        severity="secondary"
+        outlined
+        @click="handleCancel"
+      />
+      <Button
+        :label="isEdit ? 'Update User' : 'Add User'"
+        :loading="isLoading"
+        @click="handleSubmit"
+      />
+    </div>
   </Dialog>
 </template>
 

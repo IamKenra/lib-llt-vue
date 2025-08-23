@@ -1,0 +1,22 @@
+/* Global Modal Border Radius Override - Applied to All Modals */
+.p-component-overlay .p-dialog {
+  border-radius: 28px !important;
+  overflow: hidden;
+}
+
+.p-dialog {
+  border-radius: 28px !important;
+  overflow: hidden;
+}
+
+.p-dialog-header {
+  border-radius: 28px 28px 0 0 !important;
+}
+
+.p-dialog-content {
+  border-radius: 0 0 28px 28px !important;
+}
+
+.p-dialog-footer {
+  border-radius: 0 0 28px 28px !important;
+}

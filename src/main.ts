@@ -17,6 +17,7 @@ import Checkbox from 'primevue/checkbox'
 import 'primevue/resources/themes/saga-blue/theme.css';
 import 'primevue/resources/primevue.min.css';
 import 'primeicons/primeicons.css';
+import './styles/modal-global.css';
 
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';

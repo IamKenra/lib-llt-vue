@@ -48,15 +48,3 @@ a,
   padding: 0 !important;
 }
 
-/* Override PrimeVue Dialog border-radius */
-.p-dialog {
-  border-radius: 28px !important;
-}
-
-.p-dialog-header {
-  border-radius: 28px 28px 0 0 !important;
-}
-
-.p-dialog-footer {
-  border-radius: 0 0 28px 28px !important;
-}

@@ -33,28 +33,27 @@
       </div>
     </div>
 
-    <template #footer>
-      <div class="flex justify-end gap-3">
-        <Button
-          label="Cancel"
-          severity="secondary"
-          outlined
-          @click="handleCancel"
-          :disabled="isDeleting"
-        />
-        <Button
-          label="Delete"
-          severity="danger"
-          :loading="isDeleting"
-          @click="handleConfirm"
-        />
-      </div>
-    </template>
+    <!-- Action Buttons -->
+    <div class="flex justify-end gap-3 !mt-6">
+      <Button
+        label="Cancel"
+        severity="secondary"
+        outlined
+        @click="handleCancel"
+        :disabled="isDeleting"
+      />
+      <Button
+        label="Delete"
+        severity="danger"
+        :loading="isDeleting"
+        @click="handleConfirm"
+      />
+    </div>
   </Dialog>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 import Dialog from 'primevue/dialog'
 import Button from 'primevue/button'
 

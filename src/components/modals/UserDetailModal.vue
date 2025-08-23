@@ -2,7 +2,7 @@
   <Dialog 
     v-model:visible="visible" 
     modal 
-    :header="null"
+    header=""
     :style="{ width: '580px' }"
     :closable="false"
     :draggable="false"

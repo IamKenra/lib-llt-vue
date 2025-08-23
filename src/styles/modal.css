@@ -61,21 +61,10 @@
   color: #9ca3af;
 }
 
-/* Modal Header Styles - Using higher specificity */
-.p-component-overlay .p-dialog {
-  border-radius: 40px !important;
-  overflow: hidden;
-}
-
-:deep(.p-dialog) {
-  border-radius: 40px !important;
-  overflow: hidden;
-}
-
+/* Modal Header Styles */
 :deep(.p-dialog-header) {
   background: #f9fafb;
   border-bottom: 1px solid #e5e7eb;
-  border-radius: 40px 40px 0 0 !important;
   padding: 1.5rem;
 }
 
@@ -90,12 +79,7 @@
   background: white;
 }
 
-:deep(.p-dialog-footer) {
-  padding: 1rem 1.5rem 1.5rem;
-  background: #f9fafb;
-  border-top: 1px solid #e5e7eb;
-  border-radius: 0 0 40px 40px !important;
-}
+/* Footer styles removed - all modals now use consistent div pattern */
 
 /* Button Styles */
 :deep(.p-button) {
@@ -146,8 +130,9 @@
   }
   
   :deep(.p-dialog-content),
-  :deep(.p-dialog-header),
-  :deep(.p-dialog-footer) {
+  :deep(.p-dialog-header) {
     padding: 1rem;
   }
+  
+  /* Let footer handle its own padding - no override */
 }
