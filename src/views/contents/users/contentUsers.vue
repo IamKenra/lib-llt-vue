@@ -66,7 +66,7 @@
       <Column header="Actions">
         <template #body="slotProps">
           <div class="flex !space-x-2">
-            <Button icon="pi pi-eye" rounded outlined class="p-button-info" title="View" />
+            <Button icon="pi pi-eye" rounded outlined class="p-button-info" title="View" @click="openViewModal(slotProps.data)" />
             <Button icon="pi pi-pencil" rounded outlined class="p-button-primary" title="Edit" @click="openEditModal(slotProps.data)" />
             <Button icon="pi pi-trash" rounded outlined class="p-button-danger" title="Delete" @click="openDeleteModal(slotProps.data)" />
           </div>
@@ -102,6 +102,14 @@
       @confirm="handleConfirmDelete"
       @cancel="handleCancelDelete"
     />
+
+    <!-- User Detail Modal -->
+    <UserDetailModal
+      v-model:visible="showViewModal"
+      :user="selectedViewUser"
+      @edit="handleEditFromView"
+      @close="handleCloseView"
+    />
   </div>
 </template>
 
@@ -114,6 +122,7 @@ import Tag from 'primevue/tag'
 import InputText from 'primevue/inputtext'
 import AddUserModal from '../../../components/modals/AddUserModal.vue'
 import ConfirmDeleteModal from '../../../components/modals/ConfirmDeleteModal.vue'
+import UserDetailModal from '../../../components/modals/UserDetailModal.vue'
 import { useUserManagement } from '../../../composables/useUserManagement'
 
 interface Category {
@@ -131,17 +140,22 @@ const {
   showAddModal,
   showEditModal,
   showDeleteModal,
+  showViewModal,
   selectedUser,
+  selectedViewUser,
   userToDelete,
   isDeletingUser,
   openAddModal,
   openEditModal,
   openDeleteModal,
+  openViewModal,
   handleAddUser,
   handleEditUser,
   handleConfirmDelete,
   handleCancelModal,
   handleCancelDelete,
+  handleEditFromView,
+  handleCloseView,
   getRoleSeverity,
 } = useUserManagement()
 

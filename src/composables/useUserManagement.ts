@@ -61,7 +61,9 @@ export function useUserManagement() {
   const showAddModal = ref(false)
   const showEditModal = ref(false)
   const showDeleteModal = ref(false)
+  const showViewModal = ref(false)
   const selectedUser = ref<User | null>(null)
+  const selectedViewUser = ref<User | null>(null)
   const userToDelete = ref<User | null>(null)
   const isDeletingUser = ref(false)
 
@@ -152,11 +154,18 @@ export function useUserManagement() {
     showDeleteModal.value = true
   }
 
+  const openViewModal = (user: User) => {
+    selectedViewUser.value = { ...user }
+    showViewModal.value = true
+  }
+
   const closeModals = () => {
     showAddModal.value = false
     showEditModal.value = false
     showDeleteModal.value = false
+    showViewModal.value = false
     selectedUser.value = null
+    selectedViewUser.value = null
     userToDelete.value = null
     isDeletingUser.value = false
   }
@@ -203,6 +212,18 @@ export function useUserManagement() {
     closeModals()
   }
 
+  const handleEditFromView = (user: User) => {
+    console.log('Edit from view modal:', user)
+    selectedUser.value = { ...user }
+    showViewModal.value = false
+    showEditModal.value = true
+  }
+
+  const handleCloseView = () => {
+    console.log('View modal closed')
+    closeModals()
+  }
+
   // Role severity for UI
   const getRoleSeverity = (role: string) => {
     switch (role) {
@@ -225,7 +246,9 @@ export function useUserManagement() {
     showAddModal,
     showEditModal,
     showDeleteModal,
+    showViewModal,
     selectedUser,
+    selectedViewUser,
     userToDelete,
     isDeletingUser,
 
@@ -240,6 +263,7 @@ export function useUserManagement() {
     openAddModal,
     openEditModal,
     openDeleteModal,
+    openViewModal,
     closeModals,
     
     // Event handlers
@@ -248,6 +272,8 @@ export function useUserManagement() {
     handleConfirmDelete,
     handleCancelModal,
     handleCancelDelete,
+    handleEditFromView,
+    handleCloseView,
     
     // Utilities
     getRoleSeverity,
