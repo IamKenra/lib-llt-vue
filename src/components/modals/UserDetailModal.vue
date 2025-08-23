@@ -161,7 +161,7 @@ const handleEdit = () => {
 }
 </script>
 
-<style src="@/styles/modal.css" scoped></style>
+<!-- All modal styles are now global via modal-global.css -->
 
 <style scoped>
 .modern-user-detail {

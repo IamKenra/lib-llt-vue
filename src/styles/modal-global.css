@@ -1,4 +1,6 @@
-/* Global Modal Border Radius Override - Applied to All Modals */
+/* Global Modal Styles - Applied to All Modals */
+
+/* Border Radius */
 .p-component-overlay .p-dialog {
   border-radius: 28px !important;
   overflow: hidden;
@@ -11,12 +13,72 @@
 
 .p-dialog-header {
   border-radius: 28px 28px 0 0 !important;
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 1.5rem;
+}
+
+.p-dialog-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111827;
 }
 
 .p-dialog-content {
   border-radius: 0 0 28px 28px !important;
+  padding: 1.5rem;
+  background: white;
 }
 
 .p-dialog-footer {
   border-radius: 0 0 28px 28px !important;
+}
+
+/* Global Button Styles */
+.p-dialog .p-button {
+  border-radius: 20px;
+  padding: 0.75rem 1.5rem;
+  font-weight: 500;
+  font-size: 0.875rem;
+  transition: all 0.2s;
+}
+
+.p-dialog .p-button.p-button-outlined {
+  background: transparent;
+  color: #6b7280;
+  border-color: #d1d5db;
+}
+
+.p-dialog .p-button.p-button-outlined:hover {
+  background: #f3f4f6;
+  color: #374151;
+  border-color: #9ca3af;
+}
+
+.p-dialog .p-button:not(.p-button-outlined) {
+  background: #4A90E2;
+  border-color: #4A90E2;
+  color: white;
+}
+
+.p-dialog .p-button:not(.p-button-outlined):hover {
+  background: #2E5BBA;
+  border-color: #2E5BBA;
+}
+
+.p-dialog .p-button .p-button-loading-icon {
+  margin-right: 0.5rem;
+}
+
+/* Global Responsive */
+@media (max-width: 640px) {
+  .p-dialog {
+    width: 95vw !important;
+    margin: 0.5rem;
+  }
+  
+  .p-dialog-content,
+  .p-dialog-header {
+    padding: 1rem;
+  }
 }

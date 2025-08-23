@@ -7,53 +7,53 @@
     :closable="true"
     :draggable="false"
   >
-    <form @submit.prevent="handleSubmit" class="add-user-form">
+    <div class="space-y-6">
       <!-- Name Field -->
-      <div class="field">
-        <label for="name" class="field-label">Full Name *</label>
+      <div class="space-y-2">
+        <label for="name" class="block text-sm font-semibold text-gray-700">Full Name *</label>
         <InputText
           id="name"
           v-model="formData.name"
           :class="{ 'p-invalid': errors.name }"
           placeholder="Enter full name"
-          class="w-full"
+          class="w-full !rounded-xl !border-gray-300 !p-3 text-sm"
           required
         />
-        <small v-if="errors.name" class="p-error">{{ errors.name }}</small>
+        <small v-if="errors.name" class="text-red-500 text-xs !mt-1">{{ errors.name }}</small>
       </div>
 
       <!-- Email Field -->
-      <div class="field">
-        <label for="email" class="field-label">Email *</label>
+      <div class="space-y-2">
+        <label for="email" class="block text-sm font-semibold text-gray-700">Email *</label>
         <InputText
           id="email"
           v-model="formData.email"
           :class="{ 'p-invalid': errors.email }"
           placeholder="Enter email address"
           type="email"
-          class="w-full"
+          class="w-full !rounded-xl !border-gray-300 !p-3 text-sm"
           required
         />
-        <small v-if="errors.email" class="p-error">{{ errors.email }}</small>
+        <small v-if="errors.email" class="text-red-500 text-xs !mt-1">{{ errors.email }}</small>
       </div>
 
       <!-- Phone Field -->
-      <div class="field">
-        <label for="phone" class="field-label">Phone Number *</label>
+      <div class="space-y-2">
+        <label for="phone" class="block text-sm font-semibold text-gray-700">Phone Number *</label>
         <InputText
           id="phone"
           v-model="formData.phone"
           :class="{ 'p-invalid': errors.phone }"
           placeholder="Enter phone number"
-          class="w-full"
+          class="w-full !rounded-xl !border-gray-300 !p-3 text-sm"
           required
         />
-        <small v-if="errors.phone" class="p-error">{{ errors.phone }}</small>
+        <small v-if="errors.phone" class="text-red-500 text-xs !mt-1">{{ errors.phone }}</small>
       </div>
 
       <!-- Role Field -->
-      <div class="field">
-        <label for="role" class="field-label">Role *</label>
+      <div class="space-y-2">
+        <label for="role" class="block text-sm font-semibold text-gray-700">Role *</label>
         <Dropdown
           id="role"
           v-model="formData.role"
@@ -62,15 +62,15 @@
           optionValue="value"
           placeholder="Select a role"
           :class="{ 'p-invalid': errors.role }"
-          class="w-full"
+          class="w-full !rounded-xl !border-gray-300"
           required
         />
-        <small v-if="errors.role" class="p-error">{{ errors.role }}</small>
+        <small v-if="errors.role" class="text-red-500 text-xs !mt-1">{{ errors.role }}</small>
       </div>
-    </form>
+    </div>
 
     <!-- Action Buttons -->
-    <div class="flex justify-end gap-2 !mt-6">
+    <div class="flex justify-end gap-3 !mt-8">
       <Button
         label="Cancel"
         severity="secondary"
@@ -252,4 +252,4 @@ const handleCancel = () => {
 }
 </script>
 
-<style src="@/styles/modal.css" scoped></style>
+<!-- All modal styles are now global via modal-global.css -->
