@@ -319,7 +319,7 @@ interface LansiaFormData {
   phone: string
   emergencyContact: string
   emergencyPhone: string
-  healthStatus: 'Sehat' | 'Kurang Sehat' | 'Perlu Perhatian'
+  healthStatus: 1 | 2 | 3
   medicalConditions: string[]
   lastCheckup: string  // HTML date inputs return strings
   profileImage?: string
@@ -354,7 +354,7 @@ const formData = ref<LansiaFormData>({
   phone: '',
   emergencyContact: '',
   emergencyPhone: '',
-  healthStatus: 'Sehat',
+  healthStatus: 1,
   medicalConditions: [],
   lastCheckup: '',
   profileImage: ''
@@ -386,9 +386,9 @@ const genderOptions = [
 ]
 
 const healthStatusOptions = [
-  { label: 'Sehat', value: 'Sehat' },
-  { label: 'Kurang Sehat', value: 'Kurang Sehat' },
-  { label: 'Perlu Perhatian', value: 'Perlu Perhatian' }
+  { label: 'Level 1 (Baik)', value: 1 },
+  { label: 'Level 2 (Cukup)', value: 2 },
+  { label: 'Level 3 (Perlu Perhatian)', value: 3 }
 ]
 
 // Computed properties
@@ -437,7 +437,7 @@ const resetForm = () => {
     phone: '',
     emergencyContact: '',
     emergencyPhone: '',
-    healthStatus: 'Sehat',
+    healthStatus: 1,
     medicalConditions: [],
     lastCheckup: '',
     profileImage: ''

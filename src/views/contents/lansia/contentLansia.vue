@@ -62,11 +62,11 @@
       <Column field="gender" header="Jenis Kelamin" style="width: 120px" />
       <Column field="address" header="Alamat" />
 
-      <Column header="Status Kesehatan">
+      <Column header="Status">
         <template #body="slotProps">
           <div :class="getHealthStatusBadgeClasses(slotProps.data.healthStatus)" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold">
             <i :class="getHealthStatusIcon(slotProps.data.healthStatus)" class="text-sm"></i>
-            <span>{{ slotProps.data.healthStatus }}</span>
+            <span>{{ getHealthStatusLabel(slotProps.data.healthStatus) }}</span>
           </div>
         </template>
       </Column>
@@ -165,6 +165,7 @@ const {
   handleCloseView,
   getHealthStatusBadgeClasses,
   getHealthStatusIcon,
+  getHealthStatusLabel,
 } = useLansiaManagement()
 
 watch(

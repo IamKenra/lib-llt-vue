@@ -11,7 +11,7 @@ export interface Lansia {
   phone: string
   emergencyContact: string
   emergencyPhone: string
-  healthStatus: 'Sehat' | 'Kurang Sehat' | 'Perlu Perhatian'
+  healthStatus: 1 | 2 | 3
   medicalConditions: string[]
   lastCheckup: Date
   profileImage?: string
@@ -32,7 +32,7 @@ export function useLansiaManagement() {
       phone: '081234567890',
       emergencyContact: 'Ahmad Fauzi (Anak)',
       emergencyPhone: '081234567891',
-      healthStatus: 'Sehat' as const,
+      healthStatus: 1 as const,
       medicalConditions: ['Hipertensi'],
       lastCheckup: new Date('2024-07-15'),
       profileImage: undefined,
@@ -49,7 +49,7 @@ export function useLansiaManagement() {
       phone: '081234567892',
       emergencyContact: 'Fatimah Rahman (Istri)',
       emergencyPhone: '081234567893',
-      healthStatus: 'Kurang Sehat' as const,
+      healthStatus: 2 as const,
       medicalConditions: ['Diabetes', 'Kolesterol'],
       lastCheckup: new Date('2024-08-01'),
       profileImage: undefined,
@@ -66,7 +66,7 @@ export function useLansiaManagement() {
       phone: '081234567894',
       emergencyContact: 'Budi Santoso (Cucu)',
       emergencyPhone: '081234567895',
-      healthStatus: 'Perlu Perhatian' as const,
+      healthStatus: 3 as const,
       medicalConditions: ['Osteoporosis', 'Katarak'],
       lastCheckup: new Date('2024-06-20'),
       profileImage: undefined,
@@ -83,7 +83,7 @@ export function useLansiaManagement() {
       phone: '081234567896',
       emergencyContact: 'Dewi Sartika (Anak)',
       emergencyPhone: '081234567897',
-      healthStatus: 'Sehat' as const,
+      healthStatus: 1 as const,
       medicalConditions: [],
       lastCheckup: new Date('2024-08-10'),
       profileImage: undefined,
@@ -100,7 +100,7 @@ export function useLansiaManagement() {
       phone: '081234567898',
       emergencyContact: 'Rini Kartini (Anak)',
       emergencyPhone: '081234567899',
-      healthStatus: 'Sehat' as const,
+      healthStatus: 1 as const,
       medicalConditions: ['Hipertensi'],
       lastCheckup: new Date('2024-07-25'),
       profileImage: undefined,
@@ -133,7 +133,7 @@ export function useLansiaManagement() {
         person.id.toLowerCase().includes(term) ||
         person.address.toLowerCase().includes(term) ||
         person.phone.toLowerCase().includes(term) ||
-        person.healthStatus.toLowerCase().includes(term) ||
+        person.healthStatus.toString().includes(term) ||
         person.emergencyContact.toLowerCase().includes(term)
       )
     })
@@ -294,13 +294,13 @@ export function useLansiaManagement() {
   }
 
   // Health status styling
-  const getHealthStatusBadgeClasses = (status: string) => {
+  const getHealthStatusBadgeClasses = (status: number) => {
     switch (status) {
-      case 'Sehat':
+      case 1:
         return 'bg-green-50 text-green-700 border border-green-200 shadow-sm'
-      case 'Kurang Sehat':
+      case 2:
         return 'bg-yellow-50 text-yellow-700 border border-yellow-200 shadow-sm'
-      case 'Perlu Perhatian':
+      case 3:
         return 'bg-red-50 text-red-700 border border-red-200 shadow-sm'
       default:
         return 'bg-gray-50 text-gray-700 border border-gray-200 shadow-sm'
@@ -308,16 +308,30 @@ export function useLansiaManagement() {
   }
 
   // Health status icons
-  const getHealthStatusIcon = (status: string) => {
+  const getHealthStatusIcon = (status: number) => {
     switch (status) {
-      case 'Sehat':
+      case 1:
         return 'pi pi-heart'
-      case 'Kurang Sehat':
+      case 2:
         return 'pi pi-exclamation-triangle'
-      case 'Perlu Perhatian':
+      case 3:
         return 'pi pi-shield'
       default:
         return 'pi pi-circle'
+    }
+  }
+
+  // Health status labels
+  const getHealthStatusLabel = (status: number) => {
+    switch (status) {
+      case 1:
+        return 'Level 1'
+      case 2:
+        return 'Level 2'
+      case 3:
+        return 'Level 3'
+      default:
+        return 'Unknown'
     }
   }
 
@@ -362,5 +376,6 @@ export function useLansiaManagement() {
     // Utilities
     getHealthStatusBadgeClasses,
     getHealthStatusIcon,
+    getHealthStatusLabel,
   }
 }

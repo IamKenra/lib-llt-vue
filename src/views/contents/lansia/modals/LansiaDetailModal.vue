@@ -34,7 +34,7 @@
           <h1 class="text-2xl font-bold !mb-2">{{ lansia.name }}</h1>
           <div :class="getHealthStatusBadgeClasses(lansia.healthStatus)" class="inline-flex items-center gap-2 !px-3 !py-1.5 rounded-full text-sm font-semibold">
             <i :class="getHealthStatusIcon(lansia.healthStatus)" class="text-sm"></i>
-            <span>{{ lansia.healthStatus }}</span>
+            <span>{{ getHealthStatusLabel(lansia.healthStatus) }}</span>
           </div>
         </div>
       </div>
@@ -107,7 +107,7 @@
               <p class="text-xs font-medium text-gray-500 uppercase tracking-wide !mb-1">Status Kesehatan</p>
               <div :class="getHealthStatusBadgeClasses(lansia.healthStatus)" class="inline-flex items-center gap-2 !px-3 !py-1 rounded-full text-xs font-semibold !mt-1">
                 <i :class="getHealthStatusIcon(lansia.healthStatus)" class="text-sm"></i>
-                <span>{{ lansia.healthStatus }}</span>
+                <span>{{ getHealthStatusLabel(lansia.healthStatus) }}</span>
               </div>
             </div>
             <div>
@@ -168,7 +168,7 @@ const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
 
 // Use health status functions from composable
-const { getHealthStatusBadgeClasses, getHealthStatusIcon } = useLansiaManagement()
+const { getHealthStatusBadgeClasses, getHealthStatusIcon, getHealthStatusLabel } = useLansiaManagement()
 
 // Computed properties
 const visible = computed({
@@ -185,13 +185,13 @@ const formatDate = (date: Date): string => {
   })
 }
 
-const getHealthStatusColor = (status: string) => {
+const getHealthStatusColor = (status: number) => {
   switch (status) {
-    case 'Sehat':
+    case 1:
       return 'bg-green-500'
-    case 'Kurang Sehat':
+    case 2:
       return 'bg-yellow-500'
-    case 'Perlu Perhatian':
+    case 3:
       return 'bg-red-500'
     default:
       return 'bg-gray-500'

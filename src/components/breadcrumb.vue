@@ -11,6 +11,7 @@ const labelMap: Record<string, string> = {
   dashboard: 'Dashboard',
   assets: 'Assets',
   users: 'Users',
+  lansia: 'Lansia',
 }
 const route = useRoute()
 
