@@ -31,7 +31,7 @@
             </div>
           </div>
           
-          <h1 class="text-2xl font-bold !mb-2">{{ lansia.name }}</h1>
+          <h1 class="text-2xl font-bold !mb-2">{{ getFullName(lansia.firstName, lansia.lastName) }}</h1>
           <div :class="getHealthStatusBadgeClasses(lansia.healthStatus)" class="inline-flex items-center gap-2 !px-3 !py-1.5 rounded-full text-sm font-semibold">
             <i :class="getHealthStatusIcon(lansia.healthStatus)" class="text-sm"></i>
             <span>{{ getHealthStatusLabel(lansia.healthStatus) }}</span>
@@ -185,7 +185,7 @@ const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
 
 // Use health status functions from composable
-const { getHealthStatusBadgeClasses, getHealthStatusIcon, getHealthStatusLabel, getCaregiverStatusBadgeClasses, getCaregiverStatusIcon } = useLansiaManagement()
+const { getHealthStatusBadgeClasses, getHealthStatusIcon, getHealthStatusLabel, getFullName, getCaregiverStatusBadgeClasses, getCaregiverStatusIcon } = useLansiaManagement()
 
 // Computed properties
 const visible = computed({

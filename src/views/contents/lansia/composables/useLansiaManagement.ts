@@ -3,7 +3,8 @@ import { ref, computed } from 'vue'
 export interface Lansia {
   id: string
   nik: string
-  name: string
+  firstName: string
+  lastName: string
   dateOfBirth: Date
   age: number
   gender: 'Laki-laki' | 'Perempuan'
@@ -27,7 +28,8 @@ export function useLansiaManagement() {
     {
       id: 'LNS-001',
       nik: '6302012345671001',
-      name: 'Hj. Siti Khadijah',
+      firstName: 'Hj. Siti',
+      lastName: 'Khadijah',
       dateOfBirth: new Date('1955-03-15'),
       age: 68,
       gender: 'Perempuan' as const,
@@ -47,7 +49,8 @@ export function useLansiaManagement() {
     {
       id: 'LNS-002',
       nik: '6302012345671002',
-      name: 'H. Abdul Rahman',
+      firstName: 'H. Abdul',
+      lastName: 'Rahman',
       dateOfBirth: new Date('1950-08-22'),
       age: 73,
       gender: 'Laki-laki' as const,
@@ -67,7 +70,8 @@ export function useLansiaManagement() {
     {
       id: 'LNS-003',
       nik: '6302012345671003',
-      name: 'Nenek Aminah',
+      firstName: 'Nenek',
+      lastName: 'Aminah',
       dateOfBirth: new Date('1948-12-10'),
       age: 75,
       gender: 'Perempuan' as const,
@@ -87,7 +91,8 @@ export function useLansiaManagement() {
     {
       id: 'LNS-004',
       nik: '6302012345671004',
-      name: 'Pak Usman',
+      firstName: 'Pak',
+      lastName: 'Usman',
       dateOfBirth: new Date('1952-05-08'),
       age: 71,
       gender: 'Laki-laki' as const,
@@ -107,7 +112,8 @@ export function useLansiaManagement() {
     {
       id: 'LNS-005',
       nik: '6302012345671005',
-      name: 'Ibu Kartini',
+      firstName: 'Ibu',
+      lastName: 'Kartini',
       dateOfBirth: new Date('1953-04-21'),
       age: 70,
       gender: 'Perempuan' as const,
@@ -146,7 +152,9 @@ export function useLansiaManagement() {
     const term = searchTerm.value.toLowerCase()
     return lansia.value.filter((person) => {
       return (
-        person.name.toLowerCase().includes(term) ||
+        person.firstName.toLowerCase().includes(term) ||
+        person.lastName.toLowerCase().includes(term) ||
+        getFullName(person.firstName, person.lastName).toLowerCase().includes(term) ||
         person.nik.toLowerCase().includes(term) ||
         person.id.toLowerCase().includes(term) ||
         person.address.toLowerCase().includes(term) ||
@@ -356,6 +364,11 @@ export function useLansiaManagement() {
     }
   }
 
+  // Name utility function
+  const getFullName = (firstName: string, lastName: string) => {
+    return `${firstName} ${lastName}`.trim()
+  }
+
   // Caregiver status styling
   const getCaregiverStatusBadgeClasses = (status: string) => {
     switch (status) {
@@ -422,6 +435,7 @@ export function useLansiaManagement() {
     getHealthStatusBadgeClasses,
     getHealthStatusIcon,
     getHealthStatusLabel,
+    getFullName,
     getCaregiverStatusBadgeClasses,
     getCaregiverStatusIcon,
   }

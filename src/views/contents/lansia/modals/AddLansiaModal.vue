@@ -42,18 +42,32 @@
           <small v-if="errors.nik" class="text-red-500 text-xs !mt-1">{{ errors.nik }}</small>
         </div>
 
-        <!-- Name Field -->
+        <!-- First Name Field -->
         <div class="space-y-2">
-          <label for="name" class="block text-sm font-semibold text-gray-700">Nama Lengkap *</label>
+          <label for="firstName" class="block text-sm font-semibold text-gray-700">Nama Depan *</label>
           <InputText
-            id="name"
-            v-model="formData.name"
-            :class="{ 'p-invalid': errors.name }"
-            placeholder="Masukkan nama lengkap"
+            id="firstName"
+            v-model="formData.firstName"
+            :class="{ 'p-invalid': errors.firstName }"
+            placeholder="Masukkan nama depan"
             class="w-full !rounded-xl !border-gray-300 !p-3 text-sm"
             required
           />
-          <small v-if="errors.name" class="text-red-500 text-xs !mt-1">{{ errors.name }}</small>
+          <small v-if="errors.firstName" class="text-red-500 text-xs !mt-1">{{ errors.firstName }}</small>
+        </div>
+
+        <!-- Last Name Field -->
+        <div class="space-y-2">
+          <label for="lastName" class="block text-sm font-semibold text-gray-700">Nama Belakang *</label>
+          <InputText
+            id="lastName"
+            v-model="formData.lastName"
+            :class="{ 'p-invalid': errors.lastName }"
+            placeholder="Masukkan nama belakang"
+            class="w-full !rounded-xl !border-gray-300 !p-3 text-sm"
+            required
+          />
+          <small v-if="errors.lastName" class="text-red-500 text-xs !mt-1">{{ errors.lastName }}</small>
         </div>
 
         <!-- Date of Birth Field -->
@@ -356,7 +370,8 @@ import type { Lansia } from '../composables/useLansiaManagement'
 interface LansiaFormData {
   id?: string
   nik: string
-  name: string
+  firstName: string
+  lastName: string
   dateOfBirth: string  // HTML date inputs return strings
   age?: number
   gender: 'Laki-laki' | 'Perempuan'
@@ -395,7 +410,8 @@ const medicalConditionsText = ref('')
 // Form data
 const formData = ref<LansiaFormData>({
   nik: '',
-  name: '',
+  firstName: '',
+  lastName: '',
   dateOfBirth: '',
   gender: 'Laki-laki',
   address: '',
@@ -414,7 +430,8 @@ const formData = ref<LansiaFormData>({
 // Form validation errors
 const errors = ref({
   nik: '',
-  name: '',
+  firstName: '',
+  lastName: '',
   dateOfBirth: '',
   gender: '',
   address: '',
@@ -489,7 +506,8 @@ const resetForm = () => {
   medicalConditionsText.value = ''
   formData.value = {
     nik: '',
-    name: '',
+    firstName: '',
+    lastName: '',
     dateOfBirth: '',
     gender: 'Laki-laki',
     address: '',
@@ -506,7 +524,8 @@ const resetForm = () => {
   }
   errors.value = {
     nik: '',
-    name: '',
+    firstName: '',
+    lastName: '',
     dateOfBirth: '',
     gender: '',
     address: '',
@@ -583,13 +602,22 @@ const validateStep = (step: number): boolean => {
       newErrors.nik = ''
     }
 
-    // Name validation
-    if (!formData.value.name.trim()) {
-      newErrors.name = 'Nama wajib diisi'
-    } else if (formData.value.name.trim().length < 2) {
-      newErrors.name = 'Nama minimal 2 karakter'
+    // First Name validation
+    if (!formData.value.firstName.trim()) {
+      newErrors.firstName = 'Nama depan wajib diisi'
+    } else if (formData.value.firstName.trim().length < 2) {
+      newErrors.firstName = 'Nama depan minimal 2 karakter'
     } else {
-      newErrors.name = ''
+      newErrors.firstName = ''
+    }
+
+    // Last Name validation
+    if (!formData.value.lastName.trim()) {
+      newErrors.lastName = 'Nama belakang wajib diisi'
+    } else if (formData.value.lastName.trim().length < 2) {
+      newErrors.lastName = 'Nama belakang minimal 2 karakter'
+    } else {
+      newErrors.lastName = ''
     }
 
     // Date of Birth validation
@@ -687,7 +715,7 @@ const validateStep = (step: number): boolean => {
 
   // Check if current step has no errors
   if (step === 1 || isEdit.value) {
-    return !newErrors.nik && !newErrors.name && !newErrors.dateOfBirth && !newErrors.gender && !newErrors.address && !newErrors.rt && !newErrors.rw
+    return !newErrors.nik && !newErrors.firstName && !newErrors.lastName && !newErrors.dateOfBirth && !newErrors.gender && !newErrors.address && !newErrors.rt && !newErrors.rw
   } else if (step === 2) {
     return !newErrors.phone && !newErrors.emergencyContact && !newErrors.emergencyPhone && !newErrors.caregiverStatus
   } else if (step === 3) {

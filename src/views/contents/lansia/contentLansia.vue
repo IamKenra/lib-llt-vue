@@ -53,7 +53,11 @@
         </template>
       </Column>
 
-      <Column field="name" header="Nama" />
+      <Column header="Nama">
+        <template #body="slotProps">
+          {{ getFullName(slotProps.data.firstName, slotProps.data.lastName) }}
+        </template>
+      </Column>
       <Column field="age" header="Umur" style="width: 80px">
         <template #body="slotProps">
           <span class="text-sm font-medium">{{ slotProps.data.age }} tahun</span>
@@ -114,7 +118,7 @@
     <ConfirmDeleteModal
       v-model:visible="showDeleteModal"
       item-type="data lansia"
-      :item-name="lansiaToDelete?.name"
+      :item-name="lansiaToDelete ? getFullName(lansiaToDelete.firstName, lansiaToDelete.lastName) : ''"
       :item-description="lansiaToDelete?.nik"
       item-icon="pi pi-users"
       :is-deleting="isDeletingLansia"
@@ -141,7 +145,7 @@ import InputText from 'primevue/inputtext'
 import AddLansiaModal from './modals/AddLansiaModal.vue'
 import ConfirmDeleteModal from '../../../components/modals/ConfirmDeleteModal.vue'
 import LansiaDetailModal from './modals/LansiaDetailModal.vue'
-import { useLansiaManagement, type Lansia } from './composables/useLansiaManagement'
+import { useLansiaManagement } from './composables/useLansiaManagement'
 
 interface Category {
   id: string
@@ -177,6 +181,7 @@ const {
   getHealthStatusBadgeClasses,
   getHealthStatusIcon,
   getHealthStatusLabel,
+  getFullName,
   getCaregiverStatusBadgeClasses,
   getCaregiverStatusIcon,
 } = useLansiaManagement()
