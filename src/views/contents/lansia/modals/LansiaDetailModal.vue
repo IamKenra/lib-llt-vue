@@ -153,7 +153,14 @@
       </div>
 
       <!-- Action Buttons -->
-      <div class="flex justify-end">
+      <div class="flex justify-end gap-3">
+        <Button
+          label="QR Code"
+          icon="pi pi-qrcode"
+          severity="secondary"
+          outlined
+          @click="showQR"
+        />
         <Button
           label="Edit Data"
           icon="pi pi-pencil"
@@ -161,14 +168,22 @@
         />
       </div>
     </div>
+
+    <!-- QR Code Modal -->
+    <LansiaQRModal
+      v-model:visible="showQRModal"
+      :lansia="lansia"
+      @close="showQRModal = false"
+    />
   </Dialog>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 import Dialog from 'primevue/dialog'
 import Button from 'primevue/button'
 import { useLansiaManagement, type Lansia } from '../composables/useLansiaManagement'
+import LansiaQRModal from './LansiaQRModal.vue'
 
 interface Props {
   visible: boolean
@@ -186,6 +201,9 @@ const emit = defineEmits<Emits>()
 
 // Use health status functions from composable
 const { getHealthStatusBadgeClasses, getHealthStatusIcon, getHealthStatusLabel, getFullName, getCaregiverStatusBadgeClasses, getCaregiverStatusIcon } = useLansiaManagement()
+
+// Reactive variables
+const showQRModal = ref(false)
 
 // Computed properties
 const visible = computed({
@@ -221,6 +239,10 @@ const handleEdit = () => {
     emit('edit', props.lansia)
     visible.value = false
   }
+}
+
+const showQR = () => {
+  showQRModal.value = true
 }
 </script>
 
