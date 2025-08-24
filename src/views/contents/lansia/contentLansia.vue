@@ -61,6 +61,17 @@
       </Column>
       <Column field="gender" header="Jenis Kelamin" style="width: 120px" />
       <Column field="address" header="Alamat" />
+      <Column field="rt" header="RT" style="width: 80px" />
+      <Column field="rw" header="RW" style="width: 80px" />
+      
+      <Column header="Caregiver" style="width: 120px">
+        <template #body="slotProps">
+          <div :class="getCaregiverStatusBadgeClasses(slotProps.data.caregiverStatus)" class="inline-flex items-center gap-2 px-2 py-1 rounded-full text-xs font-semibold">
+            <i :class="getCaregiverStatusIcon(slotProps.data.caregiverStatus)" class="text-sm"></i>
+            <span>{{ slotProps.data.caregiverStatus }}</span>
+          </div>
+        </template>
+      </Column>
 
       <Column header="Status">
         <template #body="slotProps">
@@ -166,6 +177,8 @@ const {
   getHealthStatusBadgeClasses,
   getHealthStatusIcon,
   getHealthStatusLabel,
+  getCaregiverStatusBadgeClasses,
+  getCaregiverStatusIcon,
 } = useLansiaManagement()
 
 watch(

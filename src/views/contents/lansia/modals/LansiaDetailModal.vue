@@ -82,6 +82,16 @@
               <p class="text-xs font-medium text-gray-500 uppercase tracking-wide !mb-1">Alamat</p>
               <p class="text-sm text-gray-900 font-medium">{{ lansia.address }}</p>
             </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <p class="text-xs font-medium text-gray-500 uppercase tracking-wide !mb-1">RT</p>
+                <p class="text-sm text-gray-900 font-medium">{{ lansia.rt }}</p>
+              </div>
+              <div>
+                <p class="text-xs font-medium text-gray-500 uppercase tracking-wide !mb-1">RW</p>
+                <p class="text-sm text-gray-900 font-medium">{{ lansia.rw }}</p>
+              </div>
+            </div>
             <div v-if="lansia.phone">
               <p class="text-xs font-medium text-gray-500 uppercase tracking-wide !mb-1">Telepon</p>
               <p class="text-sm text-gray-900 font-medium">{{ lansia.phone }}</p>
@@ -90,6 +100,13 @@
               <p class="text-xs font-medium text-gray-500 uppercase tracking-wide !mb-1">Kontak Darurat</p>
               <p class="text-sm text-gray-900 font-medium">{{ lansia.emergencyContact }}</p>
               <p class="text-sm text-blue-600 font-medium">{{ lansia.emergencyPhone }}</p>
+            </div>
+            <div>
+              <p class="text-xs font-medium text-gray-500 uppercase tracking-wide !mb-1">Status Caregiver</p>
+              <div :class="getCaregiverStatusBadgeClasses(lansia.caregiverStatus)" class="inline-flex items-center gap-2 !px-3 !py-1 rounded-full text-xs font-semibold !mt-1">
+                <i :class="getCaregiverStatusIcon(lansia.caregiverStatus)" class="text-sm"></i>
+                <span>{{ lansia.caregiverStatus }}</span>
+              </div>
             </div>
           </div>
         </div>
@@ -168,7 +185,7 @@ const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
 
 // Use health status functions from composable
-const { getHealthStatusBadgeClasses, getHealthStatusIcon, getHealthStatusLabel } = useLansiaManagement()
+const { getHealthStatusBadgeClasses, getHealthStatusIcon, getHealthStatusLabel, getCaregiverStatusBadgeClasses, getCaregiverStatusIcon } = useLansiaManagement()
 
 // Computed properties
 const visible = computed({

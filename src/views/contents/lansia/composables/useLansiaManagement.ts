@@ -8,9 +8,12 @@ export interface Lansia {
   age: number
   gender: 'Laki-laki' | 'Perempuan'
   address: string
+  rt: string
+  rw: string
   phone: string
   emergencyContact: string
   emergencyPhone: string
+  caregiverStatus: 'Ada' | 'Tidak Ada'
   healthStatus: 1 | 2 | 3
   medicalConditions: string[]
   lastCheckup: Date
@@ -29,9 +32,12 @@ export function useLansiaManagement() {
       age: 68,
       gender: 'Perempuan' as const,
       address: 'Jl. Raya Kotabaru No. 123, Kotabaru',
+      rt: '001',
+      rw: '003',
       phone: '081234567890',
       emergencyContact: 'Ahmad Fauzi (Anak)',
       emergencyPhone: '081234567891',
+      caregiverStatus: 'Ada' as const,
       healthStatus: 1 as const,
       medicalConditions: ['Hipertensi'],
       lastCheckup: new Date('2024-07-15'),
@@ -46,9 +52,12 @@ export function useLansiaManagement() {
       age: 73,
       gender: 'Laki-laki' as const,
       address: 'Jl. Veteran No. 456, Kotabaru',
+      rt: '002',
+      rw: '005',
       phone: '081234567892',
       emergencyContact: 'Fatimah Rahman (Istri)',
       emergencyPhone: '081234567893',
+      caregiverStatus: 'Ada' as const,
       healthStatus: 2 as const,
       medicalConditions: ['Diabetes', 'Kolesterol'],
       lastCheckup: new Date('2024-08-01'),
@@ -63,9 +72,12 @@ export function useLansiaManagement() {
       age: 75,
       gender: 'Perempuan' as const,
       address: 'Kampung Baru RT 02/RW 01, Kotabaru',
+      rt: '002',
+      rw: '001',
       phone: '081234567894',
       emergencyContact: 'Budi Santoso (Cucu)',
       emergencyPhone: '081234567895',
+      caregiverStatus: 'Tidak Ada' as const,
       healthStatus: 3 as const,
       medicalConditions: ['Osteoporosis', 'Katarak'],
       lastCheckup: new Date('2024-06-20'),
@@ -80,9 +92,12 @@ export function useLansiaManagement() {
       age: 71,
       gender: 'Laki-laki' as const,
       address: 'Jl. Sudirman No. 789, Kotabaru',
+      rt: '003',
+      rw: '004',
       phone: '081234567896',
       emergencyContact: 'Dewi Sartika (Anak)',
       emergencyPhone: '081234567897',
+      caregiverStatus: 'Ada' as const,
       healthStatus: 1 as const,
       medicalConditions: [],
       lastCheckup: new Date('2024-08-10'),
@@ -97,9 +112,12 @@ export function useLansiaManagement() {
       age: 70,
       gender: 'Perempuan' as const,
       address: 'Perumahan Kotabaru Indah Blok A No. 12',
+      rt: '001',
+      rw: '002',
       phone: '081234567898',
       emergencyContact: 'Rini Kartini (Anak)',
       emergencyPhone: '081234567899',
+      caregiverStatus: 'Ada' as const,
       healthStatus: 1 as const,
       medicalConditions: ['Hipertensi'],
       lastCheckup: new Date('2024-07-25'),
@@ -132,9 +150,12 @@ export function useLansiaManagement() {
         person.nik.toLowerCase().includes(term) ||
         person.id.toLowerCase().includes(term) ||
         person.address.toLowerCase().includes(term) ||
+        person.rt.toLowerCase().includes(term) ||
+        person.rw.toLowerCase().includes(term) ||
         person.phone.toLowerCase().includes(term) ||
         person.healthStatus.toString().includes(term) ||
-        person.emergencyContact.toLowerCase().includes(term)
+        person.emergencyContact.toLowerCase().includes(term) ||
+        person.caregiverStatus.toLowerCase().includes(term)
       )
     })
   })
@@ -335,6 +356,30 @@ export function useLansiaManagement() {
     }
   }
 
+  // Caregiver status styling
+  const getCaregiverStatusBadgeClasses = (status: string) => {
+    switch (status) {
+      case 'Ada':
+        return 'bg-green-50 text-green-700 border border-green-200 shadow-sm'
+      case 'Tidak Ada':
+        return 'bg-red-50 text-red-700 border border-red-200 shadow-sm'
+      default:
+        return 'bg-gray-50 text-gray-700 border border-gray-200 shadow-sm'
+    }
+  }
+
+  // Caregiver status icons
+  const getCaregiverStatusIcon = (status: string) => {
+    switch (status) {
+      case 'Ada':
+        return 'pi pi-check-circle'
+      case 'Tidak Ada':
+        return 'pi pi-times-circle'
+      default:
+        return 'pi pi-circle'
+    }
+  }
+
   return {
     // State
     lansia: lansia.value,
@@ -377,5 +422,7 @@ export function useLansiaManagement() {
     getHealthStatusBadgeClasses,
     getHealthStatusIcon,
     getHealthStatusLabel,
+    getCaregiverStatusBadgeClasses,
+    getCaregiverStatusIcon,
   }
 }

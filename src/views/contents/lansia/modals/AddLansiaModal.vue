@@ -103,6 +103,34 @@
           <small v-if="errors.address" class="text-red-500 text-xs !mt-1">{{ errors.address }}</small>
         </div>
 
+        <!-- RT Field -->
+        <div class="space-y-2">
+          <label for="rt" class="block text-sm font-semibold text-gray-700">RT *</label>
+          <InputText
+            id="rt"
+            v-model="formData.rt"
+            :class="{ 'p-invalid': errors.rt }"
+            placeholder="Masukkan RT (contoh: 001)"
+            class="w-full !rounded-xl !border-gray-300 !p-3 text-sm"
+            required
+          />
+          <small v-if="errors.rt" class="text-red-500 text-xs !mt-1">{{ errors.rt }}</small>
+        </div>
+
+        <!-- RW Field -->
+        <div class="space-y-2">
+          <label for="rw" class="block text-sm font-semibold text-gray-700">RW *</label>
+          <InputText
+            id="rw"
+            v-model="formData.rw"
+            :class="{ 'p-invalid': errors.rw }"
+            placeholder="Masukkan RW (contoh: 003)"
+            class="w-full !rounded-xl !border-gray-300 !p-3 text-sm"
+            required
+          />
+          <small v-if="errors.rw" class="text-red-500 text-xs !mt-1">{{ errors.rw }}</small>
+        </div>
+
         <!-- Additional fields for edit mode -->
         <template v-if="isEdit">
           <!-- Phone Field -->
@@ -192,6 +220,23 @@
             required
           />
           <small v-if="errors.emergencyPhone" class="text-red-500 text-xs !mt-1">{{ errors.emergencyPhone }}</small>
+        </div>
+
+        <!-- Caregiver Status -->
+        <div class="space-y-2">
+          <label for="caregiverStatus" class="block text-sm font-semibold text-gray-700">Status Caregiver *</label>
+          <Dropdown
+            id="caregiverStatus"
+            v-model="formData.caregiverStatus"
+            :options="caregiverStatusOptions"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Pilih status caregiver"
+            :class="{ 'p-invalid': errors.caregiverStatus }"
+            class="w-full !rounded-xl !border-gray-300"
+            required
+          />
+          <small v-if="errors.caregiverStatus" class="text-red-500 text-xs !mt-1">{{ errors.caregiverStatus }}</small>
         </div>
       </div>
 
@@ -316,9 +361,12 @@ interface LansiaFormData {
   age?: number
   gender: 'Laki-laki' | 'Perempuan'
   address: string
+  rt: string
+  rw: string
   phone: string
   emergencyContact: string
   emergencyPhone: string
+  caregiverStatus: 'Ada' | 'Tidak Ada'
   healthStatus: 1 | 2 | 3
   medicalConditions: string[]
   lastCheckup: string  // HTML date inputs return strings
@@ -351,9 +399,12 @@ const formData = ref<LansiaFormData>({
   dateOfBirth: '',
   gender: 'Laki-laki',
   address: '',
+  rt: '',
+  rw: '',
   phone: '',
   emergencyContact: '',
   emergencyPhone: '',
+  caregiverStatus: 'Ada',
   healthStatus: 1,
   medicalConditions: [],
   lastCheckup: '',
@@ -367,9 +418,12 @@ const errors = ref({
   dateOfBirth: '',
   gender: '',
   address: '',
+  rt: '',
+  rw: '',
   phone: '',
   emergencyContact: '',
   emergencyPhone: '',
+  caregiverStatus: '',
   healthStatus: '',
   medicalConditions: '',
   lastCheckup: '',
@@ -389,6 +443,11 @@ const healthStatusOptions = [
   { label: 'Level 1 (Baik)', value: 1 },
   { label: 'Level 2 (Cukup)', value: 2 },
   { label: 'Level 3 (Perlu Perhatian)', value: 3 }
+]
+
+const caregiverStatusOptions = [
+  { label: 'Ada', value: 'Ada' },
+  { label: 'Tidak Ada', value: 'Tidak Ada' }
 ]
 
 // Computed properties
@@ -434,9 +493,12 @@ const resetForm = () => {
     dateOfBirth: '',
     gender: 'Laki-laki',
     address: '',
+    rt: '',
+    rw: '',
     phone: '',
     emergencyContact: '',
     emergencyPhone: '',
+    caregiverStatus: 'Ada',
     healthStatus: 1,
     medicalConditions: [],
     lastCheckup: '',
@@ -448,9 +510,12 @@ const resetForm = () => {
     dateOfBirth: '',
     gender: '',
     address: '',
+    rt: '',
+    rw: '',
     phone: '',
     emergencyContact: '',
     emergencyPhone: '',
+    caregiverStatus: '',
     healthStatus: '',
     medicalConditions: '',
     lastCheckup: '',
@@ -547,6 +612,20 @@ const validateStep = (step: number): boolean => {
     } else {
       newErrors.address = ''
     }
+
+    // RT validation
+    if (!formData.value.rt.trim()) {
+      newErrors.rt = 'RT wajib diisi'
+    } else {
+      newErrors.rt = ''
+    }
+
+    // RW validation
+    if (!formData.value.rw.trim()) {
+      newErrors.rw = 'RW wajib diisi'
+    } else {
+      newErrors.rw = ''
+    }
   }
 
   if (step === 2 || isEdit.value) {
@@ -572,6 +651,13 @@ const validateStep = (step: number): boolean => {
       newErrors.emergencyPhone = 'Format nomor telepon tidak valid'
     } else {
       newErrors.emergencyPhone = ''
+    }
+
+    // Caregiver Status validation
+    if (!formData.value.caregiverStatus) {
+      newErrors.caregiverStatus = 'Status caregiver wajib dipilih'
+    } else {
+      newErrors.caregiverStatus = ''
     }
   }
 
@@ -601,9 +687,9 @@ const validateStep = (step: number): boolean => {
 
   // Check if current step has no errors
   if (step === 1 || isEdit.value) {
-    return !newErrors.nik && !newErrors.name && !newErrors.dateOfBirth && !newErrors.gender && !newErrors.address
+    return !newErrors.nik && !newErrors.name && !newErrors.dateOfBirth && !newErrors.gender && !newErrors.address && !newErrors.rt && !newErrors.rw
   } else if (step === 2) {
-    return !newErrors.phone && !newErrors.emergencyContact && !newErrors.emergencyPhone
+    return !newErrors.phone && !newErrors.emergencyContact && !newErrors.emergencyPhone && !newErrors.caregiverStatus
   } else if (step === 3) {
     return !newErrors.healthStatus && !newErrors.profileImage
   }
