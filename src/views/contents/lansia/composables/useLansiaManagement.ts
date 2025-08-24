@@ -393,6 +393,21 @@ export function useLansiaManagement() {
     }
   }
 
+  // Statistics computed properties
+  const totalLansia = computed(() => lansia.value.length)
+  
+  const lansiaLevel1 = computed(() => 
+    lansia.value.filter(l => l.healthStatus === 1).length
+  )
+  
+  const lansiaLevel2 = computed(() => 
+    lansia.value.filter(l => l.healthStatus === 2).length
+  )
+  
+  const lansiaLevel3 = computed(() => 
+    lansia.value.filter(l => l.healthStatus === 3).length
+  )
+
   return {
     // State
     lansia: lansia.value,
@@ -438,5 +453,11 @@ export function useLansiaManagement() {
     getFullName,
     getCaregiverStatusBadgeClasses,
     getCaregiverStatusIcon,
+
+    // Statistics
+    totalLansia,
+    lansiaLevel1,
+    lansiaLevel2,
+    lansiaLevel3,
   }
 }

@@ -1,4 +1,12 @@
 <template>
+  <!-- Status Cards Outside -->
+  <LansiaStatusCards
+    :total-lansia="totalLansia"
+    :lansia-level1="lansiaLevel1"
+    :lansia-level2="lansiaLevel2"
+    :lansia-level3="lansiaLevel3"
+  />
+
   <div class="bg-white rounded-2xl border shadow-sm !p-4">
     <!-- Top bar -->
     <div class="flex justify-between items-center !p-4 !mb-10">
@@ -145,6 +153,7 @@ import InputText from 'primevue/inputtext'
 import AddLansiaModal from './modals/AddLansiaModal.vue'
 import ConfirmDeleteModal from '../../../components/modals/ConfirmDeleteModal.vue'
 import LansiaDetailModal from './modals/LansiaDetailModal.vue'
+import LansiaStatusCards from './components/LansiaStatusCards.vue'
 import { useLansiaManagement } from './composables/useLansiaManagement'
 
 interface Category {
@@ -184,6 +193,10 @@ const {
   getFullName,
   getCaregiverStatusBadgeClasses,
   getCaregiverStatusIcon,
+  totalLansia,
+  lansiaLevel1,
+  lansiaLevel2,
+  lansiaLevel3,
 } = useLansiaManagement()
 
 watch(
