@@ -1,154 +1,169 @@
 <template>
-  <div class="grid grid-cols-12 !gap-8 mb-4">
-    <!-- Card 1 -->
+  <div class="grid grid-cols-12 !gap-6 !mb-8">
+    <!-- Total Lansia Card -->
     <div class="col-span-12 md:col-span-6 xl:col-span-3">
-      <Card class="custom-card">
-        <template #content>
-          <div class="flex items-center !p-4">
-            <i class="pi pi-desktop !text-5xl !text-blue-500"></i>
-            <div class="!ml-4">
-              <p class="!text-blue-500 !block !whitespace-nowrap">TOTAL ASSETS</p>
-              <p class="!text-blue-500 !block !text-4xl !font-bold">440</p>
-            </div>
-          </div>
-
-          <div class="w-full">
-            <MiniLineChart :data="chartData" borderColor="#2b7fff" />
-          </div>
-        </template>
-      </Card>
-    </div>
-
-    <!-- Card 2 -->
-    <div class="col-span-12 md:col-span-6 xl:col-span-3">
-      <Card class="custom-card">
-        <template #content>
-          <div class="flex items-center p-4">
-            <i class="pi pi-check !text-5xl text-green-500"></i>
-            <div class="!ml-4">
-              <p class="text-green-500 block whitespace-nowrap">WORKING ASSET</p>
-              <p class="text-green-500 block text-4xl !font-bold">413</p>
-            </div>
-          </div>
-
-          <div class="w-full">
-            <MiniLineChart :data="chartData2" borderColor="#00c950" />
-          </div>
-        </template>
-      </Card>
-    </div>
-
-    <!-- Card 3 -->
-    <div class="col-span-12 md:col-span-6 xl:col-span-3">
-      <Card class="custom-card">
-        <template #content>
-          <div class="flex items-center p-4">
-            <i class="pi pi-exclamation-triangle !text-5xl !text-yellow-500"></i>
-            <div class="!ml-4">
-              <p class="!text-yellow-500 !block !whitespace-nowrap">NEED ATTENTION</p>
-              <p class="!text-yellow-500 !block !text-4xl !font-bold">5</p>
-            </div>
-          </div>
-
-          <div class="w-full">
-            <MiniLineChart :data="chartData3" borderColor="#efb000" />
-          </div>
-        </template>
-      </Card>
-    </div>
-
-    <!-- Card 4 -->
-    <div class="col-span-12 md:col-span-6 xl:col-span-3">
-      <Card class="custom-card">
-        <template #content>
-          <div class="!flex !items-center !p-4">
-            <i class="pi pi-times !text-5xl !text-red-500"></i>
-            <div class="!ml-4">
-              <p class="!text-red-500 !block !whitespace-nowrap">NOT WORKING ASSETS</p>
-              <p class="!text-red-500 !block !text-4xl !font-bold">32</p>
-            </div>
-          </div>
-
-          <div class="w-full">
-            <MiniLineChart :data="chartData4" borderColor="#fa2c37" />
-          </div>
-        </template>
-      </Card>
-    </div>
-
-    <!-- Button Menu -->
-    <div class="col-span-12 !-mb-4">
-      <div class="w-full bg-[#ffffff] rounded-full">
-        <div class="flex space-x-6 justify-center gap-100 pt-1 pb-1">
-          <button
-            v-for="tab in tabs"
-            :key="tab.key"
-            @click="currentTab = tab.key"
-            :class="[
-              'px-4 py-1.5 text-base font-semibold transition-all duration-150',
-              currentTab === tab.key
-                ? '!bg-[#2b7fff] text-white rounded-full shadow-sm pl-10 pr-10'
-                : 'text-gray-500 hover:text-gray-400',
-            ]"
-          >
-            {{ tab.label }}
-          </button>
-        </div>
+      <div class="stat-card blue-card">
+        <div class="stat-number">440</div>
+        <div class="stat-title">Total Lansia</div>
+        <i class="pi pi-users card-icon"></i>
       </div>
     </div>
 
-    <!-- Dynamic Tab Content -->
-    <component :is="currentTabComponent"/>
+    <!-- Level 1 Card -->
+    <div class="col-span-12 md:col-span-6 xl:col-span-3">
+      <div class="stat-card green-card">
+        <div class="stat-number">413</div>
+        <div class="stat-title">Level 1</div>
+        <i class="pi pi-heart card-icon"></i>
+      </div>
+    </div>
+
+    <!-- Level 2 Card -->
+    <div class="col-span-12 md:col-span-6 xl:col-span-3">
+      <div class="stat-card yellow-card">
+        <div class="stat-number">5</div>
+        <div class="stat-title">Level 2</div>
+        <i class="pi pi-exclamation-triangle card-icon"></i>
+      </div>
+    </div>
+
+    <!-- Level 3 Card -->
+    <div class="col-span-12 md:col-span-6 xl:col-span-3">
+      <div class="stat-card red-card">
+        <div class="stat-number">32</div>
+        <div class="stat-title">Level 3</div>
+        <i class="pi pi-shield card-icon"></i>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import MiniLineChart from '../../../components/lineChart.vue'
-import dashboardOverview from './dashboardOverview.vue'
-import dashboardAnalytics from './dashboardAnalytics.vue'
-import Card from 'primevue/card'
 import 'primeicons/primeicons.css'
-
-const chartData = [2, 2, 6, 8, 8, 2, 6, 6, 6, 6]
-const chartData2 = [5, 7, 6, 8, 4, 2, 6, 6, 6, 6]
-const chartData3 = [5, 7, 6, 8, 4, 2, 6, 6, 6, 6]
-const chartData4 = [5, 7, 6, 8, 4, 2, 6, 6, 6, 6]
-
-const currentTab = ref('overview')
-
-const tabs = [
-  { key: 'overview', label: 'Overview' },
-  { key: 'analytics', label: 'Analytics' },
-  { key: 'maintenance', label: 'Maintenance' },
-]
-
-const currentTabComponent = computed(() => {
-  switch (currentTab.value) {
-    case 'overview':
-      return dashboardOverview
-    case 'analytics':
-      return dashboardAnalytics
-    case 'Maintenance':
-      return dashboardAnalytics
-    default:
-      return dashboardOverview
-  }
-})
 </script>
 
-<style lang="css">
-.card {
-  margin-bottom: 1rem;
-  box-shadow:
-    rgba(0, 0, 0, 0.1) 0px 3px 4px,
-    rgba(0, 0, 0, 0.04) 0px 24px 36px;
-  background: var(--surface-card);
-  padding: 1.5rem;
-  border-radius: 14px;
+<style lang="css" scoped>
+/* Simple Stat Cards */
+.stat-card {
+  position: relative;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 1.25rem;
+  border: 1px solid #e5e7eb;
+  transition: all 0.2s ease;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  min-height: 120px;
 }
 
-.card:last-child {
-  margin-bottom: 0px;
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Card Icon */
+.card-icon {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 3.5rem;
+  opacity: 0.8;
+}
+
+/* Stat Number */
+.stat-number {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+  color: #1f2937;
+}
+
+/* Stat Title */
+.stat-title {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Color Themes */
+.blue-card {
+  border-left: 4px solid #3b82f6;
+}
+
+.blue-card .stat-number {
+  color: #1e40af;
+}
+
+.blue-card .card-icon {
+  color: #3b82f6;
+}
+
+.green-card {
+  border-left: 4px solid #10b981;
+}
+
+.green-card .stat-number {
+  color: #047857;
+}
+
+.green-card .card-icon {
+  color: #10b981;
+}
+
+.yellow-card {
+  border-left: 4px solid #f59e0b;
+}
+
+.yellow-card .stat-number {
+  color: #d97706;
+}
+
+.yellow-card .card-icon {
+  color: #f59e0b;
+}
+
+.red-card {
+  border-left: 4px solid #ef4444;
+}
+
+.red-card .stat-number {
+  color: #dc2626;
+}
+
+.red-card .card-icon {
+  color: #ef4444;
+}
+
+/* Hover Effects */
+.stat-card:hover .card-icon {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.stat-card:hover .stat-number {
+  transform: scale(1.02);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .stat-card {
+    padding: 1rem;
+    min-height: 100px;
+  }
+  
+  .stat-number {
+    font-size: 1.75rem;
+  }
+  
+  .stat-title {
+    font-size: 0.8rem;
+  }
+  
+  .card-icon {
+    font-size: 2.5rem;
+  }
 }
 </style>

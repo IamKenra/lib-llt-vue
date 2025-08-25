@@ -87,8 +87,7 @@
 
       <Column header="Status">
         <template #body="slotProps">
-          <div :class="getHealthStatusBadgeClasses(slotProps.data.healthStatus)" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold">
-            <i :class="getHealthStatusIcon(slotProps.data.healthStatus)" class="text-sm"></i>
+          <div :class="getHealthStatusBadgeClasses(slotProps.data.healthStatus)" class="inline-flex items-center justify-center px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap">
             <span>{{ getHealthStatusLabel(slotProps.data.healthStatus) }}</span>
           </div>
         </template>

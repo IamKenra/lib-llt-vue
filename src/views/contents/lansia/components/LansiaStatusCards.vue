@@ -39,7 +39,6 @@
 </template>
 
 <script setup lang="ts">
-import Card from 'primevue/card'
 import 'primeicons/primeicons.css'
 
 interface Props {
