@@ -1,7 +1,7 @@
 <template>
   <div class="bg-white rounded-2xl border shadow-sm !p-4">
     <!-- Top bar -->
-    <div class="flex justify-between items-center !p-4 !mb-10">
+    <div class="flex justify-between items-center !p-4 !mb-6">
       <h2 class="!text-2xl text-gray-900">Users Management</h2>
       <div class="flex space-x-2">
 

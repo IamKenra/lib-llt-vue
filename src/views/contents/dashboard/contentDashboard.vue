@@ -1,5 +1,5 @@
 <template>
-  <div class="grid grid-cols-12 !gap-6 !mb-8">
+  <div class="grid grid-cols-12 !gap-6 !mb-4">
     <!-- Total Lansia Card -->
     <div class="col-span-12 md:col-span-6 xl:col-span-3">
       <div class="stat-card blue-card">
@@ -36,10 +36,146 @@
       </div>
     </div>
   </div>
+
+  <!-- Chart and Map Section -->
+  <div class="grid grid-cols-12 !gap-6 !mt-4">
+    <!-- Health Statistics Chart Card -->
+    <div class="col-span-12 lg:col-span-4">
+      <div class="stat-card bg-white border border-gray-200 !h-[580px]">
+        <div class="!p-4 !h-full flex flex-col">
+          <div class="flex items-center justify-between !mb-3">
+            <div>
+              <h3 class="!text-lg !font-semibold !text-gray-900 !mb-1">Status Kesehatan</h3>
+              <p class="!text-xs !text-gray-600">Distribusi level kesehatan lansia</p>
+            </div>
+            <i class="pi pi-chart-pie !text-xl !text-green-500 !opacity-70"></i>
+          </div>
+          
+          <!-- Doughnut Chart -->
+          <div class="flex justify-center !mb-4 flex-grow flex items-center">
+            <Doughnut :data="healthChartData" :options="healthChartOptions" class="max-h-64" />
+          </div>
+
+          <!-- Health Statistics Summary -->
+          <div class="space-y-1">
+            <div class="flex justify-between items-center bg-blue-50 rounded-lg px-3 py-1.5 text-xs">
+              <div class="flex items-center">
+                <div class="w-2.5 h-2.5 bg-blue-500 rounded-full !mr-2"></div>
+                <span class="text-gray-700 font-medium">Total Lansia</span>
+              </div>
+              <span class="text-blue-700 font-semibold">440</span>
+            </div>
+            <div class="flex justify-between items-center bg-green-50 rounded-lg px-3 py-1.5 text-xs">
+              <div class="flex items-center">
+                <div class="w-2.5 h-2.5 bg-green-500 rounded-full !mr-2"></div>
+                <span class="text-gray-700 font-medium">Level 1 (Baik)</span>
+              </div>
+              <span class="text-green-700 font-semibold">413</span>
+            </div>
+            <div class="flex justify-between items-center bg-yellow-50 rounded-lg px-3 py-1.5 text-xs">
+              <div class="flex items-center">
+                <div class="w-2.5 h-2.5 bg-yellow-500 rounded-full !mr-2"></div>
+                <span class="text-gray-700 font-medium">Level 2 (Cukup)</span>
+              </div>
+              <span class="text-yellow-700 font-semibold">5</span>
+            </div>
+            <div class="flex justify-between items-center bg-red-50 rounded-lg px-3 py-1.5 text-xs">
+              <div class="flex items-center">
+                <div class="w-2.5 h-2.5 bg-red-500 rounded-full !mr-2"></div>
+                <span class="text-gray-700 font-medium">Level 3 (Perhatian)</span>
+              </div>
+              <span class="text-red-700 font-semibold">32</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Map Card -->
+    <div class="col-span-12 lg:col-span-8">
+      <div class="stat-card bg-white border border-gray-200 !h-[580px]">
+        <!-- Header Section -->
+        <div class="!px-4 !pt-4 !pb-3">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="!text-lg !font-semibold !text-gray-900 !mb-1">Peta Sebaran Lansia</h3>
+              <p class="!text-xs !text-gray-600">Distribusi lansia berdasarkan RW di Kotabaru</p>
+            </div>
+            <i class="pi pi-map !text-xl !text-blue-500 !opacity-70"></i>
+          </div>
+        </div>
+        
+        <!-- Map Content Container - Now takes more space -->
+        <div class="!px-3 !pb-3" style="height: calc(100% - 70px);">
+          <div class="w-full h-full rounded-lg overflow-hidden">
+            <KotabaruMap />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
 import 'primeicons/primeicons.css'
+import KotabaruMap from '../../../components/KotabaruMap.vue'
+import { Doughnut } from 'vue-chartjs'
+import {
+  Chart as ChartJS,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+  ChartData,
+  ChartOptions
+} from 'chart.js'
+
+ChartJS.register(Title, Tooltip, Legend, ArcElement)
+
+// Health Chart Data
+const healthChartData: ChartData<'doughnut'> = {
+  labels: ['Level 1 (Baik)', 'Level 2 (Cukup)', 'Level 3 (Perhatian)'],
+  datasets: [
+    {
+      data: [413, 5, 32],
+      backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
+      borderWidth: 0,
+      hoverBorderWidth: 2,
+      hoverBorderColor: '#ffffff'
+    }
+  ]
+}
+
+const healthChartOptions: ChartOptions<'doughnut'> = {
+  responsive: true,
+  maintainAspectRatio: false,
+  cutout: '65%',
+  plugins: {
+    legend: { 
+      display: false 
+    },
+    tooltip: {
+      backgroundColor: '#1f2937',
+      titleColor: '#ffffff',
+      bodyColor: '#ffffff',
+      borderColor: '#374151',
+      borderWidth: 1,
+      cornerRadius: 8,
+      displayColors: true,
+      callbacks: {
+        label: function(context) {
+          const total = context.dataset.data.reduce((a: number, b: number) => a + b, 0)
+          const percentage = ((context.parsed / total) * 100).toFixed(1)
+          return `${context.label}: ${context.parsed} (${percentage}%)`
+        }
+      }
+    }
+  },
+  interaction: {
+    intersect: false,
+    mode: 'nearest'
+  }
+}
 </script>
 
 <style lang="css" scoped>
