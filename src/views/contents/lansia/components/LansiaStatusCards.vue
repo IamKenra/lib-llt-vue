@@ -21,34 +21,18 @@
     <!-- Level 2 Card -->
     <div class="col-span-12 md:col-span-6 xl:col-span-3">
       <AnimatedCard :delay="300" card-class="stat-card yellow-card">
-        <template v-if="isLoading">
-          <div class="animate-pulse">
-            <div class="bg-yellow-200 rounded-lg h-8 w-20 mb-2"></div>
-            <div class="bg-yellow-200 rounded-lg h-4 w-16"></div>
-          </div>
-        </template>
-        <template v-else>
-          <div class="stat-number">{{ lansiaLevel2 }}</div>
-          <div class="stat-title">Level 2</div>
-        </template>
-        <i class="pi pi-exclamation-triangle card-icon" :class="{ 'opacity-50': isLoading }"></i>
+        <div class="stat-number">{{ lansiaLevel2 }}</div>
+        <div class="stat-title">Level 2</div>
+        <i class="pi pi-exclamation-triangle card-icon"></i>
       </AnimatedCard>
     </div>
 
     <!-- Level 3 Card -->
     <div class="col-span-12 md:col-span-6 xl:col-span-3">
       <AnimatedCard :delay="400" card-class="stat-card red-card">
-        <template v-if="isLoading">
-          <div class="animate-pulse">
-            <div class="bg-red-200 rounded-lg h-8 w-20 mb-2"></div>
-            <div class="bg-red-200 rounded-lg h-4 w-16"></div>
-          </div>
-        </template>
-        <template v-else>
-          <div class="stat-number">{{ lansiaLevel3 }}</div>
-          <div class="stat-title">Level 3</div>
-        </template>
-        <i class="pi pi-shield card-icon" :class="{ 'opacity-50': isLoading }"></i>
+        <div class="stat-number">{{ lansiaLevel3 }}</div>
+        <div class="stat-title">Level 3</div>
+        <i class="pi pi-shield card-icon"></i>
       </AnimatedCard>
     </div>
   </div>
@@ -63,12 +47,9 @@ interface Props {
   lansiaLevel1: number
   lansiaLevel2: number
   lansiaLevel3: number
-  isLoading?: boolean
 }
 
-withDefaults(defineProps<Props>(), {
-  isLoading: false
-})
+defineProps<Props>()
 </script>
 
 <style lang="css" scoped>

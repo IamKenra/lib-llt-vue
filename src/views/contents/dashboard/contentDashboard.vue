@@ -45,17 +45,17 @@
         <div class="!p-4 !h-full flex flex-col">
           <div class="flex items-center justify-between !mb-3">
             <div>
-              <h3 class="!text-lg !font-semibold !text-gray-900 !mb-1">{{ currentView === 'health' ? 'Status Kesehatan' : 'Status Ekonomi' }}</h3>
-              <p class="!text-xs !text-gray-600">{{ currentView === 'health' ? 'Distribusi level kesehatan lansia' : 'Distribusi kondisi ekonomi lansia' }}</p>
+              <h3 class="!text-lg !font-semibold !text-gray-900 !mb-1">{{ chartView === 'health' ? 'Status Kesehatan' : 'Status Ekonomi' }}</h3>
+              <p class="!text-xs !text-gray-600">{{ chartView === 'health' ? 'Distribusi level kesehatan lansia' : 'Distribusi kondisi ekonomi lansia' }}</p>
             </div>
             <div class="flex items-center gap-2">
               <!-- Simple Toggle Switch -->
               <div class="flex items-center bg-gray-100 rounded-lg p-1">
                 <!-- Health Option -->
                 <button
-                  @click="currentView = 'health'"
+                  @click="chartView = 'health'"
                   class="flex items-center justify-center w-8 h-8 rounded-md text-sm font-medium transition-all"
-                  :class="currentView === 'health' ? 'bg-white text-green-600 shadow-sm' : 'text-gray-600 hover:text-gray-800'"
+                  :class="chartView === 'health' ? 'bg-white text-green-600 shadow-sm' : 'text-gray-600 hover:text-gray-800'"
                   title="Status Kesehatan"
                 >
                   <i class="pi pi-shield"></i>
@@ -63,9 +63,9 @@
                 
                 <!-- Economic Option -->
                 <button
-                  @click="currentView = 'economic'"
+                  @click="chartView = 'economic'"
                   class="flex items-center justify-center w-8 h-8 rounded-md text-sm font-medium transition-all"
-                  :class="currentView === 'economic' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-600 hover:text-gray-800'"
+                  :class="chartView === 'economic' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-600 hover:text-gray-800'"
                   title="Status Ekonomi"
                 >
                   <i class="pi pi-money-bill"></i>
@@ -90,7 +90,7 @@
             </div>
             
             <!-- Health Statistics -->
-            <template v-if="currentView === 'health'">
+            <template v-if="chartView === 'health'">
               <div class="flex justify-between items-center bg-green-50 rounded-lg px-3 py-1.5 text-xs">
                 <div class="flex items-center">
                   <div class="w-2.5 h-2.5 bg-green-500 rounded-full !mr-2"></div>
@@ -151,16 +151,40 @@
           <div class="flex items-center justify-between">
             <div>
               <h3 class="!text-lg !font-semibold !text-gray-900 !mb-1">Peta Sebaran Lansia</h3>
-              <p class="!text-xs !text-gray-600">Distribusi lansia berdasarkan RW di Kotabaru</p>
+              <p class="!text-xs !text-gray-600">{{ mapView === 'health' ? 'Distribusi kesehatan lansia per RW' : 'Distribusi ekonomi lansia per RW' }}</p>
             </div>
-            <i class="pi pi-map !text-xl !text-blue-500 !opacity-70"></i>
+            <div class="flex items-center gap-2">
+              <!-- Map Toggle Switch (Independent) -->
+              <div class="flex items-center bg-gray-100 rounded-lg p-1">
+                <!-- Health Option -->
+                <button
+                  @click="mapView = 'health'"
+                  class="flex items-center justify-center w-8 h-8 rounded-md text-sm font-medium transition-all"
+                  :class="mapView === 'health' ? 'bg-white text-green-600 shadow-sm' : 'text-gray-600 hover:text-gray-800'"
+                  title="Status Kesehatan"
+                >
+                  <i class="pi pi-shield"></i>
+                </button>
+                
+                <!-- Economic Option -->
+                <button
+                  @click="mapView = 'economic'"
+                  class="flex items-center justify-center w-8 h-8 rounded-md text-sm font-medium transition-all"
+                  :class="mapView === 'economic' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-600 hover:text-gray-800'"
+                  title="Status Ekonomi"
+                >
+                  <i class="pi pi-money-bill"></i>
+                </button>
+              </div>
+              <i class="pi pi-map !text-xl !text-blue-500 !opacity-70"></i>
+            </div>
           </div>
         </div>
         
         <!-- Map Content Container - Now takes more space -->
         <div class="!px-3 !pb-3" style="height: calc(100% - 70px);">
           <div class="w-full h-full rounded-lg overflow-hidden">
-            <KotabaruMap />
+            <KotabaruMap :map-view="mapView" />
           </div>
         </div>
       </AnimatedCard>
@@ -194,8 +218,9 @@ const statusData = ref({
   level3: 32
 })
 
-// Toggle between health and economic view
-const currentView = ref<'health' | 'economic'>('health')
+// Separate toggle states for chart and map
+const chartView = ref<'health' | 'economic'>('health')
+const mapView = ref<'health' | 'economic'>('health')
 
 // Health Chart Data - using reactive data
 const healthChartData = computed<ChartData<'doughnut'>>(() => ({
@@ -227,7 +252,7 @@ const economicChartData: ChartData<'doughnut'> = {
 
 // Computed properties for current chart data
 const currentChartData = computed(() => {
-  return currentView.value === 'health' ? healthChartData.value : economicChartData
+  return chartView.value === 'health' ? healthChartData.value : economicChartData
 })
 
 const baseChartOptions: ChartOptions<'doughnut'> = {
@@ -271,7 +296,7 @@ const economicChartOptions: ChartOptions<'doughnut'> = {
 
 // Computed property for current chart options
 const currentChartOptions = computed(() => {
-  return currentView.value === 'health' ? healthChartOptions : economicChartOptions
+  return chartView.value === 'health' ? healthChartOptions : economicChartOptions
 })
 </script>
 

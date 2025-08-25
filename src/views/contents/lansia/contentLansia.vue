@@ -5,7 +5,6 @@
     :lansia-level1="lansiaLevel1"
     :lansia-level2="lansiaLevel2"
     :lansia-level3="lansiaLevel3"
-    :is-loading="isLoadingLansiaCards"
   />
 
   <AnimatedCard :delay="500" card-class="bg-white rounded-2xl border shadow-sm !p-4 !mt-4">
@@ -145,7 +144,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, watch, ref, onMounted } from 'vue'
+import { defineProps, watch, ref } from 'vue'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import Button from 'primevue/button'
@@ -165,18 +164,6 @@ interface Category {
 const props = defineProps<{ category: Category | null }>()
 const selectedCategoryName = ref(props.category?.name || '')
 
-// Loading state for lansia cards
-const isLoadingLansiaCards = ref(true)
-
-// Simulate lansia data loading
-const loadLansiaData = async () => {
-  isLoadingLansiaCards.value = true
-  
-  // Quick loading for better UX (simulate fast API call)
-  await new Promise(resolve => setTimeout(resolve, 250))
-  
-  isLoadingLansiaCards.value = false
-}
 
 // Use lansia management composable
 const {
@@ -213,10 +200,6 @@ const {
   lansiaLevel3,
 } = useLansiaManagement()
 
-// Initialize loading on component mount
-onMounted(() => {
-  loadLansiaData()
-})
 
 watch(
   () => props.category,

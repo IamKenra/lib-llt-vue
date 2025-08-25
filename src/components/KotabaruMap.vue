@@ -9,32 +9,62 @@
       <!-- Map will be initialized here -->
     </div>
 
-    <!-- Enhanced Legend -->
+    <!-- Dynamic Legend -->
     <div class="absolute bottom-4 left-4 bg-white/98 backdrop-blur-md rounded-2xl p-5 shadow-2xl border-2 border-white/50 z-[1000]">
-      <h4 class="font-bold text-base text-gray-800 mb-4 text-center">Kepadatan Lansia</h4>
-      <div class="space-y-3">
+      <h4 class="font-bold text-base text-gray-800 mb-4 text-center">
+        {{ mapView === 'health' ? 'Status Kesehatan' : 'Status Ekonomi' }}
+      </h4>
+      
+      <!-- Health Legend -->
+      <div v-if="mapView === 'health'" class="space-y-3">
         <div class="flex items-center justify-between text-sm font-medium">
           <div class="flex items-center">
-            <div class="w-4 h-4 bg-blue-500 rounded-lg mr-3 shadow-md border border-blue-300"></div>
-            <span class="text-gray-700">≤ 10%</span>
+            <div class="w-4 h-4 bg-green-500 rounded-lg mr-3 shadow-md border border-green-300"></div>
+            <span class="text-gray-700">Level 1</span>
           </div>
-          <span class="text-blue-600 font-semibold">Rendah</span>
+          <span class="text-green-600 font-semibold">Produktif</span>
         </div>
         <div class="flex items-center justify-between text-sm font-medium">
           <div class="flex items-center">
             <div class="w-4 h-4 bg-yellow-500 rounded-lg mr-3 shadow-md border border-yellow-300"></div>
-            <span class="text-gray-700">10-15%</span>
+            <span class="text-gray-700">Level 2</span>
           </div>
-          <span class="text-yellow-600 font-semibold">Sedang</span>
+          <span class="text-yellow-600 font-semibold">Butuh Bantuan</span>
         </div>
         <div class="flex items-center justify-between text-sm font-medium">
           <div class="flex items-center">
             <div class="w-4 h-4 bg-red-500 rounded-lg mr-3 shadow-md border border-red-300"></div>
-            <span class="text-gray-700">> 15%</span>
+            <span class="text-gray-700">Level 3</span>
           </div>
-          <span class="text-red-600 font-semibold">Tinggi</span>
+          <span class="text-red-600 font-semibold">Tirah Baring</span>
         </div>
       </div>
+
+      <!-- Economic Legend -->
+      <div v-else class="space-y-3">
+        <div class="flex items-center justify-between text-sm font-medium">
+          <div class="flex items-center">
+            <div class="w-4 h-4 bg-red-500 rounded-lg mr-3 shadow-md border border-red-300"></div>
+            <span class="text-gray-700">Kurang</span>
+          </div>
+          <span class="text-red-600 font-semibold">Kurang Mampu</span>
+        </div>
+        <div class="flex items-center justify-between text-sm font-medium">
+          <div class="flex items-center">
+            <div class="w-4 h-4 bg-yellow-500 rounded-lg mr-3 shadow-md border border-yellow-300"></div>
+            <span class="text-gray-700">Cukup</span>
+          </div>
+          <span class="text-yellow-600 font-semibold">Cukup Mampu</span>
+        </div>
+        <div class="flex items-center justify-between text-sm font-medium">
+          <div class="flex items-center">
+            <div class="w-4 h-4 bg-green-500 rounded-lg mr-3 shadow-md border border-green-300"></div>
+            <span class="text-gray-700">Sangat</span>
+          </div>
+          <span class="text-green-600 font-semibold">Sangat Mampu</span>
+        </div>
+      </div>
+
       <div class="mt-4 pt-3 border-t border-gray-200">
         <div class="text-center text-xs text-gray-500">
           <i class="pi pi-search-plus mr-1"></i>
@@ -65,9 +95,18 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, watch, computed } from 'vue'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
+
+// Props
+interface Props {
+  mapView?: 'health' | 'economic'
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  mapView: 'health'
+})
 
 // Fix Leaflet default icons
 delete (L.Icon.Default.prototype as any)._getIconUrl
@@ -80,8 +119,10 @@ L.Icon.Default.mergeOptions({
 const mapContainer = ref<HTMLElement>()
 const map = ref<L.Map>()
 const loading = ref(true)
+const markersLayer = ref<L.LayerGroup>()
+const circlesLayer = ref<L.LayerGroup>()
 
-// Sample RW data with coordinates (Kotabaru, Yogyakarta)
+// Enhanced RW data with health and economic information
 const rwData = [
   {
     id: 'RW001',
@@ -90,7 +131,9 @@ const rwData = [
     lansiaCount: 32,
     lat: -7.7956,
     lng: 110.3695,
-    bounds: [[-7.7980, 110.3670], [-7.7932, 110.3720]]
+    bounds: [[-7.7980, 110.3670], [-7.7932, 110.3720]],
+    health: { level1: 20, level2: 8, level3: 4 },
+    economic: { kurangMampu: 12, cukupMampu: 15, sangatMampu: 5 }
   },
   {
     id: 'RW002', 
@@ -99,7 +142,9 @@ const rwData = [
     lansiaCount: 28,
     lat: -7.7925,
     lng: 110.3715,
-    bounds: [[-7.7949, 110.3690], [-7.7901, 110.3740]]
+    bounds: [[-7.7949, 110.3690], [-7.7901, 110.3740]],
+    health: { level1: 22, level2: 3, level3: 3 },
+    economic: { kurangMampu: 8, cukupMampu: 12, sangatMampu: 8 }
   },
   {
     id: 'RW003',
@@ -108,7 +153,9 @@ const rwData = [
     lansiaCount: 19,
     lat: -7.7940,
     lng: 110.3745,
-    bounds: [[-7.7964, 110.3720], [-7.7916, 110.3770]]
+    bounds: [[-7.7964, 110.3720], [-7.7916, 110.3770]],
+    health: { level1: 15, level2: 2, level3: 2 },
+    economic: { kurangMampu: 5, cukupMampu: 9, sangatMampu: 5 }
   },
   {
     id: 'RW004',
@@ -117,7 +164,9 @@ const rwData = [
     lansiaCount: 33,
     lat: -7.7985,
     lng: 110.3720,
-    bounds: [[-7.8009, 110.3695], [-7.7961, 110.3745]]
+    bounds: [[-7.8009, 110.3695], [-7.7961, 110.3745]],
+    health: { level1: 18, level2: 10, level3: 5 },
+    economic: { kurangMampu: 15, cukupMampu: 12, sangatMampu: 6 }
   },
   {
     id: 'RW005',
@@ -126,28 +175,44 @@ const rwData = [
     lansiaCount: 22,
     lat: -7.7960,
     lng: 110.3775,
-    bounds: [[-7.7984, 110.3750], [-7.7936, 110.3800]]
+    bounds: [[-7.7984, 110.3750], [-7.7936, 110.3800]],
+    health: { level1: 16, level2: 4, level3: 2 },
+    economic: { kurangMampu: 7, cukupMampu: 10, sangatMampu: 5 }
   }
 ]
 
-const totalLansia = ref(134)
+const totalLansia = computed(() => rwData.reduce((sum, rw) => sum + rw.lansiaCount, 0))
 
-const getLansiaDensity = (lansiaCount: number, population: number) => {
-  return (lansiaCount / population) * 100
+// Health data functions
+const getHealthDominant = (health: { level1: number, level2: number, level3: number }) => {
+  const { level1, level2, level3 } = health
+  if (level3 >= level1 && level3 >= level2) return { level: 'level3', color: '#ef4444', label: 'Level 3 (Tirah Baring)' }
+  if (level2 >= level1 && level2 >= level3) return { level: 'level2', color: '#f59e0b', label: 'Level 2 (Butuh Bantuan)' }
+  return { level: 'level1', color: '#10b981', label: 'Level 1 (Produktif)' }
 }
 
-const getRWColor = (lansiaCount: number, population: number) => {
-  const density = getLansiaDensity(lansiaCount, population)
-  if (density > 15) return '#ef4444'
-  if (density > 10) return '#f59e0b' 
-  return '#3b82f6'
+// Economic data functions
+const getEconomicDominant = (economic: { kurangMampu: number, cukupMampu: number, sangatMampu: number }) => {
+  const { kurangMampu, cukupMampu, sangatMampu } = economic
+  if (kurangMampu >= cukupMampu && kurangMampu >= sangatMampu) return { level: 'kurang', color: '#ef4444', label: 'Kurang Mampu' }
+  if (sangatMampu >= cukupMampu && sangatMampu >= kurangMampu) return { level: 'sangat', color: '#10b981', label: 'Sangat Mampu' }
+  return { level: 'cukup', color: '#f59e0b', label: 'Cukup Mampu' }
 }
 
-const getDensityLabel = (lansiaCount: number, population: number) => {
-  const density = getLansiaDensity(lansiaCount, population)
-  if (density > 15) return 'Tinggi'
-  if (density > 10) return 'Sedang'
-  return 'Rendah'
+// Get RW color and data based on current view
+const getRWData = (rw: any) => {
+  if (props.mapView === 'health') {
+    return getHealthDominant(rw.health)
+  } else {
+    return getEconomicDominant(rw.economic)
+  }
+}
+
+// Get marker size based on total lansia count
+const getMarkerSize = (lansiaCount: number): [number, number] => {
+  if (lansiaCount >= 30) return [50, 50]
+  if (lansiaCount >= 20) return [45, 45]
+  return [40, 40]
 }
 
 const initializeMap = () => {
