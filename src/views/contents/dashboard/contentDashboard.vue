@@ -39,24 +39,47 @@
 
   <!-- Chart and Map Section -->
   <div class="grid grid-cols-12 !gap-6 !mt-4">
-    <!-- Health Statistics Chart Card -->
+    <!-- Statistics Chart Card -->
     <div class="col-span-12 lg:col-span-4">
       <div class="stat-card bg-white border border-gray-200 !h-[580px]">
         <div class="!p-4 !h-full flex flex-col">
           <div class="flex items-center justify-between !mb-3">
             <div>
-              <h3 class="!text-lg !font-semibold !text-gray-900 !mb-1">Status Kesehatan</h3>
-              <p class="!text-xs !text-gray-600">Distribusi level kesehatan lansia</p>
+              <h3 class="!text-lg !font-semibold !text-gray-900 !mb-1">{{ currentView === 'health' ? 'Status Kesehatan' : 'Status Ekonomi' }}</h3>
+              <p class="!text-xs !text-gray-600">{{ currentView === 'health' ? 'Distribusi level kesehatan lansia' : 'Distribusi kondisi ekonomi lansia' }}</p>
             </div>
-            <i class="pi pi-chart-pie !text-xl !text-green-500 !opacity-70"></i>
+            <div class="flex items-center gap-2">
+              <!-- Simple Toggle Switch -->
+              <div class="flex items-center bg-gray-100 rounded-lg p-1">
+                <!-- Health Option -->
+                <button
+                  @click="currentView = 'health'"
+                  class="flex items-center justify-center w-8 h-8 rounded-md text-sm font-medium transition-all"
+                  :class="currentView === 'health' ? 'bg-white text-green-600 shadow-sm' : 'text-gray-600 hover:text-gray-800'"
+                  title="Status Kesehatan"
+                >
+                  <i class="pi pi-shield"></i>
+                </button>
+                
+                <!-- Economic Option -->
+                <button
+                  @click="currentView = 'economic'"
+                  class="flex items-center justify-center w-8 h-8 rounded-md text-sm font-medium transition-all"
+                  :class="currentView === 'economic' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-600 hover:text-gray-800'"
+                  title="Status Ekonomi"
+                >
+                  <i class="pi pi-money-bill"></i>
+                </button>
+              </div>
+            </div>
           </div>
           
           <!-- Doughnut Chart -->
           <div class="flex justify-center !mb-4 flex-grow flex items-center">
-            <Doughnut :data="healthChartData" :options="healthChartOptions" class="max-h-64" />
+            <Doughnut :data="currentChartData" :options="currentChartOptions" class="max-h-64" />
           </div>
 
-          <!-- Health Statistics Summary -->
+          <!-- Statistics Summary -->
           <div class="space-y-1">
             <div class="flex justify-between items-center bg-blue-50 rounded-lg px-3 py-1.5 text-xs">
               <div class="flex items-center">
@@ -65,27 +88,56 @@
               </div>
               <span class="text-blue-700 font-semibold">440</span>
             </div>
-            <div class="flex justify-between items-center bg-green-50 rounded-lg px-3 py-1.5 text-xs">
-              <div class="flex items-center">
-                <div class="w-2.5 h-2.5 bg-green-500 rounded-full !mr-2"></div>
-                <span class="text-gray-700 font-medium">Level 1 (Baik)</span>
+            
+            <!-- Health Statistics -->
+            <template v-if="currentView === 'health'">
+              <div class="flex justify-between items-center bg-green-50 rounded-lg px-3 py-1.5 text-xs">
+                <div class="flex items-center">
+                  <div class="w-2.5 h-2.5 bg-green-500 rounded-full !mr-2"></div>
+                  <span class="text-gray-700 font-medium">Level 1 (Baik)</span>
+                </div>
+                <span class="text-green-700 font-semibold">413</span>
               </div>
-              <span class="text-green-700 font-semibold">413</span>
-            </div>
-            <div class="flex justify-between items-center bg-yellow-50 rounded-lg px-3 py-1.5 text-xs">
-              <div class="flex items-center">
-                <div class="w-2.5 h-2.5 bg-yellow-500 rounded-full !mr-2"></div>
-                <span class="text-gray-700 font-medium">Level 2 (Cukup)</span>
+              <div class="flex justify-between items-center bg-yellow-50 rounded-lg px-3 py-1.5 text-xs">
+                <div class="flex items-center">
+                  <div class="w-2.5 h-2.5 bg-yellow-500 rounded-full !mr-2"></div>
+                  <span class="text-gray-700 font-medium">Level 2 (Cukup)</span>
+                </div>
+                <span class="text-yellow-700 font-semibold">5</span>
               </div>
-              <span class="text-yellow-700 font-semibold">5</span>
-            </div>
-            <div class="flex justify-between items-center bg-red-50 rounded-lg px-3 py-1.5 text-xs">
-              <div class="flex items-center">
-                <div class="w-2.5 h-2.5 bg-red-500 rounded-full !mr-2"></div>
-                <span class="text-gray-700 font-medium">Level 3 (Perhatian)</span>
+              <div class="flex justify-between items-center bg-red-50 rounded-lg px-3 py-1.5 text-xs">
+                <div class="flex items-center">
+                  <div class="w-2.5 h-2.5 bg-red-500 rounded-full !mr-2"></div>
+                  <span class="text-gray-700 font-medium">Level 3 (Perhatian)</span>
+                </div>
+                <span class="text-red-700 font-semibold">32</span>
               </div>
-              <span class="text-red-700 font-semibold">32</span>
-            </div>
+            </template>
+
+            <!-- Economic Statistics -->
+            <template v-else>
+              <div class="flex justify-between items-center bg-red-50 rounded-lg px-3 py-1.5 text-xs">
+                <div class="flex items-center">
+                  <div class="w-2.5 h-2.5 bg-red-500 rounded-full !mr-2"></div>
+                  <span class="text-gray-700 font-medium">Kurang Mampu</span>
+                </div>
+                <span class="text-red-700 font-semibold">125</span>
+              </div>
+              <div class="flex justify-between items-center bg-yellow-50 rounded-lg px-3 py-1.5 text-xs">
+                <div class="flex items-center">
+                  <div class="w-2.5 h-2.5 bg-yellow-500 rounded-full !mr-2"></div>
+                  <span class="text-gray-700 font-medium">Cukup Mampu</span>
+                </div>
+                <span class="text-yellow-700 font-semibold">245</span>
+              </div>
+              <div class="flex justify-between items-center bg-green-50 rounded-lg px-3 py-1.5 text-xs">
+                <div class="flex items-center">
+                  <div class="w-2.5 h-2.5 bg-green-500 rounded-full !mr-2"></div>
+                  <span class="text-gray-700 font-medium">Sangat Mampu</span>
+                </div>
+                <span class="text-green-700 font-semibold">70</span>
+              </div>
+            </template>
           </div>
         </div>
       </div>
@@ -120,6 +172,7 @@
 import 'primeicons/primeicons.css'
 import KotabaruMap from '../../../components/KotabaruMap.vue'
 import { Doughnut } from 'vue-chartjs'
+import { ref, computed } from 'vue'
 import {
   Chart as ChartJS,
   Title,
@@ -131,6 +184,13 @@ import {
 } from 'chart.js'
 
 ChartJS.register(Title, Tooltip, Legend, ArcElement)
+
+// Toggle between health and economic view
+const currentView = ref<'health' | 'economic'>('health')
+
+const toggleView = () => {
+  currentView.value = currentView.value === 'health' ? 'economic' : 'health'
+}
 
 // Health Chart Data
 const healthChartData: ChartData<'doughnut'> = {
@@ -146,7 +206,26 @@ const healthChartData: ChartData<'doughnut'> = {
   ]
 }
 
-const healthChartOptions: ChartOptions<'doughnut'> = {
+// Economic Chart Data
+const economicChartData: ChartData<'doughnut'> = {
+  labels: ['Kurang Mampu', 'Cukup Mampu', 'Sangat Mampu'],
+  datasets: [
+    {
+      data: [125, 245, 70],
+      backgroundColor: ['#ef4444', '#f59e0b', '#10b981'],
+      borderWidth: 0,
+      hoverBorderWidth: 2,
+      hoverBorderColor: '#ffffff'
+    }
+  ]
+}
+
+// Computed properties for current chart data
+const currentChartData = computed(() => {
+  return currentView.value === 'health' ? healthChartData : economicChartData
+})
+
+const baseChartOptions: ChartOptions<'doughnut'> = {
   responsive: true,
   maintainAspectRatio: false,
   cutout: '65%',
@@ -176,6 +255,19 @@ const healthChartOptions: ChartOptions<'doughnut'> = {
     mode: 'nearest'
   }
 }
+
+const healthChartOptions: ChartOptions<'doughnut'> = {
+  ...baseChartOptions
+}
+
+const economicChartOptions: ChartOptions<'doughnut'> = {
+  ...baseChartOptions
+}
+
+// Computed property for current chart options
+const currentChartOptions = computed(() => {
+  return currentView.value === 'health' ? healthChartOptions : economicChartOptions
+})
 </script>
 
 <style lang="css" scoped>
