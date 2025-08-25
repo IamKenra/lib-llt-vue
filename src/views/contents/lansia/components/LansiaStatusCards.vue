@@ -2,53 +2,73 @@
   <div class="grid grid-cols-12 !gap-6 !mb-4">
     <!-- Total Lansia Card -->
     <div class="col-span-12 md:col-span-6 xl:col-span-3">
-      <div class="stat-card blue-card">
+      <AnimatedCard :delay="100" card-class="stat-card blue-card">
         <div class="stat-number">{{ totalLansia }}</div>
         <div class="stat-title">Total Lansia</div>
         <i class="pi pi-users card-icon"></i>
-      </div>
+      </AnimatedCard>
     </div>
 
     <!-- Level 1 Card -->
     <div class="col-span-12 md:col-span-6 xl:col-span-3">
-      <div class="stat-card green-card">
+      <AnimatedCard :delay="200" card-class="stat-card green-card">
         <div class="stat-number">{{ lansiaLevel1 }}</div>
         <div class="stat-title">Level 1</div>
         <i class="pi pi-heart card-icon"></i>
-      </div>
+      </AnimatedCard>
     </div>
 
     <!-- Level 2 Card -->
     <div class="col-span-12 md:col-span-6 xl:col-span-3">
-      <div class="stat-card yellow-card">
-        <div class="stat-number">{{ lansiaLevel2 }}</div>
-        <div class="stat-title">Level 2</div>
-        <i class="pi pi-exclamation-triangle card-icon"></i>
-      </div>
+      <AnimatedCard :delay="300" card-class="stat-card yellow-card">
+        <template v-if="isLoading">
+          <div class="animate-pulse">
+            <div class="bg-yellow-200 rounded-lg h-8 w-20 mb-2"></div>
+            <div class="bg-yellow-200 rounded-lg h-4 w-16"></div>
+          </div>
+        </template>
+        <template v-else>
+          <div class="stat-number">{{ lansiaLevel2 }}</div>
+          <div class="stat-title">Level 2</div>
+        </template>
+        <i class="pi pi-exclamation-triangle card-icon" :class="{ 'opacity-50': isLoading }"></i>
+      </AnimatedCard>
     </div>
 
     <!-- Level 3 Card -->
     <div class="col-span-12 md:col-span-6 xl:col-span-3">
-      <div class="stat-card red-card">
-        <div class="stat-number">{{ lansiaLevel3 }}</div>
-        <div class="stat-title">Level 3</div>
-        <i class="pi pi-shield card-icon"></i>
-      </div>
+      <AnimatedCard :delay="400" card-class="stat-card red-card">
+        <template v-if="isLoading">
+          <div class="animate-pulse">
+            <div class="bg-red-200 rounded-lg h-8 w-20 mb-2"></div>
+            <div class="bg-red-200 rounded-lg h-4 w-16"></div>
+          </div>
+        </template>
+        <template v-else>
+          <div class="stat-number">{{ lansiaLevel3 }}</div>
+          <div class="stat-title">Level 3</div>
+        </template>
+        <i class="pi pi-shield card-icon" :class="{ 'opacity-50': isLoading }"></i>
+      </AnimatedCard>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import 'primeicons/primeicons.css'
+import AnimatedCard from '../../../../components/AnimatedCard.vue'
 
 interface Props {
   totalLansia: number
   lansiaLevel1: number
   lansiaLevel2: number
   lansiaLevel3: number
+  isLoading?: boolean
 }
 
-defineProps<Props>()
+withDefaults(defineProps<Props>(), {
+  isLoading: false
+})
 </script>
 
 <style lang="css" scoped>

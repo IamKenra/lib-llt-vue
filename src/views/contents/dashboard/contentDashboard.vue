@@ -2,38 +2,38 @@
   <div class="grid grid-cols-12 !gap-6 !mb-4">
     <!-- Total Lansia Card -->
     <div class="col-span-12 md:col-span-6 xl:col-span-3">
-      <div class="stat-card blue-card">
-        <div class="stat-number">440</div>
+      <AnimatedCard :delay="100" card-class="stat-card blue-card">
+        <div class="stat-number">{{ statusData.totalLansia }}</div>
         <div class="stat-title">Total Lansia</div>
         <i class="pi pi-users card-icon"></i>
-      </div>
+      </AnimatedCard>
     </div>
 
     <!-- Level 1 Card -->
     <div class="col-span-12 md:col-span-6 xl:col-span-3">
-      <div class="stat-card green-card">
-        <div class="stat-number">413</div>
+      <AnimatedCard :delay="200" card-class="stat-card green-card">
+        <div class="stat-number">{{ statusData.level1 }}</div>
         <div class="stat-title">Level 1</div>
         <i class="pi pi-heart card-icon"></i>
-      </div>
+      </AnimatedCard>
     </div>
 
     <!-- Level 2 Card -->
     <div class="col-span-12 md:col-span-6 xl:col-span-3">
-      <div class="stat-card yellow-card">
-        <div class="stat-number">5</div>
+      <AnimatedCard :delay="300" card-class="stat-card yellow-card">
+        <div class="stat-number">{{ statusData.level2 }}</div>
         <div class="stat-title">Level 2</div>
         <i class="pi pi-exclamation-triangle card-icon"></i>
-      </div>
+      </AnimatedCard>
     </div>
 
     <!-- Level 3 Card -->
     <div class="col-span-12 md:col-span-6 xl:col-span-3">
-      <div class="stat-card red-card">
-        <div class="stat-number">32</div>
+      <AnimatedCard :delay="400" card-class="stat-card red-card">
+        <div class="stat-number">{{ statusData.level3 }}</div>
         <div class="stat-title">Level 3</div>
         <i class="pi pi-shield card-icon"></i>
-      </div>
+      </AnimatedCard>
     </div>
   </div>
 
@@ -41,7 +41,7 @@
   <div class="grid grid-cols-12 !gap-6 !mt-4">
     <!-- Statistics Chart Card -->
     <div class="col-span-12 lg:col-span-4">
-      <div class="stat-card bg-white border border-gray-200 !h-[580px]">
+      <AnimatedCard :delay="500" card-class="stat-card bg-white border border-gray-200 !h-[580px]">
         <div class="!p-4 !h-full flex flex-col">
           <div class="flex items-center justify-between !mb-3">
             <div>
@@ -86,7 +86,7 @@
                 <div class="w-2.5 h-2.5 bg-blue-500 rounded-full !mr-2"></div>
                 <span class="text-gray-700 font-medium">Total Lansia</span>
               </div>
-              <span class="text-blue-700 font-semibold">440</span>
+              <span class="text-blue-700 font-semibold">{{ statusData.totalLansia }}</span>
             </div>
             
             <!-- Health Statistics -->
@@ -94,23 +94,23 @@
               <div class="flex justify-between items-center bg-green-50 rounded-lg px-3 py-1.5 text-xs">
                 <div class="flex items-center">
                   <div class="w-2.5 h-2.5 bg-green-500 rounded-full !mr-2"></div>
-                  <span class="text-gray-700 font-medium">Level 1 (Baik)</span>
+                  <span class="text-gray-700 font-medium">Level 1 (Produktif)</span>
                 </div>
-                <span class="text-green-700 font-semibold">413</span>
+                <span class="text-green-700 font-semibold">{{ statusData.level1 }}</span>
               </div>
               <div class="flex justify-between items-center bg-yellow-50 rounded-lg px-3 py-1.5 text-xs">
                 <div class="flex items-center">
                   <div class="w-2.5 h-2.5 bg-yellow-500 rounded-full !mr-2"></div>
-                  <span class="text-gray-700 font-medium">Level 2 (Cukup)</span>
+                  <span class="text-gray-700 font-medium">Level 2 (Butuh Bantuan)</span>
                 </div>
-                <span class="text-yellow-700 font-semibold">5</span>
+                <span class="text-yellow-700 font-semibold">{{ statusData.level2 }}</span>
               </div>
               <div class="flex justify-between items-center bg-red-50 rounded-lg px-3 py-1.5 text-xs">
                 <div class="flex items-center">
                   <div class="w-2.5 h-2.5 bg-red-500 rounded-full !mr-2"></div>
-                  <span class="text-gray-700 font-medium">Level 3 (Perhatian)</span>
+                  <span class="text-gray-700 font-medium">Level 3 (Tirah Baring)</span>
                 </div>
-                <span class="text-red-700 font-semibold">32</span>
+                <span class="text-red-700 font-semibold">{{ statusData.level3 }}</span>
               </div>
             </template>
 
@@ -140,12 +140,12 @@
             </template>
           </div>
         </div>
-      </div>
+      </AnimatedCard>
     </div>
 
     <!-- Map Card -->
     <div class="col-span-12 lg:col-span-8">
-      <div class="stat-card bg-white border border-gray-200 !h-[580px]">
+      <AnimatedCard :delay="600" card-class="stat-card bg-white border border-gray-200 !h-[580px]">
         <!-- Header Section -->
         <div class="!px-4 !pt-4 !pb-3">
           <div class="flex items-center justify-between">
@@ -163,7 +163,7 @@
             <KotabaruMap />
           </div>
         </div>
-      </div>
+      </AnimatedCard>
     </div>
   </div>
 </template>
@@ -171,6 +171,7 @@
 <script setup lang="ts">
 import 'primeicons/primeicons.css'
 import KotabaruMap from '../../../components/KotabaruMap.vue'
+import AnimatedCard from '../../../components/AnimatedCard.vue'
 import { Doughnut } from 'vue-chartjs'
 import { ref, computed } from 'vue'
 import {
@@ -185,26 +186,30 @@ import {
 
 ChartJS.register(Title, Tooltip, Legend, ArcElement)
 
+// Status card data
+const statusData = ref({
+  totalLansia: 440,
+  level1: 413,
+  level2: 5,
+  level3: 32
+})
+
 // Toggle between health and economic view
 const currentView = ref<'health' | 'economic'>('health')
 
-const toggleView = () => {
-  currentView.value = currentView.value === 'health' ? 'economic' : 'health'
-}
-
-// Health Chart Data
-const healthChartData: ChartData<'doughnut'> = {
-  labels: ['Level 1 (Baik)', 'Level 2 (Cukup)', 'Level 3 (Perhatian)'],
+// Health Chart Data - using reactive data
+const healthChartData = computed<ChartData<'doughnut'>>(() => ({
+  labels: ['Level 1 (Produktif)', 'Level 2 (Butuh Bantuan)', 'Level 3 (Tirah Baring)'],
   datasets: [
     {
-      data: [413, 5, 32],
+      data: [statusData.value.level1, statusData.value.level2, statusData.value.level3],
       backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
       borderWidth: 0,
       hoverBorderWidth: 2,
       hoverBorderColor: '#ffffff'
     }
   ]
-}
+}))
 
 // Economic Chart Data
 const economicChartData: ChartData<'doughnut'> = {
@@ -222,7 +227,7 @@ const economicChartData: ChartData<'doughnut'> = {
 
 // Computed properties for current chart data
 const currentChartData = computed(() => {
-  return currentView.value === 'health' ? healthChartData : economicChartData
+  return currentView.value === 'health' ? healthChartData.value : economicChartData
 })
 
 const baseChartOptions: ChartOptions<'doughnut'> = {

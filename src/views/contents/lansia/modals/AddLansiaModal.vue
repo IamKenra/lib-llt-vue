@@ -457,9 +457,9 @@ const genderOptions = [
 ]
 
 const healthStatusOptions = [
-  { label: 'Level 1 (Baik)', value: 1 },
-  { label: 'Level 2 (Cukup)', value: 2 },
-  { label: 'Level 3 (Perlu Perhatian)', value: 3 }
+  { label: 'Level 1 (Produktif)', value: 1 },
+  { label: 'Level 2 (Butuh Bantuan)', value: 2 },
+  { label: 'Level 3 (Tirah Baring)', value: 3 }
 ]
 
 const caregiverStatusOptions = [

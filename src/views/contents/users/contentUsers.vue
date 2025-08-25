@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white rounded-2xl border shadow-sm !p-4">
+  <AnimatedCard :delay="100" card-class="bg-white rounded-2xl border shadow-sm !p-4">
     <!-- Top bar -->
     <div class="flex justify-between items-center !p-4 !mb-6">
       <h2 class="!text-2xl text-gray-900">Users Management</h2>
@@ -113,7 +113,7 @@
       @edit="handleEditFromView"
       @close="handleCloseView"
     />
-  </div>
+  </AnimatedCard>
 </template>
 
 <script setup lang="ts">
@@ -122,6 +122,7 @@ import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
+import AnimatedCard from '../../../components/AnimatedCard.vue'
 import AddUserModal from './modals/AddUserModal.vue'
 import ConfirmDeleteModal from '../../../components/modals/ConfirmDeleteModal.vue'
 import UserDetailModal from './modals/UserDetailModal.vue'
