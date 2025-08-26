@@ -99,6 +99,86 @@ import { ref, onMounted, onUnmounted, watch, computed } from 'vue'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 
+// GeoJSON data will be loaded dynamically
+const kotabaruGeoJSON = ref(null)
+
+// Load GeoJSON data
+const loadGeoJSONData = async () => {
+  try {
+    const response = await fetch('/src/assets/rw-kotabaru (1).geojson')
+    const data = await response.json()
+    kotabaruGeoJSON.value = data
+    return data
+  } catch (error) {
+    console.error('Error loading GeoJSON:', error)
+    // Fallback data based on the GeoJSON file structure
+    return {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "properties": {
+            "rw": "RW 1",
+            "lansia": 20,
+            "kelurahan": "Kotabaru"
+          },
+          "geometry": {
+            "type": "Polygon",
+            "coordinates": [
+              [
+                [110.374929, -7.783092],
+                [110.371013, -7.783114],
+                [110.370938, -7.784007],
+                [110.370251, -7.784719],
+                [110.369221, -7.785517],
+                [110.369575, -7.785857],
+                [110.369554, -7.78607],
+                [110.369704, -7.786878],
+                [110.371968, -7.785942],
+                [110.371442, -7.78457],
+                [110.372901, -7.784156],
+                [110.374703, -7.784262],
+                [110.374929, -7.783092]
+              ]
+            ]
+          }
+        },
+        {
+          "type": "Feature",
+          "properties": {
+            "rw": "RW 4",
+            "lansia": 10,
+            "kelurahan": "Kotabaru"
+          },
+          "geometry": {
+            "type": "Polygon",
+            "coordinates": [
+              [
+                [110.369221, -7.785517],
+                [110.368073, -7.786931],
+                [110.368212, -7.78776],
+                [110.368481, -7.788504],
+                [110.368867, -7.789398],
+                [110.36906, -7.789865],
+                [110.371517, -7.788207],
+                [110.372311, -7.787877],
+                [110.372386, -7.786909],
+                [110.373598, -7.786761],
+                [110.374253, -7.786697],
+                [110.374349, -7.785867],
+                [110.371968, -7.785942],
+                [110.369704, -7.786878],
+                [110.369575, -7.785857],
+                [110.369221, -7.785517]
+              ]
+            ]
+          }
+        }
+      ]
+    }
+  }
+}
+
 // Props
 interface Props {
   mapView?: 'health' | 'economic'
@@ -119,67 +199,69 @@ L.Icon.Default.mergeOptions({
 const mapContainer = ref<HTMLElement>()
 const map = ref<L.Map>()
 const loading = ref(true)
-const markersLayer = ref<L.LayerGroup>()
-const circlesLayer = ref<L.LayerGroup>()
+const geoJSONLayer = ref<L.GeoJSON>()
 
-// Enhanced RW data with health and economic information
+// Enhanced RW data with health and economic information that matches GeoJSON
 const rwData = [
   {
     id: 'RW001',
-    name: 'RW 001',
+    name: 'RW 1',
     population: 245,
-    lansiaCount: 32,
-    lat: -7.7956,
-    lng: 110.3695,
-    bounds: [[-7.7980, 110.3670], [-7.7932, 110.3720]],
-    health: { level1: 20, level2: 8, level3: 4 },
-    economic: { kurangMampu: 12, cukupMampu: 15, sangatMampu: 5 }
-  },
-  {
-    id: 'RW002', 
-    name: 'RW 002',
-    population: 198,
-    lansiaCount: 28,
-    lat: -7.7925,
-    lng: 110.3715,
-    bounds: [[-7.7949, 110.3690], [-7.7901, 110.3740]],
-    health: { level1: 22, level2: 3, level3: 3 },
-    economic: { kurangMampu: 8, cukupMampu: 12, sangatMampu: 8 }
-  },
-  {
-    id: 'RW003',
-    name: 'RW 003', 
-    population: 167,
-    lansiaCount: 19,
-    lat: -7.7940,
-    lng: 110.3745,
-    bounds: [[-7.7964, 110.3720], [-7.7916, 110.3770]],
-    health: { level1: 15, level2: 2, level3: 2 },
-    economic: { kurangMampu: 5, cukupMampu: 9, sangatMampu: 5 }
+    lansiaCount: 20, // From GeoJSON
+    lat: -7.7845,
+    lng: 110.3725,
+    health: { level1: 12, level2: 5, level3: 3 },
+    economic: { kurangMampu: 8, cukupMampu: 7, sangatMampu: 5 }
   },
   {
     id: 'RW004',
-    name: 'RW 004',
-    population: 203,
-    lansiaCount: 33,
-    lat: -7.7985,
-    lng: 110.3720,
-    bounds: [[-7.8009, 110.3695], [-7.7961, 110.3745]],
-    health: { level1: 18, level2: 10, level3: 5 },
-    economic: { kurangMampu: 15, cukupMampu: 12, sangatMampu: 6 }
-  },
-  {
-    id: 'RW005',
-    name: 'RW 005',
-    population: 189,
-    lansiaCount: 22,
-    lat: -7.7960,
-    lng: 110.3775,
-    bounds: [[-7.7984, 110.3750], [-7.7936, 110.3800]],
-    health: { level1: 16, level2: 4, level3: 2 },
-    economic: { kurangMampu: 7, cukupMampu: 10, sangatMampu: 5 }
+    name: 'RW 4', 
+    population: 198,
+    lansiaCount: 10, // From GeoJSON
+    lat: -7.7875,
+    lng: 110.3715,
+    health: { level1: 6, level2: 2, level3: 2 },
+    economic: { kurangMampu: 4, cukupMampu: 4, sangatMampu: 2 }
   }
 ]
+
+// GeoJSON styling functions
+const getGeoJSONStyle = (feature: any) => {
+  const lansiaCount = feature.properties.lansia
+  const rw = feature.properties.rw
+  
+  // Find matching RW data for detailed health/economic info
+  const rwInfo = rwData.find(r => r.name === rw)
+  
+  if (!rwInfo) {
+    return {
+      fillColor: '#gray',
+      weight: 2,
+      opacity: 1,
+      color: '#666',
+      fillOpacity: 0.7
+    }
+  }
+
+  let fillColor = '#10b981' // Default green
+  
+  if (props.mapView === 'health') {
+    const healthData = getHealthDominant(rwInfo.health)
+    fillColor = healthData.color
+  } else {
+    const economicData = getEconomicDominant(rwInfo.economic)
+    fillColor = economicData.color
+  }
+
+  return {
+    fillColor: fillColor,
+    weight: 3,
+    opacity: 1,
+    color: '#fff',
+    fillOpacity: 0.6,
+    dashArray: '',
+  }
+}
 
 const totalLansia = computed(() => rwData.reduce((sum, rw) => sum + rw.lansiaCount, 0))
 
@@ -199,33 +281,149 @@ const getEconomicDominant = (economic: { kurangMampu: number, cukupMampu: number
   return { level: 'cukup', color: '#f59e0b', label: 'Cukup Mampu' }
 }
 
-// Get RW color and data based on current view
-const getRWData = (rw: any) => {
-  if (props.mapView === 'health') {
-    return getHealthDominant(rw.health)
-  } else {
-    return getEconomicDominant(rw.economic)
+
+// GeoJSON interaction functions
+const onEachFeature = (feature: any, layer: L.Layer) => {
+  const rw = feature.properties.rw
+  const rwInfo = rwData.find(r => r.name === rw)
+  
+  if (rwInfo) {
+    let statusInfo = ''
+    let statusColor = '#10b981'
+    
+    if (props.mapView === 'health') {
+      const healthData = getHealthDominant(rwInfo.health)
+      statusColor = healthData.color
+      statusInfo = `
+        <div class="mt-2 pt-2 border-t border-gray-200">
+          <h5 class="font-semibold text-gray-700 mb-2">Status Kesehatan:</h5>
+          <div class="grid grid-cols-3 gap-2 text-xs">
+            <div class="text-center">
+              <div class="w-3 h-3 bg-green-500 rounded-full mx-auto mb-1"></div>
+              <div class="text-gray-600">Level 1</div>
+              <div class="font-semibold">${rwInfo.health.level1}</div>
+            </div>
+            <div class="text-center">
+              <div class="w-3 h-3 bg-yellow-500 rounded-full mx-auto mb-1"></div>
+              <div class="text-gray-600">Level 2</div>
+              <div class="font-semibold">${rwInfo.health.level2}</div>
+            </div>
+            <div class="text-center">
+              <div class="w-3 h-3 bg-red-500 rounded-full mx-auto mb-1"></div>
+              <div class="text-gray-600">Level 3</div>
+              <div class="font-semibold">${rwInfo.health.level3}</div>
+            </div>
+          </div>
+        </div>
+      `
+    } else {
+      const economicData = getEconomicDominant(rwInfo.economic)
+      statusColor = economicData.color
+      statusInfo = `
+        <div class="mt-2 pt-2 border-t border-gray-200">
+          <h5 class="font-semibold text-gray-700 mb-2">Status Ekonomi:</h5>
+          <div class="grid grid-cols-3 gap-2 text-xs">
+            <div class="text-center">
+              <div class="w-3 h-3 bg-red-500 rounded-full mx-auto mb-1"></div>
+              <div class="text-gray-600">Kurang</div>
+              <div class="font-semibold">${rwInfo.economic.kurangMampu}</div>
+            </div>
+            <div class="text-center">
+              <div class="w-3 h-3 bg-yellow-500 rounded-full mx-auto mb-1"></div>
+              <div class="text-gray-600">Cukup</div>
+              <div class="font-semibold">${rwInfo.economic.cukupMampu}</div>
+            </div>
+            <div class="text-center">
+              <div class="w-3 h-3 bg-green-500 rounded-full mx-auto mb-1"></div>
+              <div class="text-gray-600">Sangat</div>
+              <div class="font-semibold">${rwInfo.economic.sangatMampu}</div>
+            </div>
+          </div>
+        </div>
+      `
+    }
+    
+    const popupContent = `
+      <div class="p-4 min-w-[280px]">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-4 h-4 rounded-full" style="background-color: ${statusColor}"></div>
+          <h3 class="text-lg font-bold text-gray-800">${rw}</h3>
+        </div>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between items-center">
+            <span class="text-gray-600">Kelurahan:</span>
+            <span class="font-medium">${feature.properties.kelurahan}</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-gray-600">Total Populasi:</span>
+            <span class="font-medium">${rwInfo.population}</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-gray-600">Jumlah Lansia:</span>
+            <span class="font-bold text-indigo-600">${feature.properties.lansia}</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-gray-600">Persentase Lansia:</span>
+            <span class="font-medium">${((feature.properties.lansia/rwInfo.population)*100).toFixed(1)}%</span>
+          </div>
+          ${statusInfo}
+        </div>
+      </div>
+    `
+    
+    layer.bindPopup(popupContent, {
+      className: 'custom-popup',
+      maxWidth: 320,
+      closeButton: true,
+      autoClose: false
+    })
+  }
+
+  // Add hover effects
+  layer.on('mouseover', function() {
+    if (layer instanceof L.Path) {
+      layer.setStyle({
+        weight: 5,
+        fillOpacity: 0.8
+      })
+    }
+  })
+
+  layer.on('mouseout', function() {
+    if (layer instanceof L.Path) {
+      layer.setStyle({
+        weight: 3,
+        fillOpacity: 0.6
+      })
+    }
+  })
+}
+
+// Function to update GeoJSON layer styling when map view changes
+const updateGeoJSONStyling = () => {
+  if (geoJSONLayer.value) {
+    geoJSONLayer.value.eachLayer((layer: any) => {
+      const feature = layer.feature
+      const newStyle = getGeoJSONStyle(feature)
+      layer.setStyle(newStyle)
+    })
   }
 }
 
-// Get marker size based on total lansia count
-const getMarkerSize = (lansiaCount: number): [number, number] => {
-  if (lansiaCount >= 30) return [50, 50]
-  if (lansiaCount >= 20) return [45, 45]
-  return [40, 40]
-}
-
-const initializeMap = () => {
+const initializeMap = async () => {
   if (!mapContainer.value) return
 
   try {
     loading.value = true
 
-    // Initialize map centered on Kotabaru, Yogyakarta
+    // Load GeoJSON data first
+    const geoJSONData = await loadGeoJSONData()
+
+    // Initialize map centered on Kotabaru, Yogyakarta with adjusted center for GeoJSON data
     map.value = L.map(mapContainer.value, {
-      center: [-7.7956, 110.3720],
-      zoom: 15,
-      minZoom: 13,
+      center: [-7.7860, 110.3710],
+      zoom: 16,
+      minZoom: 14,
       maxZoom: 18,
       zoomControl: true,
       scrollWheelZoom: true,
@@ -241,86 +439,59 @@ const initializeMap = () => {
       maxZoom: 18
     }).addTo(map.value)
 
-    // Custom icons for different density levels
-    const createCustomIcon = (color: string, size: [number, number] = [40, 40]) => {
-      return L.divIcon({
-        className: 'custom-marker',
-        html: `
+    // Add GeoJSON layer with choropleth styling
+    geoJSONLayer.value = L.geoJSON(geoJSONData, {
+      style: getGeoJSONStyle,
+      onEachFeature: onEachFeature
+    }).addTo(map.value)
+
+    // Add center markers for statistical visualization on GeoJSON polygons
+    rwData.forEach(rw => {
+      const rwColor = props.mapView === 'health' 
+        ? getHealthDominant(rw.health).color
+        : getEconomicDominant(rw.economic).color
+
+      // Create mini chart markers for enhanced visualization
+      const createChartIcon = (rwData: any) => {
+        // Create consistent chart design for both views
+        const chartHTML = `
           <div style="
-            background-color: ${color}; 
-            width: ${size[0]}px; 
-            height: ${size[1]}px; 
-            border-radius: 50%; 
-            border: 3px solid white;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            background: white;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            border: 3px solid ${rwColor};
+            position: relative;
           ">
-            <i class="pi pi-users" style="font-size: 16px;"></i>
-          </div>
-        `,
-        iconSize: size,
-        iconAnchor: [size[0] / 2, size[1] / 2]
-      })
-    }
-
-    // Add markers for each RW
-    rwData.forEach(rw => {
-      const color = getRWColor(rw.lansiaCount, rw.population)
-      const density = getLansiaDensity(rw.lansiaCount, rw.population)
-      const size: [number, number] = density > 15 ? [50, 50] : density > 10 ? [45, 45] : [40, 40]
-      
-      const marker = L.marker([rw.lat, rw.lng], {
-        icon: createCustomIcon(color, size)
-      }).addTo(map.value!)
-
-      // Create popup content
-      const popupContent = `
-        <div class="p-3 min-w-[200px]">
-          <h3 class="text-lg font-semibold text-gray-800 mb-2">${rw.name}</h3>
-          <div class="space-y-1 text-sm">
-            <div class="flex justify-between">
-              <span class="text-gray-600">Total Populasi:</span>
-              <span class="font-medium">${rw.population}</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="text-gray-600">Lansia:</span>
-              <span class="font-medium">${rw.lansiaCount}</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="text-gray-600">Kepadatan:</span>
-              <span class="font-medium">${density.toFixed(1)}%</span>
-            </div>
-            <div class="flex justify-between items-center pt-2 border-t">
-              <span class="text-gray-600">Status:</span>
-              <div class="flex items-center">
-                <div class="w-3 h-3 rounded-full mr-2" style="background-color: ${color}"></div>
-                <span class="text-sm font-medium" style="color: ${color}">${getDensityLabel(rw.lansiaCount, rw.population)}</span>
-              </div>
+            <div style="
+              font-size: 14px;
+              font-weight: bold;
+              color: ${rwColor};
+              text-align: center;
+              line-height: 1;
+            ">
+              ${rwData.lansiaCount}
+              <div style="font-size: 8px; color: #666;">Lansia</div>
             </div>
           </div>
-        </div>
-      `
+        `
+        
+        return L.divIcon({
+          className: 'chart-marker',
+          html: chartHTML,
+          iconSize: [60, 60],
+          iconAnchor: [30, 30]
+        })
+      }
 
-      marker.bindPopup(popupContent, {
-        className: 'custom-popup',
-        maxWidth: 300,
-        closeButton: true,
-        autoClose: false
-      })
-
-      // Add circle overlay for area representation
-      const circleColor = color + '40' // Add transparency
-      L.circle([rw.lat, rw.lng], {
-        color: color,
-        fillColor: circleColor,
-        fillOpacity: 0.3,
-        radius: density > 15 ? 200 : density > 10 ? 150 : 100,
-        weight: 2
+      // Add the chart marker
+      L.marker([rw.lat, rw.lng], {
+        icon: createChartIcon(rw),
+        zIndexOffset: 1000
       }).addTo(map.value!)
     })
 
@@ -330,6 +501,65 @@ const initializeMap = () => {
     loading.value = false
   }
 }
+
+// Watch for map view changes to update styling
+watch(() => props.mapView, () => {
+  updateGeoJSONStyling()
+  // Re-create markers with updated styling
+  if (map.value) {
+    // Remove existing markers
+    map.value.eachLayer((layer) => {
+      if (layer instanceof L.Marker) {
+        map.value!.removeLayer(layer)
+      }
+    })
+    
+    // Re-add markers with new styling
+    rwData.forEach(rw => {
+      const rwColor = props.mapView === 'health' 
+        ? getHealthDominant(rw.health).color
+        : getEconomicDominant(rw.economic).color
+
+      const createChartIcon = (rwData: any) => {
+        return L.divIcon({
+          className: 'chart-marker',
+          html: `
+            <div style="
+              background: white;
+              border-radius: 50%;
+              width: 60px;
+              height: 60px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+              border: 3px solid ${rwColor};
+              position: relative;
+            ">
+              <div style="
+                font-size: 14px;
+                font-weight: bold;
+                color: ${rwColor};
+                text-align: center;
+                line-height: 1;
+              ">
+                ${rwData.lansiaCount}
+                <div style="font-size: 8px; color: #666;">Lansia</div>
+              </div>
+            </div>
+          `,
+          iconSize: [60, 60],
+          iconAnchor: [30, 30]
+        })
+      }
+
+      L.marker([rw.lat, rw.lng], {
+        icon: createChartIcon(rw),
+        zIndexOffset: 1000
+      }).addTo(map.value!)
+    })
+  }
+})
 
 onMounted(() => {
   setTimeout(() => {
@@ -349,33 +579,54 @@ onUnmounted(() => {
   position: relative;
 }
 
-/* Custom popup styling */
+/* Custom popup styling with enhanced design for GeoJSON */
 :global(.custom-popup .leaflet-popup-content-wrapper) {
-  border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.95);
 }
 
 :global(.custom-popup .leaflet-popup-tip) {
-  background: white;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+}
+
+/* Chart marker animations */
+:global(.chart-marker) {
+  transition: transform 0.3s ease;
+}
+
+:global(.chart-marker:hover) {
+  transform: scale(1.1);
 }
 
 /* Leaflet zoom controls styling */
 :global(.leaflet-control-zoom) {
   border: none !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+  border-radius: 12px !important;
 }
 
 :global(.leaflet-control-zoom a) {
-  border-radius: 8px !important;
-  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  border-radius: 12px !important;
+  border: none !important;
   color: #374151 !important;
   font-weight: bold !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+  backdrop-filter: blur(10px) !important;
 }
 
 :global(.leaflet-control-zoom a:hover) {
-  background-color: #f3f4f6 !important;
-  color: #1f2937 !important;
+  background: rgba(59, 130, 246, 0.1) !important;
+  color: #3b82f6 !important;
+  transform: scale(1.05);
+}
+
+/* GeoJSON polygon styling improvements */
+:global(.leaflet-interactive) {
+  transition: all 0.3s ease;
 }
 </style>
