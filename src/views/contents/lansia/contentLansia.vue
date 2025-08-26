@@ -201,18 +201,83 @@
 
       <Column header="Nama">
         <template #body="slotProps">
-          {{ getFullName(slotProps.data.firstName, slotProps.data.lastName) }}
+          <div class="flex items-center gap-2">
+            <i 
+              v-if="slotProps.data.livingStatus === 'Meninggal'" 
+              class="pi pi-times-circle text-gray-500"
+            />
+            <span 
+              :class="{
+                'text-gray-500': slotProps.data.livingStatus === 'Meninggal',
+                'text-gray-900': slotProps.data.livingStatus === 'Hidup'
+              }"
+            >
+              {{ getFullName(slotProps.data.firstName, slotProps.data.lastName) }}
+            </span>
+          </div>
         </template>
       </Column>
       <Column field="age" header="Umur" style="width: 80px">
         <template #body="slotProps">
-          <span class="text-sm font-medium">{{ slotProps.data.age }} tahun</span>
+          <span 
+            class="text-sm font-medium"
+            :class="{
+              'text-gray-500': slotProps.data.livingStatus === 'Meninggal',
+              'text-gray-900': slotProps.data.livingStatus === 'Hidup'
+            }"
+          >
+            {{ slotProps.data.age }} tahun
+          </span>
         </template>
       </Column>
-      <Column field="gender" header="Jenis Kelamin" style="width: 120px" />
-      <Column field="address" header="Alamat" />
-      <Column field="rt" header="RT" style="width: 80px" />
-      <Column field="rw" header="RW" style="width: 80px" />
+      <Column field="gender" header="Jenis Kelamin" style="width: 120px">
+        <template #body="slotProps">
+          <span 
+            :class="{
+              'text-gray-500': slotProps.data.livingStatus === 'Meninggal',
+              'text-gray-900': slotProps.data.livingStatus === 'Hidup'
+            }"
+          >
+            {{ slotProps.data.gender }}
+          </span>
+        </template>
+      </Column>
+      <Column field="address" header="Alamat">
+        <template #body="slotProps">
+          <span 
+            :class="{
+              'text-gray-500': slotProps.data.livingStatus === 'Meninggal',
+              'text-gray-900': slotProps.data.livingStatus === 'Hidup'
+            }"
+          >
+            {{ slotProps.data.address }}
+          </span>
+        </template>
+      </Column>
+      <Column field="rt" header="RT" style="width: 80px">
+        <template #body="slotProps">
+          <span 
+            :class="{
+              'text-gray-500': slotProps.data.livingStatus === 'Meninggal',
+              'text-gray-900': slotProps.data.livingStatus === 'Hidup'
+            }"
+          >
+            {{ slotProps.data.rt }}
+          </span>
+        </template>
+      </Column>
+      <Column field="rw" header="RW" style="width: 80px">
+        <template #body="slotProps">
+          <span 
+            :class="{
+              'text-gray-500': slotProps.data.livingStatus === 'Meninggal',
+              'text-gray-900': slotProps.data.livingStatus === 'Hidup'
+            }"
+          >
+            {{ slotProps.data.rw }}
+          </span>
+        </template>
+      </Column>
       
       <Column header="Caregiver" style="width: 120px">
         <template #body="slotProps">
@@ -276,7 +341,43 @@
       v-model:visible="showViewModal"
       :lansia="selectedViewLansia"
       @edit="handleEditFromView"
+      @editPersonalInfo="handleEditPersonalInfo"
+      @editContactInfo="handleEditContactInfo"
+      @editHealthHistory="handleEditHealthHistory"
+      @editProfilePicture="handleEditProfilePicture"
       @close="handleCloseView"
+    />
+
+    <!-- Edit Personal Info Modal -->
+    <EditPersonalInfoModal
+      v-model:visible="showEditPersonalInfoModal"
+      :lansia="selectedEditLansia"
+      @save="handleSavePersonalInfo"
+      @close="handleCloseEditModals"
+    />
+
+    <!-- Edit Contact Info Modal -->
+    <EditContactInfoModal
+      v-model:visible="showEditContactInfoModal"
+      :lansia="selectedEditLansia"
+      @save="handleSaveContactInfo"
+      @close="handleCloseEditModals"
+    />
+
+    <!-- Edit Health History Modal -->
+    <EditHealthHistoryModal
+      v-model:visible="showEditHealthHistoryModal"
+      :lansia="selectedEditLansia"
+      @save="handleSaveHealthHistory"
+      @close="handleCloseEditModals"
+    />
+
+    <!-- Profile Picture Upload Modal -->
+    <ProfilePictureUploadModal
+      v-model:visible="showProfilePictureModal"
+      :lansia="selectedEditLansia"
+      @save="handleSaveProfilePicture"
+      @close="handleCloseEditModals"
     />
   </AnimatedCard>
 </template>
@@ -292,6 +393,10 @@ import Checkbox from 'primevue/checkbox'
 import AddLansiaModal from './modals/AddLansiaModal.vue'
 import ConfirmDeleteModal from '../../../components/modals/ConfirmDeleteModal.vue'
 import LansiaDetailModal from './modals/LansiaDetailModal.vue'
+import EditPersonalInfoModal from './modals/EditPersonalInfoModal.vue'
+import EditContactInfoModal from './modals/EditContactInfoModal.vue'
+import EditHealthHistoryModal from './modals/EditHealthHistoryModal.vue'
+import ProfilePictureUploadModal from './modals/ProfilePictureUploadModal.vue'
 import LansiaStatusCards from './components/LansiaStatusCards.vue'
 import AnimatedCard from '../../../components/AnimatedCard.vue'
 import { useLansiaManagement } from './composables/useLansiaManagement'
@@ -320,10 +425,21 @@ const {
   selectedViewLansia,
   lansiaToDelete,
   isDeletingLansia,
+  
+  // Individual edit modal states
+  showEditPersonalInfoModal,
+  showEditContactInfoModal,
+  showEditHealthHistoryModal,
+  showProfilePictureModal,
+  selectedEditLansia,
+  
+  // Modal methods
   openAddModal,
   openEditModal,
   openDeleteModal,
   openViewModal,
+  
+  // Event handlers
   handleAddLansia,
   handleEditLansia,
   handleConfirmDelete,
@@ -331,6 +447,21 @@ const {
   handleCancelDelete,
   handleEditFromView,
   handleCloseView,
+  
+  // Individual edit modal handlers
+  handleEditPersonalInfo,
+  handleEditContactInfo,
+  handleEditHealthHistory,
+  handleEditProfilePicture,
+  handleCloseEditModals,
+  
+  // Save handlers
+  handleSavePersonalInfo,
+  handleSaveContactInfo,
+  handleSaveHealthHistory,
+  handleSaveProfilePicture,
+  
+  // Utilities
   getHealthStatusBadgeClasses,
   getHealthStatusIcon,
   getHealthStatusLabel,

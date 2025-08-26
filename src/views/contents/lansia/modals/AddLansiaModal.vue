@@ -102,6 +102,19 @@
           <small v-if="errors.gender" class="text-red-500 text-xs !mt-1">{{ errors.gender }}</small>
         </div>
 
+        <!-- Job Field -->
+        <div class="space-y-2">
+          <label for="job" class="block text-sm font-semibold text-gray-700">Pekerjaan</label>
+          <InputText
+            id="job"
+            v-model="formData.job"
+            :class="{ 'p-invalid': errors.job }"
+            placeholder="Masukkan pekerjaan (opsional)"
+            class="w-full !rounded-xl !border-gray-300 !p-3 text-sm"
+          />
+          <small v-if="errors.job" class="text-red-500 text-xs !mt-1">{{ errors.job }}</small>
+        </div>
+
         <!-- Address Field -->
         <div class="space-y-2">
           <label for="address" class="block text-sm font-semibold text-gray-700">Alamat *</label>
@@ -451,6 +464,7 @@ interface LansiaFormData {
   healthStatus: 1 | 2 | 3
   economicStatus: 'Kurang Mampu' | 'Cukup Mampu' | 'Sangat Mampu'
   livingStatus: 'Hidup' | 'Meninggal'
+  job?: string
   medicalConditions: string[]
   lastCheckup: string  // HTML date inputs return strings
   profileImage?: string
@@ -482,6 +496,7 @@ const formData = ref<LansiaFormData>({
   lastName: '',
   dateOfBirth: '',
   gender: 'Laki-laki',
+  job: '',
   address: '',
   rt: '',
   rw: '',
@@ -504,6 +519,7 @@ const errors = ref({
   lastName: '',
   dateOfBirth: '',
   gender: '',
+  job: '',
   address: '',
   rt: '',
   rw: '',
@@ -593,6 +609,7 @@ const resetForm = () => {
     lastName: '',
     dateOfBirth: '',
     gender: 'Laki-laki',
+    job: '',
     address: '',
     rt: '',
     rw: '',
@@ -613,6 +630,7 @@ const resetForm = () => {
     lastName: '',
     dateOfBirth: '',
     gender: '',
+    job: '',
     address: '',
     rt: '',
     rw: '',

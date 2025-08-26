@@ -8,6 +8,7 @@ export interface Lansia {
   dateOfBirth: Date
   age: number
   gender: 'Laki-laki' | 'Perempuan'
+  job?: string
   address: string
   rt: string
   rw: string
@@ -35,6 +36,7 @@ export function useLansiaManagement() {
       dateOfBirth: new Date('1955-03-15'),
       age: 68,
       gender: 'Perempuan' as const,
+      job: 'Ibu Rumah Tangga',
       address: 'Jl. Raya Kotabaru No. 123, Kotabaru',
       rt: '001',
       rw: '003',
@@ -58,6 +60,7 @@ export function useLansiaManagement() {
       dateOfBirth: new Date('1950-08-22'),
       age: 73,
       gender: 'Laki-laki' as const,
+      job: 'Pensiunan PNS',
       address: 'Jl. Veteran No. 456, Kotabaru',
       rt: '002',
       rw: '005',
@@ -81,6 +84,7 @@ export function useLansiaManagement() {
       dateOfBirth: new Date('1948-12-10'),
       age: 75,
       gender: 'Perempuan' as const,
+      job: 'Tidak bekerja',
       address: 'Kampung Baru RT 02/RW 01, Kotabaru',
       rt: '002',
       rw: '001',
@@ -104,6 +108,7 @@ export function useLansiaManagement() {
       dateOfBirth: new Date('1952-05-08'),
       age: 71,
       gender: 'Laki-laki' as const,
+      job: 'Pensiunan Guru',
       address: 'Jl. Sudirman No. 789, Kotabaru',
       rt: '003',
       rw: '004',
@@ -127,6 +132,7 @@ export function useLansiaManagement() {
       dateOfBirth: new Date('1953-04-21'),
       age: 70,
       gender: 'Perempuan' as const,
+      job: 'Pensiunan Perawat',
       address: 'Perumahan Kotabaru Indah Blok A No. 12',
       rt: '001',
       rw: '002',
@@ -141,6 +147,30 @@ export function useLansiaManagement() {
       lastCheckup: new Date('2024-07-25'),
       profileImage: undefined,
       createdAt: new Date('2024-04-08'),
+    },
+    {
+      id: 'LNS-006',
+      nik: '6302012345671006',
+      firstName: 'Almarhum H.',
+      lastName: 'Abdullah',
+      dateOfBirth: new Date('1948-01-15'),
+      age: 75,
+      gender: 'Laki-laki' as const,
+      job: 'Pensiunan TNI',
+      address: 'Jl. Veteran No. 456, Kotabaru',
+      rt: '002',
+      rw: '003',
+      phone: '081234567900',
+      emergencyContact: 'Hj. Fatimah (Istri)',
+      emergencyPhone: '081234567901',
+      caregiverStatus: 'Tidak Ada' as const,
+      healthStatus: 3 as const,
+      economicStatus: 'Kurang Mampu' as const,
+      livingStatus: 'Meninggal' as const,
+      medicalConditions: ['Diabetes', 'Penyakit Jantung'],
+      lastCheckup: new Date('2023-12-15'),
+      profileImage: undefined,
+      createdAt: new Date('2024-02-10'),
     },
   ].sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime()))
 
@@ -170,6 +200,13 @@ export function useLansiaManagement() {
   const selectedViewLansia = ref<Lansia | null>(null)
   const lansiaToDelete = ref<Lansia | null>(null)
   const isDeletingLansia = ref(false)
+  
+  // Individual edit modal states
+  const showEditPersonalInfoModal = ref(false)
+  const showEditContactInfoModal = ref(false)
+  const showEditHealthHistoryModal = ref(false)
+  const showProfilePictureModal = ref(false)
+  const selectedEditLansia = ref<Lansia | null>(null)
 
   // Computed properties
   const filteredLansia = computed(() => {
@@ -330,6 +367,14 @@ export function useLansiaManagement() {
     lansiaToDelete.value = null
     isDeletingLansia.value = false
   }
+  
+  const closeEditModals = () => {
+    showEditPersonalInfoModal.value = false
+    showEditContactInfoModal.value = false
+    showEditHealthHistoryModal.value = false
+    showProfilePictureModal.value = false
+    selectedEditLansia.value = null
+  }
 
   // Event handlers
   const handleAddLansia = (lansiaData: Omit<Lansia, 'id' | 'age' | 'createdAt'>) => {
@@ -383,6 +428,101 @@ export function useLansiaManagement() {
   const handleCloseView = () => {
     console.log('View modal closed')
     closeModals()
+  }
+  
+  // Individual edit modal handlers
+  const handleEditPersonalInfo = (person: Lansia) => {
+    console.log('Edit personal info for:', person.firstName, person.lastName)
+    selectedEditLansia.value = { ...person }
+    showEditPersonalInfoModal.value = true
+  }
+  
+  const handleEditContactInfo = (person: Lansia) => {
+    console.log('Edit contact info for:', person.firstName, person.lastName)
+    selectedEditLansia.value = { ...person }
+    showEditContactInfoModal.value = true
+  }
+  
+  const handleEditHealthHistory = (person: Lansia) => {
+    console.log('Edit health history for:', person.firstName, person.lastName)
+    selectedEditLansia.value = { ...person }
+    showEditHealthHistoryModal.value = true
+  }
+  
+  const handleEditProfilePicture = (person: Lansia) => {
+    console.log('Edit profile picture for:', person.firstName, person.lastName)
+    selectedEditLansia.value = { ...person }
+    showProfilePictureModal.value = true
+  }
+  
+  const handleCloseEditModals = () => {
+    console.log('Edit modals closed')
+    closeEditModals()
+  }
+  
+  // Save handlers for individual edit modals
+  const handleSavePersonalInfo = (data: Partial<Lansia>) => {
+    if (selectedEditLansia.value?.id) {
+      console.log('Saving personal info:', data)
+      updateLansia(selectedEditLansia.value.id, {
+        ...selectedEditLansia.value,
+        ...data
+      })
+      closeEditModals()
+      
+      // Update the view modal data if it's open
+      if (selectedViewLansia.value && selectedViewLansia.value.id === selectedEditLansia.value.id) {
+        selectedViewLansia.value = { ...selectedViewLansia.value, ...data }
+      }
+    }
+  }
+  
+  const handleSaveContactInfo = (data: Partial<Lansia>) => {
+    if (selectedEditLansia.value?.id) {
+      console.log('Saving contact info:', data)
+      updateLansia(selectedEditLansia.value.id, {
+        ...selectedEditLansia.value,
+        ...data
+      })
+      closeEditModals()
+      
+      // Update the view modal data if it's open
+      if (selectedViewLansia.value && selectedViewLansia.value.id === selectedEditLansia.value.id) {
+        selectedViewLansia.value = { ...selectedViewLansia.value, ...data }
+      }
+    }
+  }
+  
+  const handleSaveHealthHistory = (data: Partial<Lansia>) => {
+    if (selectedEditLansia.value?.id) {
+      console.log('Saving health history:', data)
+      updateLansia(selectedEditLansia.value.id, {
+        ...selectedEditLansia.value,
+        ...data
+      })
+      closeEditModals()
+      
+      // Update the view modal data if it's open
+      if (selectedViewLansia.value && selectedViewLansia.value.id === selectedEditLansia.value.id) {
+        selectedViewLansia.value = { ...selectedViewLansia.value, ...data }
+      }
+    }
+  }
+  
+  const handleSaveProfilePicture = (data: { profileImage: string }) => {
+    if (selectedEditLansia.value?.id) {
+      console.log('Saving profile picture:', data)
+      updateLansia(selectedEditLansia.value.id, {
+        ...selectedEditLansia.value,
+        profileImage: data.profileImage
+      })
+      closeEditModals()
+      
+      // Update the view modal data if it's open
+      if (selectedViewLansia.value && selectedViewLansia.value.id === selectedEditLansia.value.id) {
+        selectedViewLansia.value = { ...selectedViewLansia.value, profileImage: data.profileImage }
+      }
+    }
   }
 
 
@@ -489,6 +629,13 @@ export function useLansiaManagement() {
     selectedViewLansia,
     lansiaToDelete,
     isDeletingLansia,
+    
+    // Individual edit modal states
+    showEditPersonalInfoModal,
+    showEditContactInfoModal,
+    showEditHealthHistoryModal,
+    showProfilePictureModal,
+    selectedEditLansia,
 
     // Methods
     addLansia,
@@ -504,6 +651,7 @@ export function useLansiaManagement() {
     openDeleteModal,
     openViewModal,
     closeModals,
+    closeEditModals,
     
     // Event handlers
     handleAddLansia,
@@ -513,6 +661,19 @@ export function useLansiaManagement() {
     handleCancelDelete,
     handleEditFromView,
     handleCloseView,
+    
+    // Individual edit modal handlers
+    handleEditPersonalInfo,
+    handleEditContactInfo,
+    handleEditHealthHistory,
+    handleEditProfilePicture,
+    handleCloseEditModals,
+    
+    // Save handlers
+    handleSavePersonalInfo,
+    handleSaveContactInfo,
+    handleSaveHealthHistory,
+    handleSaveProfilePicture,
     
     // Utilities
     getHealthStatusBadgeClasses,
