@@ -150,6 +150,34 @@
             </div>
           </div>
         </div>
+
+        <!-- Economic & Living Status Card -->
+        <div class="group bg-white border border-gray-200 rounded-xl !p-5 hover:shadow-lg hover:border-green-300 transition-all duration-300">
+          <div class="flex items-center gap-3 !mb-4">
+            <div class="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center group-hover:bg-green-100 transition-colors">
+              <i class="pi pi-chart-bar text-green-600 text-lg" />
+            </div>
+            <h3 class="font-semibold text-gray-900">Status Ekonomi & Kehidupan</h3>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <p class="text-xs font-medium text-gray-500 uppercase tracking-wide !mb-1">Status Ekonomi</p>
+              <div class="inline-flex items-center gap-2 !px-3 !py-1 rounded-full text-xs font-semibold !mt-1"
+                   :class="getEconomicStatusBadgeClasses(lansia.economicStatus)">
+                <i :class="getEconomicStatusIcon(lansia.economicStatus)" class="text-sm"></i>
+                <span>{{ lansia.economicStatus }}</span>
+              </div>
+            </div>
+            <div>
+              <p class="text-xs font-medium text-gray-500 uppercase tracking-wide !mb-1">Status Kehidupan</p>
+              <div class="inline-flex items-center gap-2 !px-3 !py-1 rounded-full text-xs font-semibold !mt-1"
+                   :class="getLivingStatusBadgeClasses(lansia.livingStatus)">
+                <i :class="getLivingStatusIcon(lansia.livingStatus)" class="text-sm"></i>
+                <span>{{ lansia.livingStatus }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Action Buttons -->
@@ -218,6 +246,56 @@ const formatDate = (date: Date): string => {
     month: 'long',
     day: 'numeric'
   })
+}
+
+// Economic status styling
+const getEconomicStatusBadgeClasses = (status: string) => {
+  switch (status) {
+    case 'Kurang Mampu':
+      return 'bg-red-50 text-red-700 border border-red-200 shadow-sm'
+    case 'Cukup Mampu':
+      return 'bg-yellow-50 text-yellow-700 border border-yellow-200 shadow-sm'
+    case 'Sangat Mampu':
+      return 'bg-green-50 text-green-700 border border-green-200 shadow-sm'
+    default:
+      return 'bg-gray-50 text-gray-700 border border-gray-200 shadow-sm'
+  }
+}
+
+const getEconomicStatusIcon = (status: string) => {
+  switch (status) {
+    case 'Kurang Mampu':
+      return 'pi pi-wallet'
+    case 'Cukup Mampu':
+      return 'pi pi-money-bill'
+    case 'Sangat Mampu':
+      return 'pi pi-dollar'
+    default:
+      return 'pi pi-circle'
+  }
+}
+
+// Living status styling
+const getLivingStatusBadgeClasses = (status: string) => {
+  switch (status) {
+    case 'Hidup':
+      return 'bg-green-50 text-green-700 border border-green-200 shadow-sm'
+    case 'Meninggal':
+      return 'bg-gray-50 text-gray-700 border border-gray-200 shadow-sm'
+    default:
+      return 'bg-gray-50 text-gray-700 border border-gray-200 shadow-sm'
+  }
+}
+
+const getLivingStatusIcon = (status: string) => {
+  switch (status) {
+    case 'Hidup':
+      return 'pi pi-heart'
+    case 'Meninggal':
+      return 'pi pi-times-circle'
+    default:
+      return 'pi pi-circle'
+  }
 }
 
 const getHealthStatusColor = (status: number) => {

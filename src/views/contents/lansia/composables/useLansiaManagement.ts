@@ -16,6 +16,8 @@ export interface Lansia {
   emergencyPhone: string
   caregiverStatus: 'Ada' | 'Tidak Ada'
   healthStatus: 1 | 2 | 3
+  economicStatus: 'Kurang Mampu' | 'Cukup Mampu' | 'Sangat Mampu'
+  livingStatus: 'Hidup' | 'Meninggal'
   medicalConditions: string[]
   lastCheckup: Date
   profileImage?: string
@@ -41,6 +43,8 @@ export function useLansiaManagement() {
       emergencyPhone: '081234567891',
       caregiverStatus: 'Ada' as const,
       healthStatus: 1 as const,
+      economicStatus: 'Cukup Mampu' as const,
+      livingStatus: 'Hidup' as const,
       medicalConditions: ['Hipertensi'],
       lastCheckup: new Date('2024-07-15'),
       profileImage: undefined,
@@ -62,6 +66,8 @@ export function useLansiaManagement() {
       emergencyPhone: '081234567893',
       caregiverStatus: 'Ada' as const,
       healthStatus: 2 as const,
+      economicStatus: 'Sangat Mampu' as const,
+      livingStatus: 'Hidup' as const,
       medicalConditions: ['Diabetes', 'Kolesterol'],
       lastCheckup: new Date('2024-08-01'),
       profileImage: undefined,
@@ -83,6 +89,8 @@ export function useLansiaManagement() {
       emergencyPhone: '081234567895',
       caregiverStatus: 'Tidak Ada' as const,
       healthStatus: 3 as const,
+      economicStatus: 'Kurang Mampu' as const,
+      livingStatus: 'Hidup' as const,
       medicalConditions: ['Osteoporosis', 'Katarak'],
       lastCheckup: new Date('2024-06-20'),
       profileImage: undefined,
@@ -104,6 +112,8 @@ export function useLansiaManagement() {
       emergencyPhone: '081234567897',
       caregiverStatus: 'Ada' as const,
       healthStatus: 1 as const,
+      economicStatus: 'Cukup Mampu' as const,
+      livingStatus: 'Hidup' as const,
       medicalConditions: [],
       lastCheckup: new Date('2024-08-10'),
       profileImage: undefined,
@@ -125,6 +135,8 @@ export function useLansiaManagement() {
       emergencyPhone: '081234567899',
       caregiverStatus: 'Ada' as const,
       healthStatus: 1 as const,
+      economicStatus: 'Cukup Mampu' as const,
+      livingStatus: 'Hidup' as const,
       medicalConditions: ['Hipertensi'],
       lastCheckup: new Date('2024-07-25'),
       profileImage: undefined,
@@ -134,6 +146,20 @@ export function useLansiaManagement() {
 
   // Search and filter state
   const searchTerm = ref('')
+  const healthFilters = ref({
+    level1: false,
+    level2: false,
+    level3: false
+  })
+  const economicFilters = ref({
+    kurangMampu: false,
+    cukupMampu: false,
+    sangatMampu: false
+  })
+  const livingFilters = ref({
+    hidup: false,
+    meninggal: false
+  })
 
   // Modal state
   const showAddModal = ref(false)
@@ -147,25 +173,62 @@ export function useLansiaManagement() {
 
   // Computed properties
   const filteredLansia = computed(() => {
-    if (!searchTerm.value) return lansia.value
-    
-    const term = searchTerm.value.toLowerCase()
-    return lansia.value.filter((person) => {
-      return (
-        person.firstName.toLowerCase().includes(term) ||
-        person.lastName.toLowerCase().includes(term) ||
-        getFullName(person.firstName, person.lastName).toLowerCase().includes(term) ||
-        person.nik.toLowerCase().includes(term) ||
-        person.id.toLowerCase().includes(term) ||
-        person.address.toLowerCase().includes(term) ||
-        person.rt.toLowerCase().includes(term) ||
-        person.rw.toLowerCase().includes(term) ||
-        person.phone.toLowerCase().includes(term) ||
-        person.healthStatus.toString().includes(term) ||
-        person.emergencyContact.toLowerCase().includes(term) ||
-        person.caregiverStatus.toLowerCase().includes(term)
-      )
-    })
+    let filtered = lansia.value
+
+    // Apply health status filters
+    const hasHealthFilters = healthFilters.value.level1 || healthFilters.value.level2 || healthFilters.value.level3
+    if (hasHealthFilters) {
+      filtered = filtered.filter(person => {
+        if (healthFilters.value.level1 && person.healthStatus === 1) return true
+        if (healthFilters.value.level2 && person.healthStatus === 2) return true
+        if (healthFilters.value.level3 && person.healthStatus === 3) return true
+        return false
+      })
+    }
+
+    // Apply economic status filters
+    const hasEconomicFilters = economicFilters.value.kurangMampu || economicFilters.value.cukupMampu || economicFilters.value.sangatMampu
+    if (hasEconomicFilters) {
+      filtered = filtered.filter(person => {
+        if (economicFilters.value.kurangMampu && person.economicStatus === 'Kurang Mampu') return true
+        if (economicFilters.value.cukupMampu && person.economicStatus === 'Cukup Mampu') return true
+        if (economicFilters.value.sangatMampu && person.economicStatus === 'Sangat Mampu') return true
+        return false
+      })
+    }
+
+    // Apply living status filters
+    const hasLivingFilters = livingFilters.value.hidup || livingFilters.value.meninggal
+    if (hasLivingFilters) {
+      filtered = filtered.filter(person => {
+        if (livingFilters.value.hidup && person.livingStatus === 'Hidup') return true
+        if (livingFilters.value.meninggal && person.livingStatus === 'Meninggal') return true
+        return false
+      })
+    }
+
+    // Apply search filter
+    if (searchTerm.value) {
+      const term = searchTerm.value.toLowerCase()
+      filtered = filtered.filter((person) => {
+        return (
+          person.firstName.toLowerCase().includes(term) ||
+          person.lastName.toLowerCase().includes(term) ||
+          getFullName(person.firstName, person.lastName).toLowerCase().includes(term) ||
+          person.nik.toLowerCase().includes(term) ||
+          person.id.toLowerCase().includes(term) ||
+          person.address.toLowerCase().includes(term) ||
+          person.rt.toLowerCase().includes(term) ||
+          person.rw.toLowerCase().includes(term) ||
+          person.phone.toLowerCase().includes(term) ||
+          person.healthStatus.toString().includes(term) ||
+          person.emergencyContact.toLowerCase().includes(term) ||
+          person.caregiverStatus.toLowerCase().includes(term)
+        )
+      })
+    }
+
+    return filtered
   })
 
   // Lansia management methods
@@ -322,6 +385,7 @@ export function useLansiaManagement() {
     closeModals()
   }
 
+
   // Health status styling
   const getHealthStatusBadgeClasses = (status: number) => {
     switch (status) {
@@ -414,6 +478,9 @@ export function useLansiaManagement() {
     lansia: lansia.value,
     filteredLansia,
     searchTerm,
+    healthFilters,
+    economicFilters,
+    livingFilters,
     showAddModal,
     showEditModal,
     showDeleteModal,

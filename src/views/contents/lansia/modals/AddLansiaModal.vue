@@ -188,6 +188,38 @@
             />
             <small v-if="errors.healthStatus" class="text-red-500 text-xs !mt-1">{{ errors.healthStatus }}</small>
           </div>
+
+          <!-- Economic Status -->
+          <div class="space-y-2">
+            <label for="economicStatus" class="block text-sm font-semibold text-gray-700">Status Ekonomi</label>
+            <Dropdown
+              id="economicStatus"
+              v-model="formData.economicStatus"
+              :options="economicStatusOptions"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="Pilih status ekonomi"
+              :class="{ 'p-invalid': errors.economicStatus }"
+              class="w-full !rounded-xl !border-gray-300"
+            />
+            <small v-if="errors.economicStatus" class="text-red-500 text-xs !mt-1">{{ errors.economicStatus }}</small>
+          </div>
+
+          <!-- Living Status -->
+          <div class="space-y-2">
+            <label for="livingStatus" class="block text-sm font-semibold text-gray-700">Status Kehidupan</label>
+            <Dropdown
+              id="livingStatus"
+              v-model="formData.livingStatus"
+              :options="livingStatusOptions"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="Pilih status kehidupan"
+              :class="{ 'p-invalid': errors.livingStatus }"
+              class="w-full !rounded-xl !border-gray-300"
+            />
+            <small v-if="errors.livingStatus" class="text-red-500 text-xs !mt-1">{{ errors.livingStatus }}</small>
+          </div>
         </template>
       </div>
 
@@ -273,6 +305,40 @@
             required
           />
           <small v-if="errors.healthStatus" class="text-red-500 text-xs !mt-1">{{ errors.healthStatus }}</small>
+        </div>
+
+        <!-- Economic Status -->
+        <div class="space-y-2">
+          <label for="economicStatus" class="block text-sm font-semibold text-gray-700">Status Ekonomi *</label>
+          <Dropdown
+            id="economicStatus"
+            v-model="formData.economicStatus"
+            :options="economicStatusOptions"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Pilih status ekonomi"
+            :class="{ 'p-invalid': errors.economicStatus }"
+            class="w-full !rounded-xl !border-gray-300"
+            required
+          />
+          <small v-if="errors.economicStatus" class="text-red-500 text-xs !mt-1">{{ errors.economicStatus }}</small>
+        </div>
+
+        <!-- Living Status -->
+        <div class="space-y-2">
+          <label for="livingStatus" class="block text-sm font-semibold text-gray-700">Status Kehidupan *</label>
+          <Dropdown
+            id="livingStatus"
+            v-model="formData.livingStatus"
+            :options="livingStatusOptions"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Pilih status kehidupan"
+            :class="{ 'p-invalid': errors.livingStatus }"
+            class="w-full !rounded-xl !border-gray-300"
+            required
+          />
+          <small v-if="errors.livingStatus" class="text-red-500 text-xs !mt-1">{{ errors.livingStatus }}</small>
         </div>
 
         <!-- Medical Conditions -->
@@ -383,6 +449,8 @@ interface LansiaFormData {
   emergencyPhone: string
   caregiverStatus: 'Ada' | 'Tidak Ada'
   healthStatus: 1 | 2 | 3
+  economicStatus: 'Kurang Mampu' | 'Cukup Mampu' | 'Sangat Mampu'
+  livingStatus: 'Hidup' | 'Meninggal'
   medicalConditions: string[]
   lastCheckup: string  // HTML date inputs return strings
   profileImage?: string
@@ -422,6 +490,8 @@ const formData = ref<LansiaFormData>({
   emergencyPhone: '',
   caregiverStatus: 'Ada',
   healthStatus: 1,
+  economicStatus: 'Cukup Mampu',
+  livingStatus: 'Hidup',
   medicalConditions: [],
   lastCheckup: '',
   profileImage: ''
@@ -442,6 +512,8 @@ const errors = ref({
   emergencyPhone: '',
   caregiverStatus: '',
   healthStatus: '',
+  economicStatus: '',
+  livingStatus: '',
   medicalConditions: '',
   lastCheckup: '',
   profileImage: ''
@@ -465,6 +537,17 @@ const healthStatusOptions = [
 const caregiverStatusOptions = [
   { label: 'Ada', value: 'Ada' },
   { label: 'Tidak Ada', value: 'Tidak Ada' }
+]
+
+const economicStatusOptions = [
+  { label: 'Kurang Mampu', value: 'Kurang Mampu' },
+  { label: 'Cukup Mampu', value: 'Cukup Mampu' },
+  { label: 'Sangat Mampu', value: 'Sangat Mampu' }
+]
+
+const livingStatusOptions = [
+  { label: 'Hidup', value: 'Hidup' },
+  { label: 'Meninggal', value: 'Meninggal' }
 ]
 
 // Computed properties
@@ -518,6 +601,8 @@ const resetForm = () => {
     emergencyPhone: '',
     caregiverStatus: 'Ada',
     healthStatus: 1,
+    economicStatus: 'Cukup Mampu',
+    livingStatus: 'Hidup',
     medicalConditions: [],
     lastCheckup: '',
     profileImage: ''
@@ -536,6 +621,8 @@ const resetForm = () => {
     emergencyPhone: '',
     caregiverStatus: '',
     healthStatus: '',
+    economicStatus: '',
+    livingStatus: '',
     medicalConditions: '',
     lastCheckup: '',
     profileImage: ''
@@ -698,6 +785,20 @@ const validateStep = (step: number): boolean => {
       newErrors.healthStatus = ''
     }
 
+    // Economic Status validation
+    if (!formData.value.economicStatus) {
+      newErrors.economicStatus = 'Status ekonomi wajib dipilih'
+    } else {
+      newErrors.economicStatus = ''
+    }
+
+    // Living Status validation
+    if (!formData.value.livingStatus) {
+      newErrors.livingStatus = 'Status kehidupan wajib dipilih'
+    } else {
+      newErrors.livingStatus = ''
+    }
+
     // Profile image validation (optional)
     if (formData.value.profileImage && formData.value.profileImage.trim()) {
       const urlRegex = /^(https?:\/\/)?[\da-z.-]+\.[a-z.]{2,6}[/\w .-]*\/?$/
@@ -719,7 +820,7 @@ const validateStep = (step: number): boolean => {
   } else if (step === 2) {
     return !newErrors.phone && !newErrors.emergencyContact && !newErrors.emergencyPhone && !newErrors.caregiverStatus
   } else if (step === 3) {
-    return !newErrors.healthStatus && !newErrors.profileImage
+    return !newErrors.healthStatus && !newErrors.economicStatus && !newErrors.livingStatus && !newErrors.profileImage
   }
 
   return true

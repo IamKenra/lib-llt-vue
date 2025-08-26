@@ -17,14 +17,152 @@
     </div>
 
     <div class="!mb-4 flex justify-between items-center">
-      <!-- Search Bar -->
-      <div class="relative max-w-sm w-full">
-        <i class="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-        <InputText
-          v-model="searchTerm"
-          placeholder="Cari lansia..."
-          class="w-full !pl-10 !pr-4 !py-2 text-sm border !border-gray-300 !rounded-full !focus:outline-none !focus:ring-2 focus:ring-blue-500"
-        />
+      <!-- Search Bar and Filters -->
+      <div class="flex items-center gap-4">
+        <!-- Search Bar -->
+        <div class="relative w-96">
+          <i class="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+          <InputText
+            v-model="searchTerm"
+            placeholder="Cari lansia..."
+            class="w-full !pl-10 !pr-4 !py-2 text-sm border !border-gray-300 !rounded-full !focus:outline-none !focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        <!-- Combined Filter Button -->
+        <div class="relative">
+          <Button
+            ref="filterButton"
+            type="button"
+            icon="pi pi-filter"
+            :label="getCombinedFilterLabel()"
+            class="p-button-outlined p-button-sm !rounded-full"
+            @click="toggleFilterPanel"
+            :class="{ '!bg-blue-50 !border-blue-300 !text-blue-700': hasAnyFilters() }"
+          />
+          <OverlayPanel 
+            ref="filterPanel" 
+            class="custom-filter-panel"
+            :dismissable="true"
+            :auto-z-index="true"
+          >
+            <div class="p-5 w-[480px]">
+              <!-- 2-Column Grid Layout -->
+              <div class="grid grid-cols-2 gap-6">
+                <!-- Left Column -->
+                <div>
+                  <!-- Health Status Section -->
+                  <div class="mb-5">
+                    <div class="flex items-center mb-3">
+                      <div class="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
+                      <h6 class="font-medium text-gray-800 text-sm">Status Kesehatan</h6>
+                    </div>
+                    <div class="space-y-2">
+                      <div class="flex items-center p-2 rounded hover:bg-gray-50 transition-colors">
+                        <Checkbox
+                          v-model="healthFilters.level1"
+                          inputId="health1"
+                          binary
+                        />
+                        <label for="health1" class="ml-2 text-xs text-gray-700 cursor-pointer">Level 1 (Produktif)</label>
+                      </div>
+                      <div class="flex items-center p-2 rounded hover:bg-gray-50 transition-colors">
+                        <Checkbox
+                          v-model="healthFilters.level2"
+                          inputId="health2"
+                          binary
+                        />
+                        <label for="health2" class="ml-2 text-xs text-gray-700 cursor-pointer">Level 2 (Butuh Bantuan)</label>
+                      </div>
+                      <div class="flex items-center p-2 rounded hover:bg-gray-50 transition-colors">
+                        <Checkbox
+                          v-model="healthFilters.level3"
+                          inputId="health3"
+                          binary
+                        />
+                        <label for="health3" class="ml-2 text-xs text-gray-700 cursor-pointer">Level 3 (Tirah Baring)</label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Living Status Section -->
+                  <div class="mb-5">
+                    <div class="flex items-center mb-3">
+                      <div class="w-2 h-2 bg-purple-500 rounded-full mr-2"></div>
+                      <h6 class="font-medium text-gray-800 text-sm">Status Kehidupan</h6>
+                    </div>
+                    <div class="space-y-2">
+                      <div class="flex items-center p-2 rounded hover:bg-gray-50 transition-colors">
+                        <Checkbox
+                          v-model="livingFilters.hidup"
+                          inputId="living1"
+                          binary
+                        />
+                        <label for="living1" class="ml-2 text-xs text-gray-700 cursor-pointer">Hidup</label>
+                      </div>
+                      <div class="flex items-center p-2 rounded hover:bg-gray-50 transition-colors">
+                        <Checkbox
+                          v-model="livingFilters.meninggal"
+                          inputId="living2"
+                          binary
+                        />
+                        <label for="living2" class="ml-2 text-xs text-gray-700 cursor-pointer">Meninggal</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Right Column -->
+                <div>
+                  <!-- Economic Status Section -->
+                  <div class="mb-5">
+                    <div class="flex items-center mb-3">
+                      <div class="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                      <h6 class="font-medium text-gray-800 text-sm">Status Ekonomi</h6>
+                    </div>
+                    <div class="space-y-2">
+                      <div class="flex items-center p-2 rounded hover:bg-gray-50 transition-colors">
+                        <Checkbox
+                          v-model="economicFilters.kurangMampu"
+                          inputId="econ1"
+                          binary
+                        />
+                        <label for="econ1" class="ml-2 text-xs text-gray-700 cursor-pointer">Kurang Mampu</label>
+                      </div>
+                      <div class="flex items-center p-2 rounded hover:bg-gray-50 transition-colors">
+                        <Checkbox
+                          v-model="economicFilters.cukupMampu"
+                          inputId="econ2"
+                          binary
+                        />
+                        <label for="econ2" class="ml-2 text-xs text-gray-700 cursor-pointer">Cukup Mampu</label>
+                      </div>
+                      <div class="flex items-center p-2 rounded hover:bg-gray-50 transition-colors">
+                        <Checkbox
+                          v-model="economicFilters.sangatMampu"
+                          inputId="econ3"
+                          binary
+                        />
+                        <label for="econ3" class="ml-2 text-xs text-gray-700 cursor-pointer">Sangat Mampu</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="flex justify-end pt-3 border-t border-gray-100">
+                <Button
+                  label="Clear All"
+                  size="small"
+                  text
+                  @click="clearAllFilters"
+                  class="!text-gray-600 hover:!text-gray-800 !text-xs !px-3 !py-1.5"
+                />
+              </div>
+            </div>
+          </OverlayPanel>
+        </div>
       </div>
 
       <!-- New Button -->
@@ -149,6 +287,8 @@ import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
+import OverlayPanel from 'primevue/overlaypanel'
+import Checkbox from 'primevue/checkbox'
 import AddLansiaModal from './modals/AddLansiaModal.vue'
 import ConfirmDeleteModal from '../../../components/modals/ConfirmDeleteModal.vue'
 import LansiaDetailModal from './modals/LansiaDetailModal.vue'
@@ -169,6 +309,9 @@ const selectedCategoryName = ref(props.category?.name || '')
 const {
   filteredLansia,
   searchTerm,
+  healthFilters,
+  economicFilters,
+  livingFilters,
   showAddModal,
   showEditModal,
   showDeleteModal,
@@ -200,6 +343,69 @@ const {
   lansiaLevel3,
 } = useLansiaManagement()
 
+// Combined filter panel refs
+const filterPanel = ref()
+const filterButton = ref()
+
+// Panel toggle method
+const toggleFilterPanel = (event: Event) => {
+  if (filterPanel.value) {
+    filterPanel.value.toggle(event)
+  }
+}
+
+// Combined filter label method
+const getCombinedFilterLabel = () => {
+  const totalActiveFilters = 
+    (healthFilters.value.level1 ? 1 : 0) + 
+    (healthFilters.value.level2 ? 1 : 0) + 
+    (healthFilters.value.level3 ? 1 : 0) +
+    (economicFilters.value.kurangMampu ? 1 : 0) + 
+    (economicFilters.value.cukupMampu ? 1 : 0) + 
+    (economicFilters.value.sangatMampu ? 1 : 0) +
+    (livingFilters.value.hidup ? 1 : 0) + 
+    (livingFilters.value.meninggal ? 1 : 0)
+  
+  if (totalActiveFilters === 0) return 'Filter'
+  return `Filter (${totalActiveFilters})`
+}
+
+// Check if any filters are active
+const hasAnyFilters = () => {
+  return hasHealthFilters() || hasEconomicFilters() || hasLivingFilters()
+}
+
+// Check if filters are active (keeping original methods for logic)
+const hasHealthFilters = () => {
+  return healthFilters.value.level1 || healthFilters.value.level2 || healthFilters.value.level3
+}
+
+const hasEconomicFilters = () => {
+  return economicFilters.value.kurangMampu || economicFilters.value.cukupMampu || economicFilters.value.sangatMampu
+}
+
+const hasLivingFilters = () => {
+  return livingFilters.value.hidup || livingFilters.value.meninggal
+}
+
+// Clear all filters
+const clearAllFilters = () => {
+  // Clear health filters
+  healthFilters.value.level1 = false
+  healthFilters.value.level2 = false
+  healthFilters.value.level3 = false
+  
+  // Clear economic filters
+  economicFilters.value.kurangMampu = false
+  economicFilters.value.cukupMampu = false
+  economicFilters.value.sangatMampu = false
+  
+  // Clear living filters
+  livingFilters.value.hidup = false
+  livingFilters.value.meninggal = false
+}
+
+
 
 watch(
   () => props.category,
@@ -214,5 +420,48 @@ watch(
 .p-datatable .p-datatable-thead > tr > th {
   background-color: #f9fafb;
   font-weight: 600;
+}
+
+.custom-filter-panel {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  background: white;
+  z-index: 1050 !important;
+  width: 480px;
+}
+
+.custom-filter-panel .p-overlaypanel {
+  transform-origin: top left !important;
+  position: absolute !important;
+  top: auto !important;
+  left: auto !important;
+}
+
+.custom-filter-panel .p-overlaypanel-content {
+  padding: 0;
+  border-radius: 12px;
+  background: white;
+  overflow: hidden;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+
+
+/* Custom checkbox styling */
+.custom-filter-panel .p-checkbox {
+  border-radius: 6px !important;
+}
+
+.custom-filter-panel .p-checkbox.p-checkbox-checked {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8) !important;
+  border-color: #3b82f6 !important;
+}
+
+/* Hover effects for checkbox containers */
+.custom-filter-panel .p-checkbox:not(.p-checkbox-checked):hover {
+  border-color: #93c5fd !important;
+  background-color: #eff6ff !important;
 }
 </style>
