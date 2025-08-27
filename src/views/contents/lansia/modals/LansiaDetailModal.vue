@@ -461,27 +461,31 @@ const showQR = () => {
 
 // Edit functions for CRUD operations
 const editPersonalInfo = () => {
-  console.log('Edit Personal Information for:', props.lansia?.firstName, props.lansia?.lastName)
-  // TODO: Emit event to parent component to open edit modal for personal info
-  emit('editPersonalInfo', props.lansia)
+  if (props.lansia) {
+    console.log('Edit Personal Information for:', props.lansia.firstName, props.lansia.lastName)
+    emit('editPersonalInfo', props.lansia)
+  }
 }
 
 const editContactInfo = () => {
-  console.log('Edit Contact Information for:', props.lansia?.firstName, props.lansia?.lastName)
-  // TODO: Emit event to parent component to open edit modal for contact info
-  emit('editContactInfo', props.lansia)
+  if (props.lansia) {
+    console.log('Edit Contact Information for:', props.lansia.firstName, props.lansia.lastName)
+    emit('editContactInfo', props.lansia)
+  }
 }
 
 const editHealthHistory = () => {
-  console.log('Edit Health History for:', props.lansia?.firstName, props.lansia?.lastName)
-  // TODO: Emit event to parent component to open edit modal for health history
-  emit('editHealthHistory', props.lansia)
+  if (props.lansia) {
+    console.log('Edit Health History for:', props.lansia.firstName, props.lansia.lastName)
+    emit('editHealthHistory', props.lansia)
+  }
 }
 
 const editProfilePicture = () => {
-  console.log('Edit Profile Picture for:', props.lansia?.firstName, props.lansia?.lastName)
-  // TODO: Emit event to parent component to open file upload dialog for profile picture
-  emit('editProfilePicture', props.lansia)
+  if (props.lansia) {
+    console.log('Edit Profile Picture for:', props.lansia.firstName, props.lansia.lastName)
+    emit('editProfilePicture', props.lansia)
+  }
 }
 </script>
 
