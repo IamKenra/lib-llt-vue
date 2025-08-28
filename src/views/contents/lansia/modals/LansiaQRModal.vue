@@ -51,7 +51,7 @@ import { ref, computed, watch, nextTick } from 'vue'
 import Dialog from 'primevue/dialog'
 import Button from 'primevue/button'
 import QRCode from 'qrcode'
-import { useLansiaManagement, type Lansia } from '../composables/useLansiaManagement'
+import type { Lansia } from '../composables/useLansiaManagement'
 
 interface Props {
   visible: boolean
@@ -137,13 +137,6 @@ const printQR = () => {
 
   const canvas = qrCanvas.value
   const dataURL = canvas.toDataURL('image/png')
-  const printDate = new Date().toLocaleDateString('id-ID', { 
-    year: 'numeric', 
-    month: 'long', 
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
-  })
   
   const htmlContent = 
     '<!DOCTYPE html>' +

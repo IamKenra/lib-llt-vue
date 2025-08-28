@@ -57,7 +57,21 @@
             </div>
             <div class="inline-flex items-center gap-1 !px-2 !py-1 rounded-full text-xs font-medium"
                  :class="getLivingStatusBadgeClasses(lansia.livingStatus)">
-              <i :class="getLivingStatusIcon(lansia.livingStatus)" class="text-xs"></i>
+              <svg 
+                v-if="lansia.livingStatus === 'Meninggal'" 
+                width="12" 
+                height="12" 
+                viewBox="0 0 48 48" 
+                fill="none" 
+                xmlns="http://www.w3.org/2000/svg"
+                class="flex-shrink-0 text-gray-400 opacity-70"
+              >
+                <path 
+                  d="M20 4H28C34.62 4 38 9.38 38 16V37.32C33.76 35.26 30.14 34 24 34C17.86 34 14.24 35.26 10 37.32V16C10 9.38 13.38 4 20 4ZM16 16V19H32V16H16ZM18 24V27H30V24H18ZM6 44V42.62C11.32 39.24 26.46 31.68 42 42.5V44H6Z" 
+                  fill="currentColor"
+                />
+              </svg>
+              <i v-else :class="getLivingStatusIcon(lansia.livingStatus)" class="text-xs"></i>
               <span>{{ lansia.livingStatus }}</span>
             </div>
           </div>
@@ -156,33 +170,15 @@
                 <p class="text-xs font-medium text-gray-500 uppercase tracking-wide !mb-0">Telepon</p>
                 <p class="text-sm text-gray-900 font-medium">{{ lansia.phone }}</p>
               </div>
-              <div class="!pb-2">
+            </div>
+            <!-- Right Column -->
+            <div class="space-y-1">
+               <div class="!pb-2">
                 <p class="text-xs font-medium text-gray-500 uppercase tracking-wide !mb-0">Status Caregiver</p>
                 <div :class="getCaregiverStatusBadgeClasses(lansia.caregiverStatus)" class="inline-flex items-center gap-2 !px-3 !py-1 rounded-full text-xs font-semibold">
                   <i :class="getCaregiverStatusIcon(lansia.caregiverStatus)" class="text-sm"></i>
                   <span>{{ lansia.caregiverStatus }}</span>
                 </div>
-              </div>
-            </div>
-            <!-- Right Column -->
-            <div class="space-y-1">
-              <div class="!pb-2">
-                <p class="text-xs font-medium text-gray-500 uppercase tracking-wide !mb-0">Terakhir Periksa</p>
-                <p class="text-sm text-gray-900 font-medium">{{ formatDate(lansia.lastCheckup) }}</p>
-              </div>
-              <div class="!pb-2">
-                <p class="text-xs font-medium text-gray-500 uppercase tracking-wide !mb-0">Kondisi Medis</p>
-                <div v-if="lansia.medicalConditions?.length > 0" class="flex flex-wrap gap-2">
-                  <span 
-                    v-for="condition in lansia.medicalConditions" 
-                    :key="condition"
-                    class="inline-flex items-center !px-2 !py-1 rounded-md bg-orange-50 text-orange-700 border border-orange-200 text-xs font-medium"
-                  >
-                    <i class="pi pi-exclamation-triangle !mr-1 text-xs"></i>
-                    {{ condition }}
-                  </span>
-                </div>
-                <p v-else class="text-sm text-gray-500 italic">Tidak ada kondisi medis khusus</p>
               </div>
             </div>
           </div>
@@ -313,7 +309,7 @@
       </div>
 
       <!-- Action Buttons -->
-      <div class="flex justify-end gap-3">
+      <div class="flex justify-end !gap-3">
         <Button
           label="QR Code"
           icon="pi pi-qrcode"
@@ -427,8 +423,6 @@ const getLivingStatusIcon = (status: string) => {
   switch (status) {
     case 'Hidup':
       return 'pi pi-heart'
-    case 'Meninggal':
-      return 'pi pi-times-circle'
     default:
       return 'pi pi-circle'
   }

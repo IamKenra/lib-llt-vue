@@ -9,69 +9,6 @@
       <!-- Map will be initialized here -->
     </div>
 
-    <!-- Dynamic Legend -->
-    <div class="absolute bottom-4 left-4 bg-white/98 backdrop-blur-md rounded-2xl p-5 shadow-2xl border-2 border-white/50 z-[1000]">
-      <h4 class="font-bold text-base text-gray-800 mb-4 text-center">
-        {{ mapView === 'health' ? 'Status Kesehatan' : 'Status Ekonomi' }}
-      </h4>
-      
-      <!-- Health Legend -->
-      <div v-if="mapView === 'health'" class="space-y-3">
-        <div class="flex items-center justify-between text-sm font-medium">
-          <div class="flex items-center">
-            <div class="w-4 h-4 bg-green-500 rounded-lg mr-3 shadow-md border border-green-300"></div>
-            <span class="text-gray-700">Level 1</span>
-          </div>
-          <span class="text-green-600 font-semibold">Produktif</span>
-        </div>
-        <div class="flex items-center justify-between text-sm font-medium">
-          <div class="flex items-center">
-            <div class="w-4 h-4 bg-yellow-500 rounded-lg mr-3 shadow-md border border-yellow-300"></div>
-            <span class="text-gray-700">Level 2</span>
-          </div>
-          <span class="text-yellow-600 font-semibold">Butuh Bantuan</span>
-        </div>
-        <div class="flex items-center justify-between text-sm font-medium">
-          <div class="flex items-center">
-            <div class="w-4 h-4 bg-red-500 rounded-lg mr-3 shadow-md border border-red-300"></div>
-            <span class="text-gray-700">Level 3</span>
-          </div>
-          <span class="text-red-600 font-semibold">Tirah Baring</span>
-        </div>
-      </div>
-
-      <!-- Economic Legend -->
-      <div v-else class="space-y-3">
-        <div class="flex items-center justify-between text-sm font-medium">
-          <div class="flex items-center">
-            <div class="w-4 h-4 bg-red-500 rounded-lg mr-3 shadow-md border border-red-300"></div>
-            <span class="text-gray-700">Kurang</span>
-          </div>
-          <span class="text-red-600 font-semibold">Kurang Mampu</span>
-        </div>
-        <div class="flex items-center justify-between text-sm font-medium">
-          <div class="flex items-center">
-            <div class="w-4 h-4 bg-yellow-500 rounded-lg mr-3 shadow-md border border-yellow-300"></div>
-            <span class="text-gray-700">Cukup</span>
-          </div>
-          <span class="text-yellow-600 font-semibold">Cukup Mampu</span>
-        </div>
-        <div class="flex items-center justify-between text-sm font-medium">
-          <div class="flex items-center">
-            <div class="w-4 h-4 bg-green-500 rounded-lg mr-3 shadow-md border border-green-300"></div>
-            <span class="text-gray-700">Sangat</span>
-          </div>
-          <span class="text-green-600 font-semibold">Sangat Mampu</span>
-        </div>
-      </div>
-
-      <div class="mt-4 pt-3 border-t border-gray-200">
-        <div class="text-center text-xs text-gray-500">
-          <i class="pi pi-search-plus mr-1"></i>
-          Zoom & geser untuk navigasi
-        </div>
-      </div>
-    </div>
 
     <!-- Total stats overlay -->
     <div class="absolute top-4 left-4 bg-white/95 backdrop-blur-sm rounded-xl p-4 shadow-xl border border-gray-200 z-[1000]">
@@ -95,87 +32,64 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * KotabaruMap Component
+ * 
+ * Features:
+ * - Flexible GeoJSON loading from environment variables (VITE_GEOJSON_FILE_PATH)
+ * - Dynamic RW data extraction from GeoJSON properties
+ * - Automatic polygon center calculation
+ * - Mock data generation (ready for API integration)
+ * - Interactive map with health/economic views
+ * 
+ * Configuration:
+ * - Set VITE_GEOJSON_FILE_PATH in .env to change GeoJSON file
+ * - GeoJSON should have 'rw' and 'lansia' properties in features
+ * 
+ * API Integration Ready:
+ * - Mock data functions prepared for replacement with API calls
+ * - See fetchRWDetailsFromAPI function for implementation example
+ */
 import { ref, onMounted, onUnmounted, watch, computed } from 'vue'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 
-// GeoJSON data will be loaded dynamically
-const kotabaruGeoJSON = ref(null)
+// GeoJSON data will be loaded dynamically from configurable path
+const kotabaruGeoJSON = ref<any>(null)
 
-// Load GeoJSON data
+// Load GeoJSON data from configurable path
 const loadGeoJSONData = async () => {
   try {
-    const response = await fetch('/src/assets/rw-kotabaru (1).geojson')
+    // Get GeoJSON path from environment variables with fallback
+    const geojsonPath = import.meta.env.VITE_GEOJSON_FILE_PATH || '/src/assets/kotabaruUpdate.geojson'
+    console.log('Loading GeoJSON from:', geojsonPath)
+    
+    const response = await fetch(geojsonPath)
+    if (!response.ok) {
+      throw new Error(`Failed to load GeoJSON: ${response.statusText}`)
+    }
+    
     const data = await response.json()
+    
+    // Validate GeoJSON structure
+    if (!data.type || data.type !== 'FeatureCollection' || !data.features) {
+      throw new Error('Invalid GeoJSON format')
+    }
+    
     kotabaruGeoJSON.value = data
+    console.log('GeoJSON loaded successfully with', data.features.length, 'features')
     return data
   } catch (error) {
     console.error('Error loading GeoJSON:', error)
-    // Fallback data based on the GeoJSON file structure
-    return {
+    
+    // Return a basic fallback structure
+    const fallbackData = {
       "type": "FeatureCollection",
-      "features": [
-        {
-          "type": "Feature",
-          "properties": {
-            "rw": "RW 1",
-            "lansia": 20,
-            "kelurahan": "Kotabaru"
-          },
-          "geometry": {
-            "type": "Polygon",
-            "coordinates": [
-              [
-                [110.374929, -7.783092],
-                [110.371013, -7.783114],
-                [110.370938, -7.784007],
-                [110.370251, -7.784719],
-                [110.369221, -7.785517],
-                [110.369575, -7.785857],
-                [110.369554, -7.78607],
-                [110.369704, -7.786878],
-                [110.371968, -7.785942],
-                [110.371442, -7.78457],
-                [110.372901, -7.784156],
-                [110.374703, -7.784262],
-                [110.374929, -7.783092]
-              ]
-            ]
-          }
-        },
-        {
-          "type": "Feature",
-          "properties": {
-            "rw": "RW 4",
-            "lansia": 10,
-            "kelurahan": "Kotabaru"
-          },
-          "geometry": {
-            "type": "Polygon",
-            "coordinates": [
-              [
-                [110.369221, -7.785517],
-                [110.368073, -7.786931],
-                [110.368212, -7.78776],
-                [110.368481, -7.788504],
-                [110.368867, -7.789398],
-                [110.36906, -7.789865],
-                [110.371517, -7.788207],
-                [110.372311, -7.787877],
-                [110.372386, -7.786909],
-                [110.373598, -7.786761],
-                [110.374253, -7.786697],
-                [110.374349, -7.785867],
-                [110.371968, -7.785942],
-                [110.369704, -7.786878],
-                [110.369575, -7.785857],
-                [110.369221, -7.785517]
-              ]
-            ]
-          }
-        }
-      ]
+      "features": []
     }
+    
+    kotabaruGeoJSON.value = fallbackData
+    return fallbackData
   }
 }
 
@@ -201,41 +115,276 @@ const map = ref<L.Map>()
 const loading = ref(true)
 const geoJSONLayer = ref<L.GeoJSON>()
 
-// Enhanced RW data with health and economic information that matches GeoJSON
-const rwData = [
-  {
-    id: 'RW001',
-    name: 'RW 1',
-    population: 245,
-    lansiaCount: 20, // From GeoJSON
-    lat: -7.7845,
-    lng: 110.3725,
-    health: { level1: 12, level2: 5, level3: 3 },
-    economic: { kurangMampu: 8, cukupMampu: 7, sangatMampu: 5 }
-  },
-  {
-    id: 'RW004',
-    name: 'RW 4', 
-    population: 198,
-    lansiaCount: 10, // From GeoJSON
-    lat: -7.7875,
-    lng: 110.3715,
-    health: { level1: 6, level2: 2, level3: 2 },
-    economic: { kurangMampu: 4, cukupMampu: 4, sangatMampu: 2 }
+// Dynamic RW data extracted from GeoJSON - will be populated after loading
+const rwData = ref<any[]>([])
+
+// Calculate smart popup positioning based on cursor location in map
+const calculatePopupOffset = (mapLayer: L.Map, latlng: L.LatLng): [number, number] => {
+  const mapContainer = mapLayer.getContainer()
+  const mapBounds = mapContainer.getBoundingClientRect()
+  const point = mapLayer.latLngToContainerPoint(latlng)
+  
+  let offsetX = 0
+  let offsetY = -10
+  
+  // If near top edge (within 120px), show popup below cursor
+  if (point.y < 120) {
+    offsetY = 40
   }
-]
+  
+  // If near right edge (within 200px), shift popup left
+  if (point.x > mapBounds.width - 200) {
+    offsetX = -150
+  }
+  
+  // If near left edge (within 100px), shift popup right
+  if (point.x < 100) {
+    offsetX = 100
+  }
+  
+  // If near bottom edge (within 80px), ensure popup goes up
+  if (point.y > mapBounds.height - 80) {
+    offsetY = -80
+  }
+  
+  return [offsetX, offsetY]
+}
+
+// Create RW title icon with contrasting colors
+const createRWTitleIcon = (rwName: string, polygonColor: string) => {
+  // Determine if the polygon color is light or dark to choose contrasting text
+  const isLightColor = (color: string): boolean => {
+    const hex = color.replace('#', '')
+    const r = parseInt(hex.substring(0, 2), 16)
+    const g = parseInt(hex.substring(2, 4), 16)
+    const b = parseInt(hex.substring(4, 6), 16)
+    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255
+    return luminance > 0.5
+  }
+  
+  const textColor = isLightColor(polygonColor) ? '#1f2937' : '#ffffff'
+  const bgColor = isLightColor(polygonColor) 
+    ? 'rgba(255, 255, 255, 0.95)' 
+    : 'rgba(0, 0, 0, 0.8)'
+  const borderColor = isLightColor(polygonColor)
+    ? 'rgba(0, 0, 0, 0.1)'
+    : 'rgba(255, 255, 255, 0.2)'
+  
+  const titleHTML = `
+    <div style="
+      background: ${bgColor};
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 14px;
+      font-weight: bold;
+      color: ${textColor};
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      border: 1px solid ${borderColor};
+      white-space: nowrap;
+      display: inline-block;
+      position: relative;
+      pointer-events: none;
+      text-shadow: ${isLightColor(polygonColor) ? 'none' : '0 1px 2px rgba(0,0,0,0.8)'};
+    ">
+      ${rwName}
+    </div>
+  `
+  
+  return L.divIcon({
+    className: 'rw-title-marker',
+    html: titleHTML,
+    iconSize: [60, 30],
+    iconAnchor: [30, 15]
+  })
+}
+
+// Calculate polygon center that works better for irregular shapes
+const calculatePolygonCenter = (coordinates: number[][][]): { lat: number, lng: number } => {
+  if (!coordinates || !coordinates[0]) {
+    return { lat: 0, lng: 0 }
+  }
+
+  const points = coordinates[0]
+  
+  // Find bounding box
+  let minLat = points[0][1]
+  let maxLat = points[0][1]
+  let minLng = points[0][0]
+  let maxLng = points[0][0]
+  
+  points.forEach(([lng, lat]) => {
+    minLat = Math.min(minLat, lat)
+    maxLat = Math.max(maxLat, lat)
+    minLng = Math.min(minLng, lng)
+    maxLng = Math.max(maxLng, lng)
+  })
+  
+  // Start with bounding box center as initial guess
+  let bestLat = (minLat + maxLat) / 2
+  let bestLng = (minLng + maxLng) / 2
+  
+  // Try to find a better center by testing multiple points
+  const gridSize = 20
+  const stepLat = (maxLat - minLat) / gridSize
+  const stepLng = (maxLng - minLng) / gridSize
+  
+  let maxDistance = 0
+  
+  // Test grid points to find the one with maximum distance to polygon edges
+  for (let i = 1; i < gridSize; i++) {
+    for (let j = 1; j < gridSize; j++) {
+      const testLat = minLat + i * stepLat
+      const testLng = minLng + j * stepLng
+      
+      // Check if point is inside polygon
+      if (isPointInPolygon(testLat, testLng, points)) {
+        // Calculate minimum distance to any edge
+        const minDistToEdge = getMinDistanceToEdge(testLat, testLng, points)
+        
+        if (minDistToEdge > maxDistance) {
+          maxDistance = minDistToEdge
+          bestLat = testLat
+          bestLng = testLng
+        }
+      }
+    }
+  }
+  
+  return {
+    lat: bestLat,
+    lng: bestLng
+  }
+}
+
+// Check if point is inside polygon using ray casting algorithm
+const isPointInPolygon = (lat: number, lng: number, points: number[][]): boolean => {
+  let inside = false
+  
+  for (let i = 0, j = points.length - 1; i < points.length; j = i++) {
+    const [lng1, lat1] = points[i]
+    const [lng2, lat2] = points[j]
+    
+    if (((lat1 > lat) !== (lat2 > lat)) && 
+        (lng < (lng2 - lng1) * (lat - lat1) / (lat2 - lat1) + lng1)) {
+      inside = !inside
+    }
+  }
+  
+  return inside
+}
+
+// Calculate minimum distance from point to polygon edges
+const getMinDistanceToEdge = (lat: number, lng: number, points: number[][]): number => {
+  let minDistance = Infinity
+  
+  for (let i = 0; i < points.length - 1; i++) {
+    const [lng1, lat1] = points[i]
+    const [lng2, lat2] = points[i + 1]
+    
+    const distance = getDistanceToLineSegment(lat, lng, lat1, lng1, lat2, lng2)
+    minDistance = Math.min(minDistance, distance)
+  }
+  
+  return minDistance
+}
+
+// Calculate distance from point to line segment
+const getDistanceToLineSegment = (px: number, py: number, x1: number, y1: number, x2: number, y2: number): number => {
+  const dx = x2 - x1
+  const dy = y2 - y1
+  
+  if (dx === 0 && dy === 0) {
+    // Line segment is a point
+    return Math.sqrt((px - x1) ** 2 + (py - y1) ** 2)
+  }
+  
+  const t = Math.max(0, Math.min(1, ((px - x1) * dx + (py - y1) * dy) / (dx * dx + dy * dy)))
+  const projectionX = x1 + t * dx
+  const projectionY = y1 + t * dy
+  
+  return Math.sqrt((px - projectionX) ** 2 + (py - projectionY) ** 2)
+}
+
+// Generate mock health and economic data based on RW name
+// TODO: Replace this with actual API call when backend is ready
+// Example API call: await ApiService.get(`/map/rw/${rwName}/details`)
+const generateMockData = (rwName: string, lansiaCount: number) => {
+  const rwNumber = parseInt(rwName.replace(/\D/g, '')) || 1
+  
+  return {
+    population: 200 + (rwNumber * 30),
+    health: {
+      level1: Math.max(1, lansiaCount - rwNumber * 2),
+      level2: Math.min(8, Math.floor(lansiaCount * 0.2) + rwNumber),
+      level3: Math.min(5, Math.floor(lansiaCount * 0.1))
+    },
+    economic: {
+      kurangMampu: Math.min(lansiaCount, Math.floor(lansiaCount * 0.3) + rwNumber),
+      cukupMampu: Math.max(1, Math.floor(lansiaCount * 0.5)),
+      sangatMampu: Math.max(1, Math.floor(lansiaCount * 0.2))
+    }
+  }
+}
+
+// Future API integration function
+// When backend is ready, replace generateMockData with this function
+/*
+const fetchRWDetailsFromAPI = async (rwName: string) => {
+  try {
+    const response = await ApiService.get(`/map/rw/${encodeURIComponent(rwName)}`)
+    return response.data
+  } catch (error) {
+    console.error(`Error fetching details for ${rwName}:`, error)
+    // Fallback to mock data if API fails
+    return generateMockData(rwName, 0)
+  }
+}
+*/
+
+// Extract RW data from loaded GeoJSON
+const extractRWDataFromGeoJSON = (geoJsonData: any) => {
+  if (!geoJsonData?.features) {
+    console.warn('No GeoJSON features found')
+    return []
+  }
+
+  return geoJsonData.features.map((feature: any) => {
+    const { properties, geometry } = feature
+    const rwName = properties.rw
+    const lansiaFromGeoJSON = properties.lansia || 0
+    const kelurahan = properties.kelurahan || 'Unknown'
+    
+    // Calculate center point from polygon coordinates
+    const center = calculatePolygonCenter(geometry.coordinates)
+    
+    // Generate mock data (replace with API call in the future)
+    const mockData = generateMockData(rwName, lansiaFromGeoJSON)
+    
+    return {
+      id: rwName.replace(/\s/g, ''),
+      name: rwName,
+      kelurahan: kelurahan,
+      population: mockData.population,
+      lansiaCount: lansiaFromGeoJSON,
+      lat: center.lat,
+      lng: center.lng,
+      health: mockData.health,
+      economic: mockData.economic
+    }
+  })
+}
 
 // GeoJSON styling functions
 const getGeoJSONStyle = (feature: any) => {
-  const lansiaCount = feature.properties.lansia
   const rw = feature.properties.rw
   
   // Find matching RW data for detailed health/economic info
-  const rwInfo = rwData.find(r => r.name === rw)
+  const rwInfo = rwData.value.find(r => r.name === rw)
   
   if (!rwInfo) {
     return {
-      fillColor: '#gray',
+      fillColor: '#9ca3af',
       weight: 2,
       opacity: 1,
       color: '#666',
@@ -263,7 +412,7 @@ const getGeoJSONStyle = (feature: any) => {
   }
 }
 
-const totalLansia = computed(() => rwData.reduce((sum, rw) => sum + rw.lansiaCount, 0))
+const totalLansia = computed(() => rwData.value.reduce((sum, rw) => sum + rw.lansiaCount, 0))
 
 // Health data functions
 const getHealthDominant = (health: { level1: number, level2: number, level3: number }) => {
@@ -282,121 +431,191 @@ const getEconomicDominant = (economic: { kurangMampu: number, cukupMampu: number
 }
 
 
-// GeoJSON interaction functions
-const onEachFeature = (feature: any, layer: L.Layer) => {
-  const rw = feature.properties.rw
-  const rwInfo = rwData.find(r => r.name === rw)
+// Create dynamic popup content based on current view
+const createPopupContent = (feature: any, rwInfo: any, currentView: 'health' | 'economic') => {
+  let statusInfo = ''
+  let statusColor = '#10b981'
+  let viewTitle = ''
   
-  if (rwInfo) {
-    let statusInfo = ''
-    let statusColor = '#10b981'
-    
-    if (props.mapView === 'health') {
-      const healthData = getHealthDominant(rwInfo.health)
-      statusColor = healthData.color
-      statusInfo = `
-        <div class="mt-2 pt-2 border-t border-gray-200">
-          <h5 class="font-semibold text-gray-700 mb-2">Status Kesehatan:</h5>
-          <div class="grid grid-cols-3 gap-2 text-xs">
-            <div class="text-center">
-              <div class="w-3 h-3 bg-green-500 rounded-full mx-auto mb-1"></div>
-              <div class="text-gray-600">Level 1</div>
-              <div class="font-semibold">${rwInfo.health.level1}</div>
-            </div>
-            <div class="text-center">
-              <div class="w-3 h-3 bg-yellow-500 rounded-full mx-auto mb-1"></div>
-              <div class="text-gray-600">Level 2</div>
-              <div class="font-semibold">${rwInfo.health.level2}</div>
-            </div>
-            <div class="text-center">
-              <div class="w-3 h-3 bg-red-500 rounded-full mx-auto mb-1"></div>
-              <div class="text-gray-600">Level 3</div>
-              <div class="font-semibold">${rwInfo.health.level3}</div>
-            </div>
-          </div>
+  if (currentView === 'health') {
+    const healthData = getHealthDominant(rwInfo.health)
+    statusColor = healthData.color
+    viewTitle = 'Status Kesehatan'
+    statusInfo = `
+      <div class="grid grid-cols-3 gap-2 text-xs mt-2">
+        <div class="text-center">
+          <div class="w-2 h-2 bg-green-500 rounded-full mx-auto mb-1"></div>
+          <div class="text-gray-600 text-xs">Level 1</div>
+          <div class="font-semibold text-xs">${rwInfo.health.level1}</div>
         </div>
-      `
-    } else {
-      const economicData = getEconomicDominant(rwInfo.economic)
-      statusColor = economicData.color
-      statusInfo = `
-        <div class="mt-2 pt-2 border-t border-gray-200">
-          <h5 class="font-semibold text-gray-700 mb-2">Status Ekonomi:</h5>
-          <div class="grid grid-cols-3 gap-2 text-xs">
-            <div class="text-center">
-              <div class="w-3 h-3 bg-red-500 rounded-full mx-auto mb-1"></div>
-              <div class="text-gray-600">Kurang</div>
-              <div class="font-semibold">${rwInfo.economic.kurangMampu}</div>
-            </div>
-            <div class="text-center">
-              <div class="w-3 h-3 bg-yellow-500 rounded-full mx-auto mb-1"></div>
-              <div class="text-gray-600">Cukup</div>
-              <div class="font-semibold">${rwInfo.economic.cukupMampu}</div>
-            </div>
-            <div class="text-center">
-              <div class="w-3 h-3 bg-green-500 rounded-full mx-auto mb-1"></div>
-              <div class="text-gray-600">Sangat</div>
-              <div class="font-semibold">${rwInfo.economic.sangatMampu}</div>
-            </div>
-          </div>
+        <div class="text-center">
+          <div class="w-2 h-2 bg-yellow-500 rounded-full mx-auto mb-1"></div>
+          <div class="text-gray-600 text-xs">Level 2</div>
+          <div class="font-semibold text-xs">${rwInfo.health.level2}</div>
         </div>
-      `
-    }
-    
-    const popupContent = `
-      <div class="p-4 min-w-[280px]">
-        <div class="flex items-center gap-3 mb-3">
-          <div class="w-4 h-4 rounded-full" style="background-color: ${statusColor}"></div>
-          <h3 class="text-lg font-bold text-gray-800">${rw}</h3>
-        </div>
-        <div class="space-y-2 text-sm">
-          <div class="flex justify-between items-center">
-            <span class="text-gray-600">Kelurahan:</span>
-            <span class="font-medium">${feature.properties.kelurahan}</span>
-          </div>
-          <div class="flex justify-between items-center">
-            <span class="text-gray-600">Total Populasi:</span>
-            <span class="font-medium">${rwInfo.population}</span>
-          </div>
-          <div class="flex justify-between items-center">
-            <span class="text-gray-600">Jumlah Lansia:</span>
-            <span class="font-bold text-indigo-600">${feature.properties.lansia}</span>
-          </div>
-          <div class="flex justify-between items-center">
-            <span class="text-gray-600">Persentase Lansia:</span>
-            <span class="font-medium">${((feature.properties.lansia/rwInfo.population)*100).toFixed(1)}%</span>
-          </div>
-          ${statusInfo}
+        <div class="text-center">
+          <div class="w-2 h-2 bg-red-500 rounded-full mx-auto mb-1"></div>
+          <div class="text-gray-600 text-xs">Level 3</div>
+          <div class="font-semibold text-xs">${rwInfo.health.level3}</div>
         </div>
       </div>
     `
-    
-    layer.bindPopup(popupContent, {
-      className: 'custom-popup',
-      maxWidth: 320,
-      closeButton: true,
-      autoClose: false
+  } else {
+    const economicData = getEconomicDominant(rwInfo.economic)
+    statusColor = economicData.color
+    viewTitle = 'Status Ekonomi'
+    statusInfo = `
+      <div class="grid grid-cols-3 gap-2 text-xs mt-2">
+        <div class="text-center">
+          <div class="w-2 h-2 bg-red-500 rounded-full mx-auto mb-1"></div>
+          <div class="text-gray-600 text-xs">Kurang</div>
+          <div class="font-semibold text-xs">${rwInfo.economic.kurangMampu}</div>
+        </div>
+        <div class="text-center">
+          <div class="w-2 h-2 bg-yellow-500 rounded-full mx-auto mb-1"></div>
+          <div class="text-gray-600 text-xs">Cukup</div>
+          <div class="font-semibold text-xs">${rwInfo.economic.cukupMampu}</div>
+        </div>
+        <div class="text-center">
+          <div class="w-2 h-2 bg-green-500 rounded-full mx-auto mb-1"></div>
+          <div class="text-gray-600 text-xs">Sangat</div>
+          <div class="font-semibold text-xs">${rwInfo.economic.sangatMampu}</div>
+        </div>
+      </div>
+    `
+  }
+  
+  return `
+    <div class="p-3" style="min-width: 200px; max-width: 240px;">
+      <div class="flex items-center gap-2 mb-2">
+        <div class="w-3 h-3 rounded-full" style="background-color: ${statusColor}"></div>
+        <h3 class="text-sm font-bold text-gray-800">${feature.properties.rw}</h3>
+      </div>
+      <div class="space-y-1 text-xs">
+        <div class="flex justify-between">
+          <span class="text-gray-600">Lansia:</span>
+          <span class="font-semibold text-indigo-600">${feature.properties.lansia}</span>
+        </div>
+        <div class="border-t border-gray-200 pt-1">
+          <div class="text-gray-700 font-medium text-xs mb-1">${viewTitle}:</div>
+          ${statusInfo}
+        </div>
+      </div>
+    </div>
+  `
+}
+
+// Custom tooltip element for better control
+let customTooltip: HTMLDivElement | null = null
+
+// Create custom tooltip element
+const createCustomTooltip = () => {
+  if (customTooltip) return customTooltip
+  
+  customTooltip = document.createElement('div')
+  customTooltip.className = 'custom-map-tooltip'
+  customTooltip.style.cssText = `
+    position: absolute;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.98);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 0;
+    max-width: 250px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    backdrop-filter: blur(8px);
+  `
+  
+  document.body.appendChild(customTooltip)
+  return customTooltip
+}
+
+// Position tooltip safely within viewport
+const positionTooltip = (tooltip: HTMLDivElement, mouseX: number, mouseY: number) => {
+  const tooltipRect = tooltip.getBoundingClientRect()
+  const viewportWidth = window.innerWidth
+  const viewportHeight = window.innerHeight
+  
+  let x = mouseX + 15 // Default offset
+  let y = mouseY - tooltipRect.height - 10 // Above cursor by default
+  
+  // Check right boundary
+  if (x + tooltipRect.width > viewportWidth - 20) {
+    x = mouseX - tooltipRect.width - 15 // Move to left of cursor
+  }
+  
+  // Check left boundary
+  if (x < 20) {
+    x = 20 // Min distance from edge
+  }
+  
+  // Check top boundary
+  if (y < 20) {
+    y = mouseY + 20 // Move below cursor
+  }
+  
+  // Check bottom boundary
+  if (y + tooltipRect.height > viewportHeight - 20) {
+    y = viewportHeight - tooltipRect.height - 20 // Keep in view
+  }
+  
+  tooltip.style.left = `${x}px`
+  tooltip.style.top = `${y}px`
+}
+
+// GeoJSON interaction functions with custom tooltip
+const onEachFeature = (feature: any, layer: L.Layer) => {
+  const rw = feature.properties.rw
+  const rwInfo = rwData.value.find(r => r.name === rw)
+  
+  if (rwInfo) {
+    // Add hover effects and tooltip on mouseover
+    layer.on('mouseover', function(e) {
+      // Highlight the polygon
+      if (layer instanceof L.Path) {
+        layer.setStyle({
+          weight: 4,
+          fillOpacity: 0.8
+        })
+      }
+      
+      // Create and show custom tooltip
+      const tooltip = createCustomTooltip()
+      const popupContent = createPopupContent(feature, rwInfo, props.mapView)
+      tooltip.innerHTML = popupContent
+      tooltip.style.opacity = '1'
+      
+      // Position tooltip based on mouse position
+      const mouseEvent = e.originalEvent as MouseEvent
+      positionTooltip(tooltip, mouseEvent.clientX, mouseEvent.clientY)
+    })
+
+    layer.on('mouseout', function() {
+      // Remove highlight
+      if (layer instanceof L.Path) {
+        layer.setStyle({
+          weight: 3,
+          fillOpacity: 0.6
+        })
+      }
+      
+      // Hide tooltip
+      if (customTooltip) {
+        customTooltip.style.opacity = '0'
+      }
+    })
+
+    // Handle mouse move to update tooltip position
+    layer.on('mousemove', function(e) {
+      if (customTooltip && customTooltip.style.opacity === '1') {
+        const mouseEvent = e.originalEvent as MouseEvent
+        positionTooltip(customTooltip, mouseEvent.clientX, mouseEvent.clientY)
+      }
     })
   }
-
-  // Add hover effects
-  layer.on('mouseover', function() {
-    if (layer instanceof L.Path) {
-      layer.setStyle({
-        weight: 5,
-        fillOpacity: 0.8
-      })
-    }
-  })
-
-  layer.on('mouseout', function() {
-    if (layer instanceof L.Path) {
-      layer.setStyle({
-        weight: 3,
-        fillOpacity: 0.6
-      })
-    }
-  })
 }
 
 // Function to update GeoJSON layer styling when map view changes
@@ -418,19 +637,43 @@ const initializeMap = async () => {
 
     // Load GeoJSON data first
     const geoJSONData = await loadGeoJSONData()
+    
+    // Extract RW data from GeoJSON
+    rwData.value = extractRWDataFromGeoJSON(geoJSONData)
+    console.log('Extracted RW data:', rwData.value)
 
-    // Initialize map centered on Kotabaru, Yogyakarta with adjusted center for GeoJSON data
+    // Calculate bounds of all polygons for map constraints and centering
+    let bounds: L.LatLngBounds | null = null
+    let centerLat = -7.7860
+    let centerLng = 110.3710
+    
+    if (geoJSONData.features && geoJSONData.features.length > 0) {
+      bounds = L.geoJSON(geoJSONData).getBounds()
+      
+      // Get center from bounds for better positioning
+      const boundsCenter = bounds.getCenter()
+      centerLat = boundsCenter.lat
+      centerLng = boundsCenter.lng
+      
+      // Add padding around the bounds for scroll restrictions
+      const padding = 0.001 // Smaller padding for tighter bounds
+      bounds = bounds.pad(padding)
+    }
+
+    // Initialize map with constraints
     map.value = L.map(mapContainer.value, {
-      center: [-7.7860, 110.3710],
+      center: [centerLat, centerLng],
       zoom: 16,
-      minZoom: 14,
-      maxZoom: 18,
+      minZoom: 15,        // Prevent zooming out too far
+      maxZoom: 19,        // Allow closer zoom for detail
       zoomControl: true,
       scrollWheelZoom: true,
       doubleClickZoom: true,
       dragging: true,
       touchZoom: true,
-      boxZoom: true
+      boxZoom: false,     // Disable box zoom
+      maxBounds: bounds || undefined,  // Restrict panning to GeoJSON area
+      maxBoundsViscosity: 1.0  // Prevent dragging outside bounds
     })
 
     // Add OpenStreetMap tiles
@@ -445,53 +688,25 @@ const initializeMap = async () => {
       onEachFeature: onEachFeature
     }).addTo(map.value)
 
-    // Add center markers for statistical visualization on GeoJSON polygons
-    rwData.forEach(rw => {
+    // Fit map to show all polygons with padding
+    if (bounds) {
+      map.value.fitBounds(bounds, {
+        padding: [20, 20], // 20px padding on all sides
+        maxZoom: 16        // Don't zoom in too close initially
+      })
+    }
+
+    // Add center markers and RW titles for statistical visualization on GeoJSON polygons
+    rwData.value.forEach(rw => {
       const rwColor = props.mapView === 'health' 
         ? getHealthDominant(rw.health).color
         : getEconomicDominant(rw.economic).color
 
-      // Create mini chart markers for enhanced visualization
-      const createChartIcon = (rwData: any) => {
-        // Create consistent chart design for both views
-        const chartHTML = `
-          <div style="
-            background: white;
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            border: 3px solid ${rwColor};
-            position: relative;
-          ">
-            <div style="
-              font-size: 14px;
-              font-weight: bold;
-              color: ${rwColor};
-              text-align: center;
-              line-height: 1;
-            ">
-              ${rwData.lansiaCount}
-              <div style="font-size: 8px; color: #666;">Lansia</div>
-            </div>
-          </div>
-        `
-        
-        return L.divIcon({
-          className: 'chart-marker',
-          html: chartHTML,
-          iconSize: [60, 60],
-          iconAnchor: [30, 30]
-        })
-      }
 
-      // Add the chart marker
+      // Add the RW title label at polygon center - using title from GeoJSON
       L.marker([rw.lat, rw.lng], {
-        icon: createChartIcon(rw),
-        zIndexOffset: 1000
+        icon: createRWTitleIcon(rw.name, rwColor), // rw.name comes from GeoJSON properties.rw
+        zIndexOffset: 1001
       }).addTo(map.value!)
     })
 
@@ -514,48 +729,16 @@ watch(() => props.mapView, () => {
       }
     })
     
-    // Re-add markers with new styling
-    rwData.forEach(rw => {
+    // Re-add only RW title markers with new styling
+    rwData.value.forEach(rw => {
       const rwColor = props.mapView === 'health' 
         ? getHealthDominant(rw.health).color
         : getEconomicDominant(rw.economic).color
 
-      const createChartIcon = (rwData: any) => {
-        return L.divIcon({
-          className: 'chart-marker',
-          html: `
-            <div style="
-              background: white;
-              border-radius: 50%;
-              width: 60px;
-              height: 60px;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-              border: 3px solid ${rwColor};
-              position: relative;
-            ">
-              <div style="
-                font-size: 14px;
-                font-weight: bold;
-                color: ${rwColor};
-                text-align: center;
-                line-height: 1;
-              ">
-                ${rwData.lansiaCount}
-                <div style="font-size: 8px; color: #666;">Lansia</div>
-              </div>
-            </div>
-          `,
-          iconSize: [60, 60],
-          iconAnchor: [30, 30]
-        })
-      }
-
+      // Add RW title label at polygon center - using title from GeoJSON
       L.marker([rw.lat, rw.lng], {
-        icon: createChartIcon(rw),
-        zIndexOffset: 1000
+        icon: createRWTitleIcon(rw.name, rwColor), // rw.name comes from GeoJSON properties.rw
+        zIndexOffset: 1001
       }).addTo(map.value!)
     })
   }
@@ -571,6 +754,12 @@ onUnmounted(() => {
   if (map.value) {
     map.value.remove()
   }
+  
+  // Clean up custom tooltip
+  if (customTooltip) {
+    document.body.removeChild(customTooltip)
+    customTooltip = null
+  }
 })
 </script>
 
@@ -579,19 +768,10 @@ onUnmounted(() => {
   position: relative;
 }
 
-/* Custom popup styling with enhanced design for GeoJSON */
-:global(.custom-popup .leaflet-popup-content-wrapper) {
-  border-radius: 16px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-  border: 2px solid rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(10px);
-  background: rgba(255, 255, 255, 0.95);
-}
-
-:global(.custom-popup .leaflet-popup-tip) {
-  background: rgba(255, 255, 255, 0.95);
-  border: 2px solid rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(10px);
+/* Custom tooltip styling */
+:global(.custom-map-tooltip) {
+  font-family: inherit;
+  font-size: 12px;
 }
 
 /* Chart marker animations */

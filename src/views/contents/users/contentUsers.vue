@@ -2,7 +2,7 @@
   <AnimatedCard :delay="100" card-class="bg-white rounded-2xl border shadow-sm !p-4">
     <!-- Top bar -->
     <div class="flex justify-between items-center !p-4 !mb-6">
-      <h2 class="!text-2xl text-gray-900">Users Management</h2>
+      <h2 class="!text-2xl text-gray-900">Manajemen Pengguna</h2>
       <div class="flex space-x-2">
 
       </div>
@@ -14,7 +14,7 @@
         <i class="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
         <InputText
           v-model="searchTerm"
-          placeholder="Search..."
+          placeholder="Pencarian..."
           class="w-full !pl-10 !pr-4 !py-2 text-sm border !border-gray-300 !rounded-full !focus:outline-none !focus:ring-2 focus:ring-blue-500"
         />
       </div>
@@ -26,7 +26,7 @@
           class="bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-full px-5 py-2 flex items-center gap-2 shadow"
         >
           <i class="pi pi-plus text-base" />
-          <span>New</span>
+          <span>Tambah Pengguna</span>
         </button>
       </div>
     </div>
@@ -53,11 +53,11 @@
         </template>
       </Column>
 
-      <Column field="name" header="Name" />
+      <Column field="name" header="Nama" />
       <Column field="email" header="Email" />
-      <Column field="phone" header="Phone" />
+      <Column field="phone" header="Telepon" />
 
-      <Column header="Role">
+      <Column header="Hak Akses">
         <template #body="slotProps">
           <div :class="getRoleBadgeClasses(slotProps.data.role)" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold">
             <i :class="getRoleIcon(slotProps.data.role)" class="text-sm"></i>
@@ -66,7 +66,7 @@
         </template>
       </Column>
 
-      <Column header="Actions">
+      <Column header="Aksi">
         <template #body="slotProps">
           <div class="flex !space-x-2">
             <Button icon="pi pi-eye" rounded outlined class="p-button-info" title="View" @click="openViewModal(slotProps.data)" />

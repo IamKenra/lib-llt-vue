@@ -26,11 +26,11 @@
     <div class="space-y-6">
       <!-- Step 1: Basic Information -->
       <div v-if="currentStep === 1 || isEdit">
-        <h3 v-if="!isEdit" class="text-lg font-semibold text-gray-800 !mb-4">Basic Information</h3>
+        <h3 v-if="!isEdit" class="text-lg font-semibold text-gray-800 !mb-4">Informasi Diri</h3>
         
         <!-- Name Field -->
         <div class="space-y-2">
-          <label for="name" class="block text-sm font-semibold text-gray-700">Full Name *</label>
+          <label for="name" class="block text-sm font-semibold text-gray-700">Nama *</label>
           <InputText
             id="name"
             v-model="formData.name"
@@ -59,7 +59,7 @@
 
         <!-- Phone Field -->
         <div class="space-y-2">
-          <label for="phone" class="block text-sm font-semibold text-gray-700">Phone Number *</label>
+          <label for="phone" class="block text-sm font-semibold text-gray-700">Nomor Telepon *</label>
           <InputText
             id="phone"
             v-model="formData.phone"
@@ -73,7 +73,7 @@
 
         <!-- Role Field -->
         <div class="space-y-2">
-          <label for="role" class="block text-sm font-semibold text-gray-700">Role *</label>
+          <label for="role" class="block text-sm font-semibold text-gray-700">Otoritas *</label>
           <Dropdown
             id="role"
             v-model="formData.role"
