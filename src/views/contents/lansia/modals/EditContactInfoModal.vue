@@ -7,13 +7,13 @@
     :closable="true"
     :draggable="false"
   >
-    <div class="space-y-6">
+    <div class="p-1">
         
-        <!-- Contact Info Section -->
-        <div class="bg-white rounded-2xl border border-gray-200 !p-5">
+        <!-- Kontak Dan Caregiver Card -->
+        <div class="bg-white rounded-2xl border border-gray-200 shadow-sm !p-5 !mb-4">
           <h3 class="text-lg font-semibold text-gray-800 !mb-4">
-            <i class="pi pi-phone text-green-600 !mr-2"></i>
-            Informasi Kontak
+            <i class="pi pi-phone text-blue-600 !mr-2"></i>
+            Kontak Dan Caregiver
           </h3>
           
           <div class="grid grid-cols-2 gap-4">
@@ -48,64 +48,12 @@
           </div>
         </div>
 
-        <!-- Emergency Contacts Section -->
-        <div class="bg-white rounded-2xl border border-gray-200 !p-5">
-          <h3 class="text-lg font-semibold text-gray-800 !mb-4">
-            <i class="pi pi-exclamation-triangle text-orange-600 !mr-2"></i>
-            Kontak Darurat Utama
-          </h3>
-          
-          <div class="grid grid-cols-1 gap-4">
-            <!-- Emergency Contact Name -->
-            <div class="space-y-2">
-              <label for="emergencyContact" class="block text-sm font-semibold text-gray-700">Nama Kontak Darurat *</label>
-              <InputText
-                id="emergencyContact"
-                v-model="formData.emergencyContact"
-                :class="{ 'p-invalid': errors.emergencyContact }"
-                class="w-full !rounded-xl !border-gray-300 !p-3 text-sm"
-                placeholder="Nama lengkap kontak darurat"
-              />
-              <small v-if="errors.emergencyContact" class="text-red-500 text-xs !mt-1">{{ errors.emergencyContact }}</small>
-            </div>
-
-            <!-- Emergency Phone -->
-            <div class="space-y-2">
-              <label for="emergencyPhone" class="block text-sm font-semibold text-gray-700">Nomor Telepon Darurat *</label>
-              <InputText
-                id="emergencyPhone"
-                v-model="formData.emergencyPhone"
-                :class="{ 'p-invalid': errors.emergencyPhone }"
-                class="w-full !rounded-xl !border-gray-300 !p-3 text-sm"
-                placeholder="08xxxxxxxxxx"
-              />
-              <small v-if="errors.emergencyPhone" class="text-red-500 text-xs !mt-1">{{ errors.emergencyPhone }}</small>
-            </div>
-
-            <!-- Emergency Relationship -->
-            <div class="space-y-2">
-              <label for="emergencyRelationship" class="block text-sm font-semibold text-gray-700">Hubungan *</label>
-              <Dropdown
-                id="emergencyRelationship"
-                v-model="formData.emergencyRelationship"
-                :options="relationshipOptions"
-                optionLabel="label"
-                optionValue="value"
-                :class="{ 'p-invalid': errors.emergencyRelationship }"
-                class="w-full !rounded-xl !border-gray-300"
-                placeholder="Pilih hubungan"
-              />
-              <small v-if="errors.emergencyRelationship" class="text-red-500 text-xs !mt-1">{{ errors.emergencyRelationship }}</small>
-            </div>
-          </div>
-        </div>
-
-        <!-- Additional Emergency Contacts Section -->
-        <div class="bg-white rounded-2xl border border-gray-200 !p-5">
+        <!-- Kontak Darurat Card -->
+        <div class="bg-white rounded-2xl border border-gray-200 shadow-sm !p-5">
           <div class="flex items-center justify-between mb-4">
-            <h3 class="text-lg font-semibold text-gray-800 !mb-0">
-              <i class="pi pi-users text-blue-600 !mr-2"></i>
-              Kontak Darurat Tambahan
+            <h3 class="text-lg font-semibold text-gray-800">
+              <i class="pi pi-exclamation-triangle text-orange-600 !mr-2"></i>
+              Kontak Darurat
             </h3>
             <Button
               type="button"
@@ -119,82 +67,134 @@
             />
           </div>
 
-          <div v-if="additionalContacts.length === 0" class="text-center py-8 text-gray-500">
-            <i class="pi pi-users text-3xl mb-2 block text-gray-400"></i>
-            <p class="text-sm">Belum ada kontak darurat tambahan</p>
-            <Button
-              type="button"
-              label="Tambah Kontak"
-              icon="pi pi-plus"
-              size="small"
-              outlined
-              class="mt-3"
-              @click="addEmergencyContact"
-            />
+          <!-- Primary Emergency Contact -->
+          <div class="!mb-6">
+            <h4 class="text-md font-semibold text-gray-700 mb-3">Kontak Darurat Utama</h4>
+            <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 shadow-sm">
+              <div class="grid grid-cols-1 gap-4">
+              <!-- Emergency Contact Name -->
+              <div class="space-y-2">
+                <label for="emergencyContact" class="block text-sm font-semibold text-gray-700">Nama Kontak Darurat *</label>
+                <InputText
+                  id="emergencyContact"
+                  v-model="formData.emergencyContact"
+                  :class="{ 'p-invalid': errors.emergencyContact }"
+                  class="w-full !rounded-xl !border-gray-300 !p-3 text-sm"
+                  placeholder="Nama lengkap kontak darurat"
+                />
+                <small v-if="errors.emergencyContact" class="text-red-500 text-xs !mt-1">{{ errors.emergencyContact }}</small>
+              </div>
+
+              <div class="grid grid-cols-2 gap-4">
+                <!-- Emergency Phone -->
+                <div class="space-y-2">
+                  <label for="emergencyPhone" class="block text-sm font-semibold text-gray-700">Nomor Telepon Darurat *</label>
+                  <InputText
+                    id="emergencyPhone"
+                    v-model="formData.emergencyPhone"
+                    :class="{ 'p-invalid': errors.emergencyPhone }"
+                    class="w-full !rounded-xl !border-gray-300 !p-3 text-sm"
+                    placeholder="08xxxxxxxxxx"
+                  />
+                  <small v-if="errors.emergencyPhone" class="text-red-500 text-xs !mt-1">{{ errors.emergencyPhone }}</small>
+                </div>
+
+                <!-- Emergency Relationship -->
+                <div class="space-y-2">
+                  <label for="emergencyRelationship" class="block text-sm font-semibold text-gray-700">Hubungan *</label>
+                  <Dropdown
+                    id="emergencyRelationship"
+                    v-model="formData.emergencyRelationship"
+                    :options="relationshipOptions"
+                    optionLabel="label"
+                    optionValue="value"
+                    :class="{ 'p-invalid': errors.emergencyRelationship }"
+                    class="w-full !rounded-xl !border-gray-300"
+                    placeholder="Pilih hubungan"
+                  />
+                  <small v-if="errors.emergencyRelationship" class="text-red-500 text-xs !mt-1">{{ errors.emergencyRelationship }}</small>
+                </div>
+              </div>
+            </div>
+            </div>
           </div>
 
-          <!-- Additional Emergency Contacts List -->
-          <div v-else class="space-y-3">
-            <div 
-              v-for="(contact, index) in additionalContacts" 
-              :key="index"
-              class="additional-contact-card"
-            >
-              <div class="flex items-start gap-3">
-                <div class="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
-                  <span class="text-sm font-bold text-blue-600">{{ index + 2 }}</span>
-                </div>
-                
-                <div class="flex-1 space-y-3">
-                  <div class="grid grid-cols-2 gap-3">
-                    <div>
-                      <label class="block text-sm font-semibold text-gray-700 !mb-1">Nama Lengkap</label>
-                      <InputText
-                        v-model="contact.name"
-                        class="w-full !rounded-xl !border-gray-300 !p-3 text-sm"
-                        placeholder="Nama kontak"
-                      />
-                    </div>
-                    <div>
-                      <label class="block text-sm font-semibold text-gray-700 !mb-1">Nomor Telepon</label>
-                      <InputText
-                        v-model="contact.phone"
-                        class="w-full !rounded-xl !border-gray-300 !p-3 text-sm"
-                        placeholder="08xxxxxxxxxx"
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label class="block text-sm font-semibold text-gray-700 !mb-1">Hubungan</label>
-                    <Dropdown
-                      v-model="contact.relationship"
-                      :options="relationshipOptions"
-                      optionLabel="label"
-                      optionValue="value"
-                      class="w-full !rounded-xl !border-gray-300"
-                      placeholder="Pilih hubungan"
-                    />
-                  </div>
-                </div>
+          <!-- Additional Emergency Contacts -->
+          <div v-if="additionalContacts.length > 0" class="mt-6">
+            <!-- Divider -->
+            <div class="border-t border-gray-200 mb-4"></div>
+            
+            <div class="!mb-4">
+              <h4 class="text-base font-semibold text-gray-700">
+                <i class="pi pi-users text-blue-600 mr-2"></i>
+                Kontak Darurat Tambahan
+              </h4>
+            </div>
 
-                <Button
-                  type="button"
-                  icon="pi pi-trash"
-                  size="small"
-                  rounded
-                  outlined
-                  severity="danger"
-                  class="mt-1 flex-shrink-0"
-                  title="Hapus kontak"
-                  @click="removeEmergencyContact(index)"
-                />
+            <!-- Additional Emergency Contacts List -->
+            <div>
+              <div 
+                v-for="(contact, index) in additionalContacts" 
+                :key="index"
+                class="bg-slate-50 border border-slate-200 rounded-xl p-4 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
+                :style="{ marginBottom: index < additionalContacts.length - 1 ? '1.5rem' : '0' }"
+              >
+                <div class="flex items-start gap-3">
+                  <div class="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                    <span class="text-sm font-bold text-blue-600">{{ index + 2 }}</span>
+                  </div>
+                  
+                  <div class="flex-1 space-y-3 !mb-3">
+                    <div class="grid grid-cols-2 gap-3">
+                      <div>
+                        <label class="block text-sm font-semibold text-gray-700 !mb-1">Nama Lengkap</label>
+                        <InputText
+                          v-model="contact.name"
+                          class="w-full !rounded-xl !border-gray-300 !p-3 text-sm"
+                          placeholder="Nama kontak"
+                        />
+                      </div>
+                      <div>
+                        <label class="block text-sm font-semibold text-gray-700 !mb-1">Nomor Telepon</label>
+                        <InputText
+                          v-model="contact.phone"
+                          class="w-full !rounded-xl !border-gray-300 !p-3 text-sm"
+                          placeholder="08xxxxxxxxxx"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label class="block text-sm font-semibold text-gray-700 !mb-1">Hubungan</label>
+                      <Dropdown
+                        v-model="contact.relationship"
+                        :options="relationshipOptions"
+                        optionLabel="label"
+                        optionValue="value"
+                        class="w-full !rounded-xl !border-gray-300"
+                        placeholder="Pilih hubungan"
+                      />
+                    </div>
+                  </div>
+
+                  <Button
+                    type="button"
+                    icon="pi pi-trash"
+                    size="small"
+                    rounded
+                    outlined
+                    severity="danger"
+                    class="mt-1 flex-shrink-0"
+                    title="Hapus kontak"
+                    @click="removeEmergencyContact(index)"
+                  />
+                </div>
               </div>
             </div>
           </div>
         </div>
 
         <!-- Action Buttons -->
-        <div class="flex justify-end gap-3 !mt-8">
+        <div class="flex justify-end gap-3 !mt-6">
           <Button
             label="Batal"
             severity="secondary"
@@ -208,6 +208,7 @@
             @click="handleSubmit"
           />
         </div>
+
     </div>
   </Dialog>
 </template>
@@ -418,17 +419,3 @@ const handleCancel = () => {
 }
 </script>
 
-<style scoped>
-.additional-contact-card {
-  background-color: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 0.5rem;
-  padding: 1rem;
-  transition: all 200ms;
-}
-
-.additional-contact-card:hover {
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  border-color: #d1d5db;
-}
-</style>

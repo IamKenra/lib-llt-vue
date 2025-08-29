@@ -3,20 +3,20 @@
     v-model:visible="visible" 
     modal 
     header="Edit Informasi Pribadi"
-    :style="{ width: '500px' }"
+    :style="{ width: '600px' }"
     :closable="true"
     :draggable="false"
   >
     <div class="space-y-6">
         
         <!-- Basic Info Section -->
-        <div class="bg-white rounded-2xl border border-gray-200 !p-5">
+        <div class="bg-white rounded-2xl border border-gray-200 !p-5 !mb-6">
           <h3 class="text-lg font-semibold text-gray-800 !mb-4">
             <i class="pi pi-user text-blue-600 !mr-2"></i>
             Informasi Dasar
           </h3>
           
-          <div class="grid grid-cols-2 gap-4">
+          <div class="grid grid-cols-2 gap-5">
             <!-- First Name -->
             <div class="space-y-2">
               <label for="firstName" class="block text-sm font-semibold text-gray-700">Nama Depan *</label>
@@ -84,11 +84,17 @@
                 id="dateOfBirth"
                 v-model="formData.dateOfBirth"
                 :class="{ 'p-invalid': errors.dateOfBirth }"
-                class="w-full !rounded-xl !border-gray-300"
                 placeholder="DD/MM/YYYY"
                 dateFormat="dd/mm/yy"
                 :maxDate="new Date()"
                 showIcon
+                iconDisplay="input"
+                inputClass="!rounded-xl !border-gray-300 !py-3 !pl-3 !pr-10 text-sm"
+                :pt="{
+                  root: { class: 'relative w-full' },
+                  input: { class: '!rounded-xl !border-gray-300 !py-3 !pl-3 !pr-10 text-sm w-full' },
+                  inputIcon: { class: 'absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center' }
+                }"
               />
               <small v-if="errors.dateOfBirth" class="text-red-500 text-xs !mt-1">{{ errors.dateOfBirth }}</small>
             </div>
@@ -107,7 +113,7 @@
         </div>
 
         <!-- Address Section -->
-        <div class="bg-white rounded-2xl border border-gray-200 !p-5">
+        <div class="bg-white rounded-2xl border border-gray-200 !p-5 !mb-6">
           <h3 class="text-lg font-semibold text-gray-800 !mb-4">
             <i class="pi pi-map-marker text-green-600 !mr-2"></i>
             Alamat
@@ -399,3 +405,6 @@ const handleCancel = () => {
 }
 </script>
 
+<style scoped>
+/* No custom calendar styling needed - using PassThrough props */
+</style>

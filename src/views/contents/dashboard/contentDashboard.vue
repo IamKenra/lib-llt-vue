@@ -176,7 +176,6 @@
                   <i class="pi pi-money-bill"></i>
                 </button>
               </div>
-              <i class="pi pi-map !text-xl !text-blue-500 !opacity-70"></i>
             </div>
           </div>
         </div>

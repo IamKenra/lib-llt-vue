@@ -268,6 +268,14 @@ export function useLansiaManagement() {
     return filtered
   })
 
+  // Check if any child modal is open
+  const hasOpenChildModal = computed(() => {
+    return showEditPersonalInfoModal.value || 
+           showEditContactInfoModal.value || 
+           showEditHealthHistoryModal.value || 
+           showProfilePictureModal.value
+  })
+
   // Lansia management methods
   const generateLansiaId = (): string => {
     const lansiaCount = lansia.value.length + 1
@@ -636,6 +644,7 @@ export function useLansiaManagement() {
     showEditHealthHistoryModal,
     showProfilePictureModal,
     selectedEditLansia,
+    hasOpenChildModal,
 
     // Methods
     addLansia,

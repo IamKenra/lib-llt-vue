@@ -10,7 +10,7 @@
     <div class="space-y-6">
         
         <!-- Health Status Section -->
-        <div class="bg-white rounded-2xl border border-gray-200 !p-5">
+        <div class="bg-white rounded-2xl border border-gray-200 !p-5 !mb-6">
           <h3 class="text-lg font-semibold text-gray-800 !mb-4">
             <i class="pi pi-heart text-red-600 !mr-2"></i>
             Status Kesehatan
@@ -33,86 +33,27 @@
               <small v-if="errors.healthStatus" class="text-red-500 text-xs !mt-1">{{ errors.healthStatus }}</small>
             </div>
 
-            <!-- Last Checkup -->
+            <!-- Living Status -->
             <div class="space-y-2">
-              <label for="lastCheckup" class="block text-sm font-semibold text-gray-700">Terakhir Periksa *</label>
-              <Calendar
-                id="lastCheckup"
-                v-model="formData.lastCheckup"
-                :class="{ 'p-invalid': errors.lastCheckup }"
+              <label for="livingStatus" class="block text-sm font-semibold text-gray-700">Status Kehidupan *</label>
+              <Dropdown
+                id="livingStatus"
+                v-model="formData.livingStatus"
+                :options="livingStatusOptions"
+                optionLabel="label"
+                optionValue="value"
+                :class="{ 'p-invalid': errors.livingStatus }"
                 class="w-full !rounded-xl !border-gray-300"
-                placeholder="DD/MM/YYYY"
-                dateFormat="dd/mm/yy"
-                :maxDate="new Date()"
-                showIcon
+                placeholder="Pilih status kehidupan"
               />
-              <small v-if="errors.lastCheckup" class="text-red-500 text-xs !mt-1">{{ errors.lastCheckup }}</small>
+              <small v-if="errors.livingStatus" class="text-red-500 text-xs !mt-1">{{ errors.livingStatus }}</small>
             </div>
           </div>
         </div>
 
-        <!-- Medical Conditions Section -->
-        <div class="bg-white rounded-2xl border border-gray-200 !p-5">
-          <div class="flex items-center justify-between mb-4">
-            <h3 class="text-lg font-semibold text-gray-800 !mb-0">
-              <i class="pi pi-exclamation-triangle text-orange-600 !mr-2"></i>
-              Kondisi Medis
-            </h3>
-            <Button
-              type="button"
-              icon="pi pi-plus"
-              size="small"
-              rounded
-              outlined
-              class="p-button-warning"
-              title="Tambah kondisi medis"
-              @click="addMedicalCondition"
-            />
-          </div>
-
-          <div v-if="medicalConditions.length === 0" class="text-center py-8 text-gray-500">
-            <i class="pi pi-heart-fill text-3xl mb-2 block text-gray-400"></i>
-            <p class="text-sm">Tidak ada kondisi medis khusus</p>
-            <Button
-              type="button"
-              label="Tambah Kondisi"
-              icon="pi pi-plus"
-              size="small"
-              outlined
-              class="mt-3"
-              @click="addMedicalCondition"
-            />
-          </div>
-
-          <!-- Medical Conditions List -->
-          <div v-else class="space-y-2">
-            <div 
-              v-for="(condition, index) in medicalConditions" 
-              :key="index"
-              class="flex items-center gap-3 p-3 bg-white border border-orange-200 rounded-lg"
-            >
-              <i class="pi pi-exclamation-triangle text-orange-500 text-sm"></i>
-              <InputText
-                v-model="medicalConditions[index]"
-                class="flex-1 w-full !rounded-xl !border-gray-300 !p-3 text-sm"
-                placeholder="Masukkan kondisi medis"
-              />
-              <Button
-                type="button"
-                icon="pi pi-trash"
-                size="small"
-                rounded
-                outlined
-                severity="danger"
-                title="Hapus kondisi"
-                @click="removeMedicalCondition(index)"
-              />
-            </div>
-          </div>
-        </div>
 
         <!-- Health History Records Section -->
-        <div class="bg-white rounded-2xl border border-gray-200 !p-5">
+        <div class="bg-white rounded-2xl border border-gray-200 !p-5 !mb-6">
           <div class="flex items-center justify-between mb-4">
             <h3 class="text-lg font-semibold text-gray-800 !mb-0">
               <i class="pi pi-calendar text-purple-600 !mr-2"></i>
@@ -145,7 +86,7 @@
           </div>
 
           <!-- Health Records List -->
-          <div v-else class="space-y-4">
+          <div v-else class="space-y-4 mt-4">
             <div 
               v-for="(record, index) in healthRecords" 
               :key="index"
@@ -173,11 +114,16 @@
                       <label class="block text-sm font-semibold text-gray-700 !mb-1">Tanggal</label>
                       <Calendar
                         v-model="record.date"
-                        class="w-full !rounded-xl !border-gray-300"
                         placeholder="DD/MM/YYYY"
                         dateFormat="dd/mm/yy"
                         :maxDate="new Date()"
                         showIcon
+                        iconDisplay="input"
+                        :pt="{
+                          root: { class: 'relative w-full' },
+                          input: { class: '!rounded-xl !border-gray-300 !py-3 !pl-3 !pr-10 text-sm w-full' },
+                          inputIcon: { class: 'absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center' }
+                        }"
                       />
                     </div>
                   </div>
@@ -260,17 +206,16 @@ const emit = defineEmits<Emits>()
 // Form data
 const formData = ref({
   healthStatus: null as number | null,
-  lastCheckup: null as Date | null
+  livingStatus: null as 'Hidup' | 'Meninggal' | null
 })
 
-// Medical conditions and health records
-const medicalConditions = ref<string[]>([])
+// Health records
 const healthRecords = ref<HealthRecord[]>([])
 
 // Form validation errors
 const errors = ref({
   healthStatus: '',
-  lastCheckup: ''
+  livingStatus: ''
 })
 
 // Form state
@@ -281,6 +226,11 @@ const healthStatusOptions = [
   { label: 'Level 1 - Sehat', value: 1 },
   { label: 'Level 2 - Perlu Perhatian', value: 2 },
   { label: 'Level 3 - Membutuhkan Perawatan', value: 3 }
+]
+
+const livingStatusOptions = [
+  { label: 'Hidup', value: 'Hidup' },
+  { label: 'Meninggal', value: 'Meninggal' }
 ]
 
 const recordTypeOptions = [
@@ -320,11 +270,8 @@ watch(() => props.visible, (newVisible) => {
 const loadLansiaData = (lansia: Lansia) => {
   formData.value = {
     healthStatus: lansia.healthStatus || null,
-    lastCheckup: lansia.lastCheckup || null
+    livingStatus: lansia.livingStatus || 'Hidup'
   }
-
-  // Load medical conditions
-  medicalConditions.value = [...(lansia.medicalConditions || [])]
 
   // Initialize with some sample health records based on the detail modal
   healthRecords.value = [
@@ -350,17 +297,8 @@ const loadLansiaData = (lansia: Lansia) => {
 const clearErrors = () => {
   errors.value = {
     healthStatus: '',
-    lastCheckup: ''
+    livingStatus: ''
   }
-}
-
-// Medical conditions management
-const addMedicalCondition = () => {
-  medicalConditions.value.push('')
-}
-
-const removeMedicalCondition = (index: number) => {
-  medicalConditions.value.splice(index, 1)
 }
 
 // Health records management
@@ -387,9 +325,9 @@ const validateForm = (): boolean => {
     isValid = false
   }
 
-  // Last checkup validation
-  if (!formData.value.lastCheckup) {
-    errors.value.lastCheckup = 'Tanggal terakhir periksa wajib diisi'
+  // Living status validation
+  if (!formData.value.livingStatus) {
+    errors.value.livingStatus = 'Status kehidupan wajib dipilih'
     isValid = false
   }
 
@@ -405,14 +343,10 @@ const handleSubmit = async () => {
   isSubmitting.value = true
 
   try {
-    // Filter out empty medical conditions
-    const validMedicalConditions = medicalConditions.value.filter(condition => condition.trim())
-
     // Prepare data for saving
     const updatedData: Partial<Lansia> = {
       healthStatus: formData.value.healthStatus as 1 | 2 | 3,
-      lastCheckup: formData.value.lastCheckup!,
-      medicalConditions: validMedicalConditions
+      livingStatus: formData.value.livingStatus as 'Hidup' | 'Meninggal'
     }
 
     emit('save', updatedData)
@@ -432,11 +366,14 @@ const handleCancel = () => {
 </script>
 
 <style scoped>
+/* Health record card styling */
+
 .health-record-card {
   background-color: #ffffff;
   border: 1px solid #e5e7eb;
   border-radius: 0.5rem;
   padding: 1rem;
+  margin-bottom: 1rem;
   transition: all 200ms;
 }
 

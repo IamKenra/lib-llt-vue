@@ -350,6 +350,7 @@
     <LansiaDetailModal
       v-model:visible="showViewModal"
       :lansia="selectedViewLansia"
+      :hasOpenChildModal="hasOpenChildModal"
       @edit="handleEditFromView"
       @editPersonalInfo="handleEditPersonalInfo"
       @editContactInfo="handleEditContactInfo"
@@ -442,6 +443,7 @@ const {
   showEditHealthHistoryModal,
   showProfilePictureModal,
   selectedEditLansia,
+  hasOpenChildModal,
   
   // Modal methods
   openAddModal,

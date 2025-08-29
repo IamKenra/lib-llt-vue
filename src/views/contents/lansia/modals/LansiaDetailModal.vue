@@ -6,6 +6,7 @@
     :style="{ width: '580px' }"
     :closable="true"
     :draggable="false"
+    :closeOnEscape="!props.hasOpenChildModal"
   >
     <div v-if="lansia" class="modern-lansia-detail">
       <!-- Hero Section -->
@@ -335,7 +336,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, withDefaults } from 'vue'
 import Dialog from 'primevue/dialog'
 import Button from 'primevue/button'
 import { useLansiaManagement, type Lansia } from '../composables/useLansiaManagement'
@@ -344,6 +345,7 @@ import LansiaQRModal from './LansiaQRModal.vue'
 interface Props {
   visible: boolean
   lansia?: Lansia | null
+  hasOpenChildModal?: boolean
 }
 
 interface Emits {
@@ -356,7 +358,9 @@ interface Emits {
   (e: 'close'): void
 }
 
-const props = defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), {
+  hasOpenChildModal: false
+})
 const emit = defineEmits<Emits>()
 
 // Use health status functions from composable

@@ -10,13 +10,6 @@
     </div>
 
 
-    <!-- Total stats overlay -->
-    <div class="absolute top-4 left-4 bg-white/95 backdrop-blur-sm rounded-xl p-4 shadow-xl border border-gray-200 z-[1000]">
-      <div class="text-center">
-        <div class="text-2xl font-bold text-indigo-600">{{ totalLansia }}</div>
-        <div class="text-sm text-gray-600">Total Lansia</div>
-      </div>
-    </div>
 
     <!-- Loading indicator -->
     <div 
@@ -442,21 +435,27 @@ const createPopupContent = (feature: any, rwInfo: any, currentView: 'health' | '
     statusColor = healthData.color
     viewTitle = 'Status Kesehatan'
     statusInfo = `
-      <div class="grid grid-cols-3 gap-2 text-xs mt-2">
-        <div class="text-center">
-          <div class="w-2 h-2 bg-green-500 rounded-full mx-auto mb-1"></div>
-          <div class="text-gray-600 text-xs">Level 1</div>
-          <div class="font-semibold text-xs">${rwInfo.health.level1}</div>
+      <div class="space-y-1.5">
+        <div class="flex items-center justify-between py-1 px-2 bg-green-50 rounded">
+          <div class="flex items-center gap-1.5">
+            <div class="w-2.5 h-2.5 bg-green-500 rounded-full"></div>
+            <span class="text-xs font-medium text-gray-700">Level 1</span>
+          </div>
+          <span class="text-xs font-bold text-green-600">${rwInfo.health.level1}</span>
         </div>
-        <div class="text-center">
-          <div class="w-2 h-2 bg-yellow-500 rounded-full mx-auto mb-1"></div>
-          <div class="text-gray-600 text-xs">Level 2</div>
-          <div class="font-semibold text-xs">${rwInfo.health.level2}</div>
+        <div class="flex items-center justify-between py-1 px-2 bg-yellow-50 rounded">
+          <div class="flex items-center gap-1.5">
+            <div class="w-2.5 h-2.5 bg-yellow-500 rounded-full"></div>
+            <span class="text-xs font-medium text-gray-700">Level 2</span>
+          </div>
+          <span class="text-xs font-bold text-yellow-600">${rwInfo.health.level2}</span>
         </div>
-        <div class="text-center">
-          <div class="w-2 h-2 bg-red-500 rounded-full mx-auto mb-1"></div>
-          <div class="text-gray-600 text-xs">Level 3</div>
-          <div class="font-semibold text-xs">${rwInfo.health.level3}</div>
+        <div class="flex items-center justify-between py-1 px-2 bg-red-50 rounded">
+          <div class="flex items-center gap-1.5">
+            <div class="w-2.5 h-2.5 bg-red-500 rounded-full"></div>
+            <span class="text-xs font-medium text-gray-700">Level 3</span>
+          </div>
+          <span class="text-xs font-bold text-red-600">${rwInfo.health.level3}</span>
         </div>
       </div>
     `
@@ -465,41 +464,47 @@ const createPopupContent = (feature: any, rwInfo: any, currentView: 'health' | '
     statusColor = economicData.color
     viewTitle = 'Status Ekonomi'
     statusInfo = `
-      <div class="grid grid-cols-3 gap-2 text-xs mt-2">
-        <div class="text-center">
-          <div class="w-2 h-2 bg-red-500 rounded-full mx-auto mb-1"></div>
-          <div class="text-gray-600 text-xs">Kurang</div>
-          <div class="font-semibold text-xs">${rwInfo.economic.kurangMampu}</div>
+      <div class="space-y-1.5">
+        <div class="flex items-center justify-between py-1 px-2 bg-red-50 rounded">
+          <div class="flex items-center gap-1.5">
+            <div class="w-2.5 h-2.5 bg-red-500 rounded-full"></div>
+            <span class="text-xs font-medium text-gray-700">Kurang Mampu</span>
+          </div>
+          <span class="text-xs font-bold text-red-600">${rwInfo.economic.kurangMampu}</span>
         </div>
-        <div class="text-center">
-          <div class="w-2 h-2 bg-yellow-500 rounded-full mx-auto mb-1"></div>
-          <div class="text-gray-600 text-xs">Cukup</div>
-          <div class="font-semibold text-xs">${rwInfo.economic.cukupMampu}</div>
+        <div class="flex items-center justify-between py-1 px-2 bg-yellow-50 rounded">
+          <div class="flex items-center gap-1.5">
+            <div class="w-2.5 h-2.5 bg-yellow-500 rounded-full"></div>
+            <span class="text-xs font-medium text-gray-700">Cukup Mampu</span>
+          </div>
+          <span class="text-xs font-bold text-yellow-600">${rwInfo.economic.cukupMampu}</span>
         </div>
-        <div class="text-center">
-          <div class="w-2 h-2 bg-green-500 rounded-full mx-auto mb-1"></div>
-          <div class="text-gray-600 text-xs">Sangat</div>
-          <div class="font-semibold text-xs">${rwInfo.economic.sangatMampu}</div>
+        <div class="flex items-center justify-between py-1 px-2 bg-green-50 rounded">
+          <div class="flex items-center gap-1.5">
+            <div class="w-2.5 h-2.5 bg-green-500 rounded-full"></div>
+            <span class="text-xs font-medium text-gray-700">Sangat Mampu</span>
+          </div>
+          <span class="text-xs font-bold text-green-600">${rwInfo.economic.sangatMampu}</span>
         </div>
       </div>
     `
   }
   
   return `
-    <div class="p-3" style="min-width: 200px; max-width: 240px;">
-      <div class="flex items-center gap-2 mb-2">
-        <div class="w-3 h-3 rounded-full" style="background-color: ${statusColor}"></div>
-        <h3 class="text-sm font-bold text-gray-800">${feature.properties.rw}</h3>
+    <div class="p-3" style="min-width: 220px; max-width: 260px; font-family: Inter, sans-serif;">
+      <div class="flex items-center gap-2 mb-3 pb-2 border-b border-gray-200">
+        <div class="w-3 h-3 rounded-full shadow-sm" style="background-color: ${statusColor};"></div>
+        <h3 class="text-base font-bold text-gray-800 tracking-tight">${feature.properties.rw}</h3>
       </div>
-      <div class="space-y-1 text-xs">
-        <div class="flex justify-between">
-          <span class="text-gray-600">Lansia:</span>
-          <span class="font-semibold text-indigo-600">${feature.properties.lansia}</span>
+      <div class="mb-3">
+        <div class="flex justify-between items-center px-2 py-1.5 bg-gradient-to-r from-slate-50 to-slate-100 rounded-lg border border-slate-200">
+          <span class="text-xs font-medium text-slate-600">Total Lansia</span>
+          <span class="text-sm font-bold text-blue-600">${feature.properties.lansia}</span>
         </div>
-        <div class="border-t border-gray-200 pt-1">
-          <div class="text-gray-700 font-medium text-xs mb-1">${viewTitle}:</div>
-          ${statusInfo}
-        </div>
+      </div>
+      <div>
+        <div class="text-sm font-semibold text-gray-700 mb-2">${viewTitle}</div>
+        ${statusInfo}
       </div>
     </div>
   `
@@ -666,7 +671,7 @@ const initializeMap = async () => {
       zoom: 16,
       minZoom: 15,        // Prevent zooming out too far
       maxZoom: 19,        // Allow closer zoom for detail
-      zoomControl: true,
+      zoomControl: false,  // Remove zoom control buttons
       scrollWheelZoom: true,
       doubleClickZoom: true,
       dragging: true,
